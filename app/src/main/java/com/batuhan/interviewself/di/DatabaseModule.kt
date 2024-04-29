@@ -3,6 +3,7 @@ package com.batuhan.interviewself.di
 import android.content.Context
 import androidx.room.Room
 import com.batuhan.interviewself.db.InterviewselfDatabase
+import com.batuhan.interviewself.db.QuestionConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +18,6 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): InterviewselfDatabase {
-        return Room.databaseBuilder(context, InterviewselfDatabase::class.java, "interviewself").build()
+        return Room.databaseBuilder(context, InterviewselfDatabase::class.java, "interviewself").addTypeConverter(QuestionConverter()).build()
     }
 }

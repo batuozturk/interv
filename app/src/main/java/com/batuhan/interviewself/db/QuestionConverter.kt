@@ -1,9 +1,11 @@
 package com.batuhan.interviewself.db
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.batuhan.interviewself.data.model.Question
 import com.squareup.moshi.Moshi
 
+@ProvidedTypeConverter
 class QuestionConverter {
 
     @TypeConverter
