@@ -9,7 +9,7 @@ class UpsertInterview @Inject constructor(private val repository: InterviewRepos
 
     data class Params(val interview:Interview)
 
-    suspend operator fun invoke(params: Params): Result<Unit> {
+    suspend operator fun invoke(params: Params): Result<Long> {
         return runCatching {
             Result.Success(repository.upsertInterview(params.interview))
         }.getOrElse {

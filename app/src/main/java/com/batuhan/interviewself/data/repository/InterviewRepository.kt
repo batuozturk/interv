@@ -2,7 +2,8 @@ package com.batuhan.interviewself.data.repository
 
 import androidx.paging.PagingData
 import com.batuhan.interviewself.data.model.Interview
-import com.batuhan.interviewself.data.model.InterviewResult
+import com.batuhan.interviewself.data.model.InterviewWithSteps
+import com.batuhan.interviewself.data.model.InterviewStep
 import kotlinx.coroutines.flow.Flow
 
 interface InterviewRepository {
@@ -10,7 +11,13 @@ interface InterviewRepository {
 
     suspend fun deleteInterview(question: Interview)
 
-    suspend fun upsertInterview(question: Interview)
+    suspend fun upsertInterview(question: Interview): Long
 
-    suspend fun getInterviewResult(interviewId: Long): InterviewResult
+    suspend fun getInterviewWithSteps(interviewId: Long): InterviewWithSteps
+
+    suspend fun upsertInterviewStep(interviewStep: InterviewStep)
+
+    suspend fun deleteInterviewStep(interviewStep: InterviewStep)
+
+    suspend fun deleteInterviewSteps(id: Long)
 }
