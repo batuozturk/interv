@@ -1,15 +1,16 @@
 package com.batuhan.interviewself.data.source
 
 import com.batuhan.interviewself.data.model.Question
+import com.batuhan.interviewself.db.InterviewselfDatabase
 import com.batuhan.interviewself.db.QuestionDao
 import javax.inject.Inject
 
-class QuestionLocalDataSource @Inject constructor(private val questionDao: QuestionDao) {
+class QuestionLocalDataSource @Inject constructor(private val database: InterviewselfDatabase) {
 
-    fun getAllQuestions() = questionDao.getAllQuestions()
+    fun getAllQuestions() = database.questionDao.getAllQuestions()
 
-    suspend fun deleteQuestion(question: Question) = questionDao.deleteQuestion(question)
+    suspend fun deleteQuestion(question: Question) = database.questionDao.deleteQuestion(question)
 
-    suspend fun upsertQuestion(question: Question) = questionDao.upsertQuestion(question)
+    suspend fun upsertQuestion(question: Question) = database.questionDao.upsertQuestion(question)
 
 }
