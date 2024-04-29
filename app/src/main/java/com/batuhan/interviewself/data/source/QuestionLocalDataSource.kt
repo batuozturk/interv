@@ -12,6 +12,4 @@ class QuestionLocalDataSource @Inject constructor(private val questionDao: Quest
 
     suspend fun upsertQuestion(question: Question) = questionDao.upsertQuestion(question)
 
-
-
 }

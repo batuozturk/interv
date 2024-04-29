@@ -4,7 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.batuhan.interviewself.data.model.Interview
-import com.batuhan.interviewself.data.model.InterviewResult
+import com.batuhan.interviewself.data.model.InterviewWithSteps
+import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.source.InterviewLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -33,12 +34,24 @@ class InterviewRepositoryImpl @Inject constructor(private val localDataSource: I
         return localDataSource.deleteInterview(question)
     }
 
-    override suspend fun upsertInterview(question: Interview) {
+    override suspend fun upsertInterview(question: Interview): Long {
         return localDataSource.upsertInterview(question)
     }
 
-    override suspend fun getInterviewResult(interviewId: Long): InterviewResult {
-        return localDataSource.getInterviewResult(interviewId)
+    override suspend fun getInterviewWithSteps(interviewId: Long): InterviewWithSteps {
+        return localDataSource.getInterviewWithSteps(interviewId)
+    }
+
+    override suspend fun upsertInterviewStep(interviewStep: InterviewStep) {
+        return localDataSource.upsertInterviewStep(interviewStep)
+    }
+
+    override suspend fun deleteInterviewStep(interviewStep: InterviewStep) {
+        return localDataSource.deleteInterviewStep(interviewStep)
+    }
+
+    override suspend fun deleteInterviewSteps(id: Long) {
+        return localDataSource.deleteInterviewSteps(id)
     }
 
 }
