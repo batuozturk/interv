@@ -11,7 +11,7 @@ import com.batuhan.interviewself.data.model.Question
 interface QuestionDao {
 
     @Query("SELECT * FROM question")
-    fun getAllQuestions(): PagingSource<Long, Question>
+    fun getAllQuestions(): PagingSource<Int, Question>
 
     @Upsert
     suspend fun upsertQuestion(question: Question)
