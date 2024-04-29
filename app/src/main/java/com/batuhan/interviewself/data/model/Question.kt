@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 
 @Entity
 data class Question(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo("questionId") val questionId: Long,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo("questionId") val questionId: Long? = null,
     @ColumnInfo("question") val question: String?,
-    @ColumnInfo("answer") val answer: String?
+    @ColumnInfo("langCode") val langCode: String?
 )
