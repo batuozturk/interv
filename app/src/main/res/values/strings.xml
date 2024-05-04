@@ -1,3 +1,62 @@
 <resources>
     <string name="app_name">Interviewself</string>
+    <string name="retry">retry</string>
+    <string name="dismiss">dismiss</string>
+    <string name="ok">ok</string>
+    <string name="undo">undo</string>
+    <string name="error_unknown">unknown error occurred</string>
+
+    <string name="error_question_not_saved">question cannot be saved</string>
+    <string name="error_question_empty">question is empty</string>
+    <string name="error_question_lang_code_empty">lang code empty</string>
+    <string name="success_question_saved">question saved</string>
+    <string name="delete_question">question deleted</string>
+    <string name="update_question">question updated</string>
+
+    <string name="error_interview_not_saved">interview cannot be saved</string>
+    <string name="error_interview_empty">interview is empty</string>
+    <string name="error_interview_lang_code_empty">lang code empty</string>
+    <string name="error_interview_duration_invalid">duration is invalid</string>
+    <string name="error_interview_type_not_selected">type was not selected</string>
+    <string name="success_interview_saved">interview saved</string>
+    <string name="delete_interview">interview deleted</string>
+    <string name="update_interview">interview updated</string>
+
+    <string name="type_video">video</string>
+    <string name="type_phone_call">phone call</string>
+    <string name="add_step">step added</string>
+    <string name="delete_step">step deleted</string>
+
+    <string name="navitem_one">interviews</string>
+    <string name="navitem_two">questions</string>
+    <string name="navitem_three">settings</string>
+
+    <string name="create_interview_title">create interview</string>
+
+
+    <string name="create_question_name_placeholder">question</string>
+    <string name="create_interview_name_placeholder">interview name</string>
+    <string name="create_interview_question_duration_placeholder">question duration</string>
+    <string name="lang_code_placeholder">lang code eg. en</string>
+
+
+    <string name="settings_import_questions">import questions</string>
+    <string name="settings_export_questions">export questions</string>
+    <string name="settings_rate_us">rate us</string>
+    <string name="settings_contact_us">contact us</string>
+    <string name="settings_language">language</string>
+    <string name="settings_tos">terms of service</string>
+    <string name="settings_privacy_policy">privacy policy</string>
+    <string name="settings_download_konsol">download konsol, firebase project manager for android</string>
+    <string name="settings_style">style</string>
+    <string name="settings_style_option_one">light mode</string>
+    <string name="settings_style_option_two">dark mode</string>
+    <string name="settings_lang_option_one">english</string>
+    <string name="settings_lang_option_two">turkish</string>
+    <string name="settings_lang_option_three">french</string>
+    <string name="settings_language_title">set app language</string>
+    <string name="settings_style_title">set app style</string>
+
+    <string name="interview_detail_question_and_answers">questions and answers</string>
+    <string name="save">save</string>
 </resources>
