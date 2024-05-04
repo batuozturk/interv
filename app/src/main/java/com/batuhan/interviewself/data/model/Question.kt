@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 
 @Entity
+@JsonClass(generateAdapter = true)
 data class Question(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("questionId") val questionId: Long? = null,
     @ColumnInfo("question") val question: String?,

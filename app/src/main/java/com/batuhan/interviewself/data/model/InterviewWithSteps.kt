@@ -2,7 +2,9 @@ package com.batuhan.interviewself.data.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class InterviewWithSteps(
     @Embedded val interview: Interview?= null,
     @Relation(

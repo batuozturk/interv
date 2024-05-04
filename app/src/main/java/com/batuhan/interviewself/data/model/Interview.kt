@@ -1,10 +1,14 @@
 package com.batuhan.interviewself.data.model
 
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.batuhan.interviewself.R
+import com.squareup.moshi.JsonClass
 
 @Entity
+@JsonClass(generateAdapter = true)
 data class Interview(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("interviewId") val interviewId: Long? = null,
     @ColumnInfo("interviewName") val interviewName: String? = null,
@@ -18,6 +22,7 @@ data class Interview(
 )
 
 @Entity
+@JsonClass(generateAdapter = true)
 data class InterviewStep(
     @PrimaryKey(autoGenerate = true) val interviewStepId: Long? = null,
     @ColumnInfo("interviewId") val interviewId: Long? = null,
@@ -27,6 +32,6 @@ data class InterviewStep(
     @ColumnInfo("answer") val answer: String? = null,
 )
 
-enum class InterviewType {
-    VIDEO, PHONE_CALL
+enum class InterviewType(@StringRes val text: Int) {
+    VIDEO(R.string.type_video), PHONE_CALL(R.string.type_phone_call)
 }

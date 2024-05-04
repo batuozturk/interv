@@ -16,4 +16,6 @@ interface QuestionListEventHandler {
     fun updateLangCode(langCode: String)
 
     fun undoDeleteQuestion()
+
+    fun setQuestionEditing(isEditing: Boolean, isSuccess: Boolean = false)
 }

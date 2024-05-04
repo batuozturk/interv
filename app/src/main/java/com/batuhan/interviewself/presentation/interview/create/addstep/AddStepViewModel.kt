@@ -8,8 +8,10 @@ import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.domain.interview.DeleteInterviewStep
+import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterviewStep
 import com.batuhan.interviewself.domain.question.GetAllQuestions
+import com.batuhan.interviewself.presentation.interview.InterviewListEvent
 import com.batuhan.interviewself.util.DialogAction
 import com.batuhan.interviewself.util.DialogData
 import com.batuhan.interviewself.util.DialogType
@@ -17,6 +19,7 @@ import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,6 +32,7 @@ class AddStepViewModel @Inject constructor(
     private val upsertInterviewStep: UpsertInterviewStep,
     private val deleteInterviewStep: DeleteInterviewStep,
     getAllQuestions: GetAllQuestions,
+    private val getInterviewWithSteps: GetInterviewWithSteps,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), AddStepEventHandler, ViewModelEventHandler<AddStepEvent, AddStepError> {
 
@@ -44,7 +48,12 @@ class AddStepViewModel @Inject constructor(
 
     val questions = getAllQuestions.invoke().cachedIn(viewModelScope)
 
-    val interviewId = savedStateHandle.get<Long>(KEY_INTERVIEW_ID)
+    var interviewId = savedStateHandle.get<Long>(KEY_INTERVIEW_ID)
+
+    fun initInterviewId(interviewId: Long){
+        this.interviewId = interviewId
+        getInterviewWithSteps(interviewId)
+    }
 
 
     override fun sendEvent(event: AddStepEvent) {
@@ -54,8 +63,14 @@ class AddStepViewModel @Inject constructor(
     }
 
     override fun showDialog(dialogData: DialogData) {
-        _uiState.update {
-            it.copy(dialogData = dialogData)
+        viewModelScope.launch {
+            if(uiState.value.dialogData != null){
+                clearDialog()
+                delay(1000L)
+            }
+            _uiState.update {
+                it.copy(dialogData = dialogData)
+            }
         }
     }
 
@@ -63,12 +78,14 @@ class AddStepViewModel @Inject constructor(
         _uiState.update {
             it.copy(dialogData = null)
         }
+        sendEvent(AddStepEvent.ClearDialog)
     }
 
     override fun retryOperation(error: AddStepError) {
         when(error){
             is AddStepError.AddStep -> addStep(error.question)
             is AddStepError.DeleteStep -> deleteStep(error.interviewStep)
+            is AddStepError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
         }
     }
 
@@ -79,10 +96,10 @@ class AddStepViewModel @Inject constructor(
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.add_step,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name,::clearDialog),
+                                DialogAction(R.string.dismiss,::clearDialog),
                             )
                         )
                     )
@@ -91,10 +108,10 @@ class AddStepViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(AddStepError.AddStep(question))
                                 }
                             )
@@ -114,10 +131,10 @@ class AddStepViewModel @Inject constructor(
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.delete_step,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name,::clearDialog),
+                                DialogAction(R.string.dismiss,::clearDialog),
                             )
                         )
                     )
@@ -126,11 +143,38 @@ class AddStepViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(AddStepError.DeleteStep(interviewStep))
+                                }
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    override fun getInterviewWithSteps(interviewId: Long) {
+        viewModelScope.launch {
+            val result = getInterviewWithSteps.invoke(GetInterviewWithSteps.Params(interviewId))
+            when (result) {
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(interviewSteps = result.data.steps)
+                    }
+                }
+
+                is Result.Error -> {
+                    showDialog(
+                        DialogData(
+                            title = R.string.error_unknown,
+                            type = DialogType.ERROR,
+                            actions = listOf(
+                                DialogAction(R.string.retry) {
+                                    retryOperation(AddStepError.GetInterviewWithSteps(interviewId))
                                 }
                             )
                         )
@@ -143,17 +187,22 @@ class AddStepViewModel @Inject constructor(
 }
 
 data class AddStepUiState(
-    private val dialogData: DialogData? = null,
+    internal val dialogData: DialogData? = null,
+    private val interviewSteps: List<InterviewStep>? = null
 )
 
 sealed class AddStepError {
     data class AddStep(val question: Question): AddStepError()
     data class DeleteStep(val interviewStep: InterviewStep): AddStepError()
+
+    data class GetInterviewWithSteps(val interviewId: Long): AddStepError()
 }
 
 sealed class AddStepEvent {
     object Back : AddStepEvent()
     data class AddStep(val question: Question) : AddStepEvent()
     data class DeleteStep(val interviewStep: InterviewStep) : AddStepEvent()
+
+    object ClearDialog: AddStepEvent()
 
 }

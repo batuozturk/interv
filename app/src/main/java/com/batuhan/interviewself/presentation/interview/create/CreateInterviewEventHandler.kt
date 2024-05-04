@@ -12,4 +12,6 @@ interface CreateInterviewEventHandler {
 
     fun cancelInterview(interview: Interview)
 
+    fun setInterviewAsInitial()
+
 }

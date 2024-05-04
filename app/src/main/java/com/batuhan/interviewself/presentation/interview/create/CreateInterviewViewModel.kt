@@ -5,11 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewType
-import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterview
-import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepError
 import com.batuhan.interviewself.util.DialogAction
 import com.batuhan.interviewself.util.DialogData
 import com.batuhan.interviewself.util.DialogType
@@ -18,6 +16,7 @@ import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -39,38 +38,37 @@ class CreateInterviewViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CreateInterviewUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        initializeInterview()
-    }
-
     override fun initializeInterview() {
-        viewModelScope.launch {
-            val result = upsertInterview.invoke(UpsertInterview.Params(uiState.value.currentInterview))
-            when (result) {
-                is Result.Success -> {
-                    _uiState.update {
-                        val interview = it.currentInterview.copy(interviewId = result.data)
-                        it.copy(currentInterview = interview)
+        if (uiState.value.currentInterview.interviewId == null)
+            {
+            viewModelScope.launch {
+                val result = upsertInterview.invoke(UpsertInterview.Params(uiState.value.currentInterview))
+                when (result) {
+                    is Result.Success -> {
+                        _uiState.update {
+                            val interview = it.currentInterview.copy(interviewId = result.data)
+                            it.copy(currentInterview = interview)
+                        }
                     }
-                }
 
-                is Result.Error -> {
-                    showDialog(
-                        DialogData(
-                            title = R.string.app_name,
-                            type = DialogType.ERROR,
-                            actions = listOf(
-                                DialogAction(R.string.app_name) {
-                                    retryOperation(CreateInterviewError.CreateInterview)
-                                }
-                            )
+                    is Result.Error -> {
+                        showDialog(
+                            DialogData(
+                                title = R.string.error_unknown,
+                                type = DialogType.ERROR,
+                                actions =
+                                    listOf(
+                                        DialogAction(R.string.retry) {
+                                            retryOperation(CreateInterviewError.CreateInterview)
+                                        },
+                                    ),
+                            ),
                         )
-                    )
+                    }
                 }
             }
         }
     }
-
 
     override fun sendEvent(event: CreateInterviewEvent) {
         viewModelScope.launch {
@@ -79,8 +77,15 @@ class CreateInterviewViewModel @Inject constructor(
     }
 
     override fun showDialog(dialogData: DialogData) {
-        _uiState.update {
-            it.copy(dialogData = dialogData)
+        viewModelScope.launch {
+            if (uiState.value.dialogData != null)
+                {
+                    clearDialog()
+                    delay(1000L)
+                }
+            _uiState.update {
+                it.copy(dialogData = dialogData)
+            }
         }
     }
 
@@ -88,10 +93,11 @@ class CreateInterviewViewModel @Inject constructor(
         _uiState.update {
             it.copy(dialogData = null)
         }
+        sendEvent(CreateInterviewEvent.ClearDialog)
     }
 
     override fun retryOperation(error: CreateInterviewError) {
-        when(error){
+        when (error) {
             is CreateInterviewError.CancelInterview -> {
                 deleteInterviewJob(error.interview)
                 deleteInterviewStepsJob(error.interview.interviewId!!)
@@ -99,7 +105,8 @@ class CreateInterviewViewModel @Inject constructor(
             CreateInterviewError.DurationNotValid,
             CreateInterviewError.LangCodeEmpty,
             CreateInterviewError.NameEmpty,
-            CreateInterviewError.TypeNotSelected -> {}
+            CreateInterviewError.TypeNotSelected,
+            -> {}
             CreateInterviewError.CreateInterview -> createInterview()
             is CreateInterviewError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
         }
@@ -107,59 +114,59 @@ class CreateInterviewViewModel @Inject constructor(
 
     override fun createInterview() {
         val interview = uiState.value.currentInterview
-        interview.interviewName ?: run {
+        interview.interviewName.takeIf {
+            it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
+        } ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_interview_empty,
                     type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.app_name) {
-                            retryOperation(CreateInterviewError.NameEmpty)
-                        }
-                    )
-                )
+                    actions =
+                        listOf(
+                            DialogAction(R.string.dismiss, ::clearDialog),
+                        ),
+                ),
             )
             return
         }
         interview.interviewType ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_interview_type_not_selected,
                     type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.app_name) {
-                            retryOperation(CreateInterviewError.TypeNotSelected)
-                        }
-                    )
-                )
+                    actions =
+                        listOf(
+                            DialogAction(R.string.dismiss, ::clearDialog),
+                        ),
+                ),
             )
             return
         }
-        interview.langCode ?: run {
+        interview.langCode.takeIf {
+            it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
+        } ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_interview_lang_code_empty,
                     type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.app_name) {
-                            retryOperation(CreateInterviewError.LangCodeEmpty)
-                        }
-                    )
-                )
+                    actions =
+                        listOf(
+                            DialogAction(R.string.dismiss, ::clearDialog),
+                        ),
+                ),
             )
             return
         }
         interview.questionDuration ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_interview_duration_invalid,
                     type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.app_name) {
-                            retryOperation(CreateInterviewError.DurationNotValid)
-                        }
-                    )
-                )
+                    actions =
+                        listOf(
+                            DialogAction(R.string.dismiss, ::clearDialog),
+                        ),
+                ),
             )
             return
         }
@@ -167,29 +174,22 @@ class CreateInterviewViewModel @Inject constructor(
             val result = upsertInterview.invoke(UpsertInterview.Params(interview))
             when (result) {
                 is Result.Success -> {
-                    showDialog(
-                        DialogData(
-                            title = R.string.app_name,
-                            type = DialogType.SUCCESS_INFO,
-                            actions = listOf(
-                                DialogAction(R.string.app_name,::clearDialog),
-                            )
-                        )
-                    )
+                    sendEvent(CreateInterviewEvent.Back(true))
                 }
 
                 is Result.Error -> {
                     showDialog(
-                            DialogData(
-                                title = R.string.app_name,
-                                type = DialogType.ERROR,
-                                actions = listOf(
-                                    DialogAction(R.string.app_name) {
+                        DialogData(
+                            title = R.string.error_unknown,
+                            type = DialogType.ERROR,
+                            actions =
+                                listOf(
+                                    DialogAction(R.string.retry) {
                                         retryOperation(CreateInterviewError.CreateInterview)
-                                    }
-                                )
-                            )
-                        )
+                                    },
+                                ),
+                        ),
+                    )
                 }
             }
         }
@@ -204,7 +204,7 @@ class CreateInterviewViewModel @Inject constructor(
                     }
 
                     is InterviewField.Duration -> {
-                        it.currentInterview.copy(questionDuration = interviewField.duration)
+                        it.currentInterview.copy(questionDuration = interviewField.duration.toIntOrNull()) // Int.max_value validation
                     }
 
                     is InterviewField.Type -> {
@@ -219,88 +219,110 @@ class CreateInterviewViewModel @Inject constructor(
         }
     }
 
-    private fun deleteInterviewJob(interview: Interview) = viewModelScope.launch {
-        val result = deleteInterview.invoke(DeleteInterview.Params(interview))
-        when (result) {
-            is Result.Success -> {
+    override fun setInterviewAsInitial() {
+        _uiState.update {
+            it.copy(currentInterview = Interview())
+        }
+    }
 
-            }
+    private fun deleteInterviewJob(interview: Interview) =
+        viewModelScope.launch {
+            val result = deleteInterview.invoke(DeleteInterview.Params(interview))
+            when (result) {
+                is Result.Success -> {
+                }
 
-            is Result.Error -> {
-                showDialog(
+                is Result.Error -> {
+                    showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
-                            actions = listOf(
-                                DialogAction(R.string.app_name) {
-                                    retryOperation(CreateInterviewError.CancelInterview(interview))
-                                }
-                            )
-                        )
-                )
-                cancel()
-            }
-        }
-
-    }
-
-    private fun deleteInterviewStepsJob(interviewId: Long) = viewModelScope.launch {
-        val result = deleteInterviewSteps.invoke(
-            DeleteInterviewSteps.Params(interviewId)
-        )
-        when (result) {
-            is Result.Success -> {
-
-            }
-
-            is Result.Error -> {
-                showDialog(
-                    DialogData(
-                        title = R.string.app_name,
-                        type = DialogType.ERROR,
-                        actions = listOf(
-                            DialogAction(R.string.app_name) {
-                                retryOperation(CreateInterviewError.DeleteInterviewSteps(interviewId))
-                            }
-                        )
+                            actions =
+                                listOf(
+                                    DialogAction(R.string.retry) {
+                                        retryOperation(CreateInterviewError.CancelInterview(interview))
+                                    },
+                                ),
+                        ),
                     )
-                )
-                cancel()
+                    cancel()
+                }
             }
         }
-    }
+
+    private fun deleteInterviewStepsJob(interviewId: Long) =
+        viewModelScope.launch {
+            val result =
+                deleteInterviewSteps.invoke(
+                    DeleteInterviewSteps.Params(interviewId),
+                )
+            when (result) {
+                is Result.Success -> {
+                    setInterviewAsInitial()
+                }
+
+                is Result.Error -> {
+                    showDialog(
+                        DialogData(
+                            title = R.string.error_unknown,
+                            type = DialogType.ERROR,
+                            actions =
+                                listOf(
+                                    DialogAction(R.string.retry) {
+                                        retryOperation(CreateInterviewError.DeleteInterviewSteps(interviewId))
+                                    },
+                                ),
+                        ),
+                    )
+                    cancel()
+                }
+            }
+        }
 
     override fun cancelInterview(interview: Interview) {
         viewModelScope.launch {
             joinAll(deleteInterviewJob(interview), deleteInterviewStepsJob(interview.interviewId!!))
-            sendEvent(CreateInterviewEvent.Back)
+            clearDialog()
+            sendEvent(CreateInterviewEvent.Back())
         }
     }
-
 }
 
 data class CreateInterviewUiState(
-    private val dialogData: DialogData? = null,
-    internal val currentInterview: Interview = Interview()
+    internal val dialogData: DialogData? = null,
+    internal val currentInterview: Interview = Interview(),
 )
 
 sealed class InterviewField {
     data class Name(val name: String) : InterviewField()
-    data class Duration(val duration: Int) : InterviewField()
+
+    data class Duration(val duration: String) : InterviewField()
+
     data class Type(val type: InterviewType) : InterviewField()
+
     data class Language(val langCode: String) : InterviewField()
 }
 
 sealed class CreateInterviewError {
-    object CreateInterview: CreateInterviewError()
-    object NameEmpty: CreateInterviewError()
-    object DurationNotValid: CreateInterviewError()
-    object TypeNotSelected: CreateInterviewError()
-    object LangCodeEmpty: CreateInterviewError()
-    data class CancelInterview(val interview: Interview): CreateInterviewError()
-    data class DeleteInterviewSteps(val interviewId: Long): CreateInterviewError()
+    object CreateInterview : CreateInterviewError()
+
+    object NameEmpty : CreateInterviewError()
+
+    object DurationNotValid : CreateInterviewError()
+
+    object TypeNotSelected : CreateInterviewError()
+
+    object LangCodeEmpty : CreateInterviewError()
+
+    data class CancelInterview(val interview: Interview) : CreateInterviewError()
+
+    data class DeleteInterviewSteps(val interviewId: Long) : CreateInterviewError()
 }
 
 sealed class CreateInterviewEvent {
-    object Back : CreateInterviewEvent()
+    data class Back(val isSuccess: Boolean = false) : CreateInterviewEvent()
+
+    data class AddStep(val interviewId: Long)
+
+    object ClearDialog : CreateInterviewEvent()
 }
