@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.domain.interview.DeleteInterview
+import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.GetAllInterviews
 import com.batuhan.interviewself.domain.interview.UpsertInterview
 import com.batuhan.interviewself.util.DialogAction
@@ -14,7 +16,9 @@ import com.batuhan.interviewself.util.DialogType
 import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -26,16 +30,46 @@ import javax.inject.Inject
 class InterviewListViewModel @Inject constructor(
     private val deleteInterview: DeleteInterview,
     private val upsertInterview: UpsertInterview,
-    getAllInterviews: GetAllInterviews
+    getAllInterviews: GetAllInterviews,
+    private val deleteInterviewSteps: DeleteInterviewSteps
 ) : ViewModel(), InterviewListEventHandler, ViewModelEventHandler<InterviewListEvent, InterviewListError> {
 
-    private val interviews = getAllInterviews.invoke().cachedIn(viewModelScope)
+    val interviews = getAllInterviews.invoke().cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(InterviewListUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _event = Channel<InterviewListEvent> { Channel.BUFFERED }
     val event = _event.receiveAsFlow()
+
+    private fun deleteInterviewStepsJob(interviewId: Long) =
+        viewModelScope.launch {
+            val result =
+                deleteInterviewSteps.invoke(
+                    DeleteInterviewSteps.Params(interviewId),
+                )
+            when (result) {
+                is Result.Success -> {
+
+                }
+
+                is Result.Error -> {
+                    showDialog(
+                        DialogData(
+                            title = R.string.error_unknown,
+                            type = DialogType.ERROR,
+                            actions =
+                            listOf(
+                                DialogAction(R.string.retry) {
+                                    retryOperation(InterviewListError.DeleteInterviewSteps(interviewId))
+                                },
+                            ),
+                        ),
+                    )
+                    cancel()
+                }
+            }
+        }
 
     override fun deleteInterview(interview: Interview) {
         viewModelScope.launch {
@@ -51,14 +85,17 @@ class InterviewListViewModel @Inject constructor(
                     }
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
-                            type = DialogType.INFO,
+                            title = R.string.delete_interview,
+                            type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name){
+                                DialogAction(R.string.undo){
                                     undoDeleteInterview()
                                     clearDialog()
                                 },
-                                DialogAction(R.string.app_name,::clearDialog),
+                                DialogAction(R.string.dismiss){
+                                    deleteInterviewStepsJob(interview.interviewId!!)
+                                    clearDialog()
+                                }
                             )
                         )
                     )
@@ -67,10 +104,10 @@ class InterviewListViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(InterviewListError.DeleteInterview(interview))
                                 }
                             )
@@ -91,24 +128,16 @@ class InterviewListViewModel @Inject constructor(
             )
             when (result) {
                 is Result.Success -> {
-                    showDialog(
-                        DialogData(
-                            title = R.string.app_name,
-                            type = DialogType.SUCCESS_INFO,
-                            actions = listOf(
-                                DialogAction(R.string.app_name,::clearDialog),
-                            )
-                        )
-                    )
+                    clearDialog()
                 }
 
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(InterviewListError.UndoDeleteInterview)
                                 }
                             )
@@ -127,8 +156,14 @@ class InterviewListViewModel @Inject constructor(
     }
 
     override fun showDialog(dialogData: DialogData) {
-        _uiState.update {
-            it.copy(dialogData = dialogData)
+        viewModelScope.launch {
+            if(uiState.value.dialogData != null){
+                clearDialog()
+                delay(1000L)
+            }
+            _uiState.update {
+                it.copy(dialogData = dialogData)
+            }
         }
     }
 
@@ -136,12 +171,16 @@ class InterviewListViewModel @Inject constructor(
         _uiState.update {
             it.copy(dialogData = null)
         }
+        sendEvent(InterviewListEvent.ClearDialog)
     }
 
     override fun retryOperation(error: InterviewListError) {
         when(error){
-            is InterviewListError.DeleteInterview -> deleteInterview(error.interview)
+            is InterviewListError.DeleteInterview -> {
+                deleteInterview(error.interview)
+            }
             InterviewListError.UndoDeleteInterview -> undoDeleteInterview()
+            is InterviewListError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
         }
     }
 
@@ -149,18 +188,23 @@ class InterviewListViewModel @Inject constructor(
 }
 
 data class InterviewListUiState(
-    private val dialogData: DialogData? = null,
+    internal val dialogData: DialogData? = null,
     internal val deletedInterview: Interview? = null,
 )
 
 sealed class InterviewListError {
     data class DeleteInterview(val interview: Interview): InterviewListError()
+
+    data class DeleteInterviewSteps(val interviewId: Long): InterviewListError()
     object UndoDeleteInterview: InterviewListError()
 }
 
 sealed class InterviewListEvent {
-    object Back : InterviewListEvent()
     object CreateInterview : InterviewListEvent()
-    data class DeleteInterview(private val interview: Interview) : InterviewListEvent()
-    data class Detail(private val interviewId: Long):InterviewListEvent()
+    data class DeleteInterview(val interview: Interview) : InterviewListEvent()
+    data class Detail(val interviewId: Long):InterviewListEvent()
+
+    data class EnterInterview(val interviewId: Long): InterviewListEvent()
+
+    object ClearDialog: InterviewListEvent()
 }
