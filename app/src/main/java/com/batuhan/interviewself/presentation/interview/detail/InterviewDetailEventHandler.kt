@@ -9,4 +9,8 @@ interface InterviewDetailEventHandler {
     fun deleteInterview(interview: Interview)
 
     fun retryInterview(interview: Interview)
+
+    fun getInterviewWithSteps(interviewId: Long)
+
+    fun setInterviewWithStepsAsInitial()
 }
