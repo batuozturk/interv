@@ -15,6 +15,7 @@ import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,7 +30,7 @@ class QuestionListViewModel @Inject constructor(
     getAllQuestions: GetAllQuestions
 ) : ViewModel(), QuestionListEventHandler, ViewModelEventHandler<QuestionListEvent,QuestionListError> {
 
-    private val questions = getAllQuestions.invoke().cachedIn(viewModelScope)
+    val questions = getAllQuestions.invoke().cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(QuestionListUiState())
     val uiState = _uiState.asStateFlow()
@@ -44,15 +45,23 @@ class QuestionListViewModel @Inject constructor(
     }
 
     override fun showDialog(dialogData: DialogData) {
-        _uiState.update {
-            it.copy(dialogData = dialogData)
+        viewModelScope.launch {
+            if(uiState.value.dialogData != null){
+                clearDialog()
+                delay(1000L)
+            }
+            _uiState.update {
+                it.copy(dialogData = dialogData)
+            }
         }
     }
+
 
     override fun clearDialog() {
         _uiState.update {
             it.copy(dialogData = null)
         }
+        sendEvent(QuestionListEvent.ClearDialog)
     }
 
     override fun retryOperation(error: QuestionListError) {
@@ -76,10 +85,10 @@ class QuestionListViewModel @Inject constructor(
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.update_question,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name,::clearDialog)
+                                DialogAction(R.string.dismiss,::clearDialog)
                             )
                         )
                     )
@@ -88,10 +97,10 @@ class QuestionListViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(QuestionListError.UpdateQuestion(question))
                                 }
                             )
@@ -107,16 +116,24 @@ class QuestionListViewModel @Inject constructor(
             val result = deleteQuestion.invoke(DeleteQuestion.Params(question))
             when (result) {
                 is Result.Success -> {
+                    _uiState.update {
+                        it.copy(deletedQuestion = question)
+                    }
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.delete_question,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name){
+                                DialogAction(R.string.undo){
                                    undoDeleteQuestion()
                                    clearDialog()
                                 },
-                                DialogAction(R.string.app_name,::clearDialog),
+                                DialogAction(R.string.dismiss){
+                                    _uiState.update {
+                                        it.copy(deletedQuestion = null)
+                                    }
+                                    clearDialog()
+                                },
                             )
                         )
                     )
@@ -125,10 +142,10 @@ class QuestionListViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(QuestionListError.DeleteQuestion(question))
                                 }
                             )
@@ -140,13 +157,15 @@ class QuestionListViewModel @Inject constructor(
     }
 
     override fun createQuestion() {
-        uiState.value.langCode ?: run {
+        uiState.value.langCode.takeIf {
+            it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
+        } ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_question_lang_code_empty,
                     type = DialogType.ERROR,
                     actions = listOf(
-                        DialogAction(R.string.app_name) {
+                        DialogAction(R.string.dismiss) {
                             retryOperation(QuestionListError.LangCodeEmpty)
                         }
                     )
@@ -154,13 +173,15 @@ class QuestionListViewModel @Inject constructor(
             )
             return
         }
-        uiState.value.questionText ?: run {
+        uiState.value.questionText.takeIf {
+            it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
+        } ?: run {
             showDialog(
                 DialogData(
-                    title = R.string.app_name,
+                    title = R.string.error_question_empty,
                     type = DialogType.ERROR,
                     actions = listOf(
-                        DialogAction(R.string.app_name) {
+                        DialogAction(R.string.dismiss) {
                             retryOperation(QuestionListError.QuestionEmpty)
                         }
                     )
@@ -180,26 +201,23 @@ class QuestionListViewModel @Inject constructor(
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.success_question_saved,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name){
-                                    undoDeleteQuestion()
-                                    clearDialog()
-                                },
-                                DialogAction(R.string.app_name,::clearDialog),
+                                DialogAction(R.string.dismiss,::clearDialog),
                             )
                         )
                     )
+                    setQuestionEditing(false, isSuccess = true)
                 }
 
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(QuestionListError.CreateQuestion)
                                 }
                             )
@@ -221,6 +239,14 @@ class QuestionListViewModel @Inject constructor(
             it.copy(langCode = langCode)
         }
     }
+    override fun setQuestionEditing(isEditing: Boolean, isSuccess: Boolean){
+        if(!isEditing && !isSuccess) clearDialog()
+        _uiState.update {
+            if(!isEditing) it.copy(isEditing = false, questionText = null, langCode = null)
+            else it.copy(isEditing = true)
+
+        }
+    }
 
     override fun undoDeleteQuestion() {
         viewModelScope.launch {
@@ -231,28 +257,16 @@ class QuestionListViewModel @Inject constructor(
             )
             when (result) {
                 is Result.Success -> {
-                    showDialog(
-                        DialogData(
-                            title = R.string.app_name,
-                            type = DialogType.INFO,
-                            actions = listOf(
-                                DialogAction(R.string.app_name){
-                                    undoDeleteQuestion()
-                                    clearDialog()
-                                },
-                                DialogAction(R.string.app_name,::clearDialog),
-                            )
-                        )
-                    )
+                    clearDialog()
                 }
 
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(QuestionListError.UndoDeleteQuestion)
                                 }
                             )
@@ -267,10 +281,11 @@ class QuestionListViewModel @Inject constructor(
 }
 
 data class QuestionListUiState(
-    private val dialogData: DialogData? = null,
+    val dialogData: DialogData? = null,
     internal val deletedQuestion: Question? = null,
     internal val questionText: String? = null,
-    internal val langCode: String? = null
+    internal val langCode: String? = null,
+    internal val isEditing: Boolean = false
 )
 
 sealed class QuestionListError {
@@ -283,7 +298,10 @@ sealed class QuestionListError {
 }
 
 sealed class QuestionListEvent {
-    object Back : QuestionListEvent()
     object CreateQuestion : QuestionListEvent()
-    data class DeleteQuestion(private val interview: Question) : QuestionListEvent()
+
+    object InitializeQuestion: QuestionListEvent()
+    data class DeleteQuestion(val question: Question) : QuestionListEvent()
+
+    object ClearDialog: QuestionListEvent()
 }
