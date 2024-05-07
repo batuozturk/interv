@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepScreen
 import com.batuhan.interviewself.presentation.interview.detail.InterviewDetailScreen
@@ -57,7 +58,7 @@ fun InterviewListScreen(
     clearDialog: () -> Unit,
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
-    enterInterview: (interviewId: Long) -> Unit,
+    enterInterview: (interviewId: Long, interviewType: InterviewType) -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<InterviewListViewModel>()
@@ -76,7 +77,11 @@ fun InterviewListScreen(
                 InterviewListEvent.ClearDialog -> clearDialog.invoke()
                 is InterviewListEvent.Detail -> navigateToDetail.invoke(it.interviewId)
                 is InterviewListEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
-                is InterviewListEvent.EnterInterview -> enterInterview.invoke(it.interviewId)
+                is InterviewListEvent.EnterInterview ->
+                    enterInterview.invoke(
+                        it.interviewId,
+                        it.interviewType,
+                    )
             }
         }
     }
@@ -173,7 +178,7 @@ fun InterviewListScreenContentForTablets(
                     interviews[it]?.let { interview ->
                         InterviewListItem(isCreating, interview = interview, sendEvent) {
                             coroutineScope.launch {
-                                if(interviewDetailId != null){
+                                if (interviewDetailId != null) {
                                     interviewDetailId = null
                                     delay(1000L)
                                 }
@@ -259,6 +264,7 @@ fun InterviewListItem(
                             sendEvent(
                                 InterviewListEvent.EnterInterview(
                                     interview.interviewId ?: return@IconButton,
+                                    interview.interviewType ?: return@IconButton,
                                 ),
                             )
                         },
