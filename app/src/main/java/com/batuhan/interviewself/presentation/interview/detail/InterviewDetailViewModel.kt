@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.data.model.InterviewWithSteps
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
@@ -35,6 +36,8 @@ class InterviewDetailViewModel @Inject constructor(
     private val getInterviewWithSteps: GetInterviewWithSteps,
     private val deleteInterviewSteps: DeleteInterviewSteps,
 ) : ViewModel(), InterviewDetailEventHandler, ViewModelEventHandler<InterviewDetailEvent, InterviewDetailError> {
+
+    // TODO upsert interview steps when copying
 
     private val _event = Channel<InterviewDetailEvent> { Channel.BUFFERED }
     val event = _event.receiveAsFlow()
@@ -107,17 +110,22 @@ class InterviewDetailViewModel @Inject constructor(
     }
 
     override fun retryInterview(interview: Interview) {
-        val newInterview = interview.copy(interviewId = null)
+        val newInterview = interview.copy(interviewId = null, interviewName = interview.interviewName + " - copy", completed = false)
         viewModelScope.launch {
             val result = upsertInterview.invoke(UpsertInterview.Params(newInterview))
+            // TODO upsert interview steps
             when (result) {
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.success_interview_saved,
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
-                                DialogAction(R.string.app_name, ::clearDialog),
+                                DialogAction(R.string.start_interview){
+                                    clearDialog()
+                                    sendEvent(InterviewDetailEvent.EnterInterview(result.data, interview.interviewType!!))
+                                },
+                                DialogAction(R.string.dismiss, ::clearDialog)
                             )
                         )
                     )
@@ -231,7 +239,7 @@ sealed class InterviewDetailError {
 sealed class InterviewDetailEvent {
     object Back : InterviewDetailEvent()
     data class DeleteInterview(val interview: Interview) : InterviewDetailEvent()
-    data class EnterInterview(val interviewId: Long) : InterviewDetailEvent()
+    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType) : InterviewDetailEvent()
     data class ShareInterview(val interview: Interview) : InterviewDetailEvent()
     data class RetryInterview(val interview: Interview): InterviewDetailEvent()
 
