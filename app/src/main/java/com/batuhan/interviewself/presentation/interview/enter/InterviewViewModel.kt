@@ -139,7 +139,8 @@ class InterviewViewModel
                         it.copy(
                             currentStepInt = 0, // caution, when user clicks to the next button, then increment by 1
                             steps = result.data.steps,
-                            interview = result.data.interview
+                            interview = result.data.interview,
+                            currentStep = result.data.steps?.get(0)
                         )
                     }
                     currentStepFlow.value = 0
