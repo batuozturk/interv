@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batuhan.interviewself.R
+import com.batuhan.interviewself.presentation.interview.enter.InterviewButton
 import com.batuhan.interviewself.presentation.interview.enter.InterviewEvent
 import com.batuhan.interviewself.presentation.interview.enter.InterviewUiState
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
@@ -58,7 +59,7 @@ fun PhoneInterviewScreenForTablet(
         ) {
             LazyHorizontalGrid(userScrollEnabled = false, rows = GridCells.Fixed(3)) {
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = R.string.create_interview_title,
                         if (isMicrophoneEnabled) R.drawable.ic_mic_none_24 else R.drawable.ic_mic_off_24,
                     ) {
@@ -66,7 +67,7 @@ fun PhoneInterviewScreenForTablet(
                     }
                 }
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = R.string.pause,
                         icon = R.drawable.ic_phone_paused_24,
                     ) {
@@ -74,7 +75,7 @@ fun PhoneInterviewScreenForTablet(
                     }
                 }
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = R.string.close_call,
                         icon = R.drawable.ic_call_end_24,
                     ) {

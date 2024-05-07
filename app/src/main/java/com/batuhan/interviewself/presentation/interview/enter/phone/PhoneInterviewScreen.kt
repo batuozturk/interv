@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batuhan.interviewself.R
+import com.batuhan.interviewself.presentation.interview.enter.InterviewButton
 import com.batuhan.interviewself.presentation.interview.enter.InterviewEvent
 import com.batuhan.interviewself.presentation.interview.enter.InterviewUiState
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
@@ -63,7 +64,7 @@ fun PhoneInterviewScreen(uiState: InterviewUiState, sendEvent: (InterviewEvent) 
         ) {
             LazyVerticalGrid(userScrollEnabled = false, columns = GridCells.Fixed(3)) {
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = if(isMicrophoneEnabled) R.string.microphone_title_enabled else R.string.microphone_title_not_enabled,
                         if(isMicrophoneEnabled) R.drawable.ic_mic_none_24 else R.drawable.ic_mic_off_24,
                     ) {
@@ -71,7 +72,7 @@ fun PhoneInterviewScreen(uiState: InterviewUiState, sendEvent: (InterviewEvent) 
                     }
                 }
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = R.string.pause,
                         icon = R.drawable.ic_phone_paused_24,
                     ) {
@@ -79,7 +80,7 @@ fun PhoneInterviewScreen(uiState: InterviewUiState, sendEvent: (InterviewEvent) 
                     }
                 }
                 item {
-                    PhoneInterviewButton(
+                    InterviewButton(
                         title = R.string.close_call,
                         icon = R.drawable.ic_call_end_24,
                     ) {
@@ -89,26 +90,6 @@ fun PhoneInterviewScreen(uiState: InterviewUiState, sendEvent: (InterviewEvent) 
             }
 
         }
-    }
-}
-
-@Composable
-fun PhoneInterviewButton(
-    @StringRes title: Int,
-    @DrawableRes icon: Int,
-    sendEvent: () -> Unit,
-) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(8.dp).clickable(role = Role.Button) {
-                sendEvent.invoke()
-            },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(painterResource(id = icon), contentDescription = null)
-        Text(stringResource(id = title), textAlign = TextAlign.Center)
     }
 }
 
