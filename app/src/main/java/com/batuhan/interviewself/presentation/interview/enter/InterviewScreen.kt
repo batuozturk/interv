@@ -124,11 +124,8 @@ fun InterviewScreen(
         val lifecycleEventObserver =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_PAUSE) {
-                    // close mic or video
                     ttsService.stop()
-                } else if (event == Lifecycle.Event.ON_RESUME) {
-                    // retain step
-                    // open mic or video
+                    viewModel.sendEvent(InterviewEvent.Back)
                 }
             }
         lifecycleOwner.lifecycle.addObserver(lifecycleEventObserver)

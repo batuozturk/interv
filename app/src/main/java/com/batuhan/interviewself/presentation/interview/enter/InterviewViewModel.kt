@@ -210,9 +210,6 @@ class InterviewViewModel
         currentStepFlow.value = -2
     }
 
-    fun onResumeText(){
-        //
-    }
 
     override fun onInit(p0: Int) {
         // no-op for now
