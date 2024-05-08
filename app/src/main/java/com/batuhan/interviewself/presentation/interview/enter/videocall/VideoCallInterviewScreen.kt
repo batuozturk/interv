@@ -15,12 +15,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,7 +36,6 @@ import com.batuhan.interviewself.R
 import com.batuhan.interviewself.presentation.interview.enter.InterviewButton
 import com.batuhan.interviewself.presentation.interview.enter.InterviewEvent
 import com.batuhan.interviewself.presentation.interview.enter.InterviewUiState
-import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -66,7 +61,8 @@ fun VideoCallInterviewScreen(
             ProcessCameraProvider.getInstance(context)
         }
 
-    val previewView = remember {
+    val previewView =
+        remember {
             PreviewView(context)
         }
     val coroutineScope = rememberCoroutineScope()
@@ -115,34 +111,17 @@ fun VideoCallInterviewScreen(
                     }
                 }
             })
-            LazyColumn(modifier = Modifier.weight(1f).fillMaxHeight(), userScrollEnabled = false, verticalArrangement = Arrangement.SpaceEvenly) {
-                item {
-                    InterviewButton(
-                        title = if(isMicrophoneEnabled) R.string.microphone_title_enabled else R.string.microphone_title_not_enabled,
-                        if (isMicrophoneEnabled) R.drawable.ic_mic_none_24 else R.drawable.ic_mic_off_24,
-                    ) {
-                        sendEvent.invoke(InterviewEvent.MicrophoneState(!isMicrophoneEnabled))
-                    }
-                }
-                item {
-                    InterviewButton(
-                        title = R.string.pause,
-                        icon = R.drawable.ic_phone_paused_24,
-                    ) {
-                        coroutineScope.launch {
-                            val cameraProvider = context.getCameraProvider()
-                            cameraProvider.unbindAll()
-                            sendEvent.invoke(InterviewEvent.Back)
-                        }
-                    }
-                }
-                item {
-                    InterviewButton(
-                        title = R.string.close_call,
-                        icon = R.drawable.ic_call_end_24,
-                    ) {
-                        sendEvent.invoke(InterviewEvent.Back)
-                    }
+
+            // todo column remove
+            Column(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                InterviewButton(
+                    title = R.string.close_call,
+                    icon = R.drawable.ic_call_end_24,
+                ) {
+                    sendEvent.invoke(InterviewEvent.Back)
                 }
             }
         }
