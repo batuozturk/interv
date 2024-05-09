@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 fun ContainerScreen(
     createInterview: () -> Unit,
     navigateToDetail: (Long) -> Unit,
-    enterInterview: (Long, InterviewType) -> Unit,
+    enterInterview: (Long, InterviewType, String) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
 ) {
     ContainerScreenContent(createInterview, navigateToDetail, enterInterview, sendBrowserEvent)
@@ -50,7 +50,7 @@ fun ContainerScreen(
 fun ContainerScreenContent(
     createInterview: () -> Unit,
     navigateToDetail: (Long) -> Unit,
-    enterInterview: (Long, InterviewType) -> Unit,
+    enterInterview: (Long, InterviewType, String) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
 ) {
     val pagerState =
@@ -154,12 +154,12 @@ fun ContainerScreenContent(
                                 clearDialog = { dialogData = null },
                                 createInterview = createInterview,
                                 navigateToDetail = navigateToDetail,
-                                enterInterview = { id, type ->
+                                enterInterview = { id, type, langCode ->
                                     enterInterviewDialogData =
                                         EnterInterviewDialogData(
                                             id,
                                             {
-                                                enterInterview.invoke(id, type)
+                                                enterInterview.invoke(id, type, langCode)
                                             },
                                             {
                                                 enterInterviewDialogData = null
