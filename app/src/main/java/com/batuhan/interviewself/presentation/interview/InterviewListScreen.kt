@@ -58,7 +58,7 @@ fun InterviewListScreen(
     clearDialog: () -> Unit,
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
-    enterInterview: (interviewId: Long, interviewType: InterviewType) -> Unit,
+    enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String) -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<InterviewListViewModel>()
@@ -81,6 +81,7 @@ fun InterviewListScreen(
                     enterInterview.invoke(
                         it.interviewId,
                         it.interviewType,
+                        it.langCode,
                     )
             }
         }
@@ -265,6 +266,7 @@ fun InterviewListItem(
                                 InterviewListEvent.EnterInterview(
                                     interview.interviewId ?: return@IconButton,
                                     interview.interviewType ?: return@IconButton,
+                                    interview.langCode ?: return@IconButton,
                                 ),
                             )
                         },
