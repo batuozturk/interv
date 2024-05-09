@@ -7,6 +7,7 @@ import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.data.model.InterviewWithSteps
+import com.batuhan.interviewself.data.model.LanguageType
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
@@ -147,6 +148,8 @@ class InterviewDetailViewModel @Inject constructor(
             val result = upsertInterviewSteps.invoke(UpsertInterviewSteps.Params(steps))
             when (result) {
                 is Result.Success -> {
+                    val interviewType = uiState.value.interviewWithSteps?.interview?.interviewType!!
+                    val langCode = uiState.value.interviewWithSteps?.interview?.langCode!!
                     showDialog(
                         DialogData(
                             title = R.string.success_interview_saved,
@@ -154,7 +157,7 @@ class InterviewDetailViewModel @Inject constructor(
                             actions = listOf(
                                 DialogAction(R.string.start_interview){
                                     clearDialog()
-                                    sendEvent(InterviewDetailEvent.EnterInterview(interviewId, uiState.value.interviewWithSteps?.interview?.interviewType!!))
+                                    sendEvent(InterviewDetailEvent.EnterInterview(interviewId, interviewType, langCode))
                                 },
                                 DialogAction(R.string.dismiss, ::clearDialog)
                             )
@@ -272,7 +275,7 @@ sealed class InterviewDetailError {
 sealed class InterviewDetailEvent {
     object Back : InterviewDetailEvent()
     data class DeleteInterview(val interview: Interview) : InterviewDetailEvent()
-    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType) : InterviewDetailEvent()
+    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val languageCode: String) : InterviewDetailEvent()
     data class ShareInterview(val interview: Interview) : InterviewDetailEvent()
     data class RetryInterview(val interview: Interview): InterviewDetailEvent()
 

@@ -38,6 +38,7 @@
     <string name="create_interview_name_placeholder">interview name</string>
     <string name="create_interview_question_duration_placeholder">question duration</string>
     <string name="lang_code_placeholder">lang code eg. en</string>
+    <string name="create_interview_add_step_title">add step</string>
 
 
     <string name="settings_import_questions">import questions</string>
@@ -64,4 +65,11 @@
     <string name="close_call">close call</string>
     <string name="pause">pause</string>
     <string name="start_interview">start</string>
+    <string name="language_type_en">english</string>
+    <string name="language_type_tr">turkish</string>
+    <string name="language_type_fr">french</string>
+    <string name="first_question_talk">Let\'s start with the first question ,</string>
+    <string name="interview_ended">The interview has ended, thanks for your answers. You can close the call</string>
+    <string name="interview_start">Welcome to the interview, I am HR Manager. Today I want to interview with you to check your knowledge.</string>
+    <string name="interview_question_talk">Let\'s continue with question %d</string>
 </resources>

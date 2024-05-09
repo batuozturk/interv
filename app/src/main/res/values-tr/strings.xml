@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Interviewself</string>
+    <string name="retry">yeniden dene</string>
+    <string name="dismiss">kapat</string>
+    <string name="ok">tamam</string>
+    <string name="undo">geri al</string>
+    <string name="error_unknown">bilinmeyen bir hata oluştu</string>
+
+    <string name="error_question_not_saved">soru kaydedilemedi</string>
+    <string name="error_question_empty">soru boş</string>
+    <string name="error_question_lang_code_empty">dil kodu boş</string>
+    <string name="success_question_saved">soru kaydedildi</string>
+    <string name="delete_question">soru silindi</string>
+    <string name="update_question">soru güncellendi</string>
+
+    <string name="error_interview_not_saved">mülakat kaydedilemedi</string>
+    <string name="error_interview_empty">mülakat boş</string>
+    <string name="error_interview_lang_code_empty">dil kodu boş</string>
+    <string name="error_interview_duration_invalid">süre geçersiz</string>
+    <string name="error_interview_type_not_selected">tür seçilmedi</string>
+    <string name="success_interview_saved">mülakat kaydedildi</string>
+    <string name="delete_interview">mülakat silindi</string>
+    <string name="update_interview">mülakat güncellendi</string>
+
+    <string name="type_video">video</string>
+    <string name="type_phone_call">telefon görüşmesi</string>
+    <string name="add_step">adım eklendi</string>
+    <string name="delete_step">adım silindi</string>
+
+    <string name="navitem_one">mülakatlar</string>
+    <string name="navitem_two">sorular</string>
+    <string name="navitem_three">ayarlar</string>
+
+    <string name="create_interview_title">mülakat oluştur</string>
+
+
+    <string name="create_question_name_placeholder">soru</string>
+    <string name="create_interview_name_placeholder">mülakat adı</string>
+    <string name="create_interview_question_duration_placeholder">soru süresi</string>
+    <string name="lang_code_placeholder">dil kodu örn. en</string>
+    <string name="create_interview_add_step_title">adım ekle</string>
+
+
+    <string name="settings_import_questions">soruları içe aktar</string>
+    <string name="settings_export_questions">soruları dışa aktar</string>
+    <string name="settings_rate_us">bizi değerlendir</string>
+    <string name="settings_contact_us">bizimle iletişime geçin</string>
+    <string name="settings_language">dil</string>
+    <string name="settings_tos">hizmet koşulları</string>
+    <string name="settings_privacy_policy">gizlilik politikası</string>
+    <string name="settings_download_konsol">konsol indir, android için firebase proje yöneticisi</string>
+    <string name="settings_style">stil</string>
+    <string name="settings_style_option_one">açık mod</string>
+    <string name="settings_style_option_two">koyu mod</string>
+    <string name="settings_lang_option_one">ingilizce</string>
+    <string name="settings_lang_option_two">türkçe</string>
+    <string name="settings_lang_option_three">fransızca</string>
+    <string name="settings_language_title">uygulama dili ayarla</string>
+    <string name="settings_style_title">uygulama stilini ayarla</string>
+
+    <string name="interview_detail_question_and_answers">sorular ve cevaplar</string>
+    <string name="save">kaydet</string>
+    <string name="microphone_title_enabled">mikrofon açık</string>
+    <string name="microphone_title_not_enabled">mikrofon kapalı</string>
+    <string name="close_call">görüşmeyi kapat</string>
+    <string name="pause">duraklat</string>
+    <string name="start_interview">başla</string>
+    <string name="language_type_en">ingilizce</string>
+    <string name="language_type_tr">türkçe</string>
+    <string name="language_type_fr">fransızca</string>
+    <string name="first_question_talk">İlk soru ile başlayalım,</string>
+    <string name="interview_ended">Mülakat sona erdi, cevaplarınız için teşekkür ederiz. Görüşmeyi kapatabilirsiniz.</string>
+    <string name="interview_start">Mülakata hoş geldiniz, Ben İK Müdürüyüm. Bugün sizinle görüşmek ve bilginizi kontrol etmek için mülakat yapmak istiyorum.</string>
+    <string name="interview_question_talk">Hadi soru %d ile devam edelim</string>
+</resources>

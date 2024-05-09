@@ -19,11 +19,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interviewself.data.model.InterviewType
+import com.batuhan.interviewself.data.model.makeString
 import com.batuhan.interviewself.presentation.interview.enter.phone.PhoneInterviewScreen
 import com.batuhan.interviewself.presentation.interview.enter.videocall.VideoCallInterviewScreen
 import com.batuhan.interviewself.presentation.interview.enter.videocall.VideoCallInterviewScreenForTablet
 import com.batuhan.interviewself.util.BaseView
 import com.batuhan.interviewself.util.isTablet
+import java.util.Locale
 
 
 @Composable
@@ -31,6 +33,7 @@ fun InterviewScreen(
     onBackPressed: () -> Unit,
     interviewId: Long,
     interviewType: String,
+    langCode: String,
 ) {
     val viewModel = hiltViewModel<InterviewViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -51,7 +54,7 @@ fun InterviewScreen(
                     RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
                 )
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, langCode)
                 putExtra(
                     RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
@@ -111,8 +114,10 @@ fun InterviewScreen(
 
     LaunchedEffect(true) {
         viewModel.currentStepToTalk.collect {
+            if(Locale.forLanguageTag(langCode).displayName != ttsService.language.displayName)
+                ttsService.setLanguage(Locale.forLanguageTag(langCode))
             ttsService.speak(
-                it,
+                it.makeString(context, langCode),
                 TextToSpeech.QUEUE_ADD,
                 params,
                 "InterviewselfTTS",
@@ -125,7 +130,7 @@ fun InterviewScreen(
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_PAUSE) {
                     ttsService.stop()
-                    viewModel.sendEvent(InterviewEvent.Back)
+                    //viewModel.sendEvent(InterviewEvent.Back)
                 }
             }
         lifecycleOwner.lifecycle.addObserver(lifecycleEventObserver)

@@ -7,6 +7,7 @@ import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.InterviewType
+import com.batuhan.interviewself.data.model.LanguageType
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.GetAllInterviews
@@ -205,7 +206,7 @@ sealed class InterviewListEvent {
     data class DeleteInterview(val interview: Interview) : InterviewListEvent()
     data class Detail(val interviewId: Long):InterviewListEvent()
 
-    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType): InterviewListEvent()
+    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val langCode: String): InterviewListEvent()
 
     object ClearDialog: InterviewListEvent()
 }

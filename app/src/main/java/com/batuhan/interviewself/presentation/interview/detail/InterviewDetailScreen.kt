@@ -59,7 +59,7 @@ fun InterviewDetailScreen(
     onBackPressed: () -> Unit,
     showDialog: (DialogData) -> Unit = {},
     clearDialog: () -> Unit = {},
-    enterInterview: (Long, InterviewType) -> Unit = { _, _ ->},
+    enterInterview: (Long, InterviewType, String) -> Unit = { _, _, _ -> },
 ) {
     val context = LocalContext.current
 
@@ -95,7 +95,7 @@ fun InterviewDetailScreen(
                         EnterInterviewDialogData(
                             it.interviewId,
                             {
-                                enterInterview(it.interviewId, it.interviewType)
+                                enterInterview(it.interviewId, it.interviewType, it.languageCode)
                             },
                             {
                                 enterInterviewDialogData = null
@@ -223,6 +223,8 @@ fun ScreenContent(
                                                 interviewWithSteps!!.interview!!.interviewId
                                                     ?: return@IconButton,
                                                 interviewWithSteps!!.interview!!.interviewType
+                                                    ?: return@IconButton,
+                                                interviewWithSteps!!.interview!!.langCode
                                                     ?: return@IconButton,
                                             ),
                                         )
