@@ -20,4 +20,6 @@ interface InterviewRepository {
     suspend fun deleteInterviewStep(interviewStep: InterviewStep)
 
     suspend fun deleteInterviewSteps(id: Long)
+
+    suspend fun upsertInterviewSteps(steps: List<InterviewStep>)
 }

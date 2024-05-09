@@ -54,4 +54,8 @@ class InterviewRepositoryImpl @Inject constructor(private val localDataSource: I
         return localDataSource.deleteInterviewSteps(id)
     }
 
+    override suspend fun upsertInterviewSteps(steps: List<InterviewStep>) {
+        return localDataSource.upsertInterviewSteps(steps)
+    }
+
 }
