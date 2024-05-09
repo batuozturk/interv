@@ -47,6 +47,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewType
+import com.batuhan.interviewself.data.model.LanguageType
+import com.batuhan.interviewself.data.model.findType
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
 import com.batuhan.interviewself.ui.theme.fontFamily
 import com.batuhan.interviewself.util.BaseView
@@ -201,8 +203,11 @@ fun ScreenContent(
         derivedStateOf { uiState.currentInterview.interviewType }
     }
     val tabRows = listOf(R.string.type_video, R.string.type_phone_call)
-    val selectedIndex by remember(interviewType) {
+    val selectedIndexType by remember(interviewType) {
         mutableStateOf(interviewType?.text?.let { tabRows.indexOf(it) } ?: 0)
+    }
+    val selectedIndexLang by remember(langCode) {
+        mutableStateOf(findType(langCode))
     }
     Column(
         modifier =
@@ -236,24 +241,6 @@ fun ScreenContent(
                     .fillMaxWidth()
                     .padding(top = 4.dp, bottom = 4.dp),
             placeholder = {
-                Text(stringResource(R.string.lang_code_placeholder))
-            },
-            leadingIcon = {
-                Icon(painterResource(id = R.drawable.ic_language_24), contentDescription = null)
-            },
-            colors = OutlinedTextFieldDefaults.colors(),
-            value = langCode ?: "",
-            onValueChange = {
-                updateConfiguration.invoke(InterviewField.Language(it))
-            },
-            singleLine = true,
-        )
-        OutlinedTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp),
-            placeholder = {
                 Text(stringResource(R.string.create_interview_question_duration_placeholder))
             },
             leadingIcon = {
@@ -273,13 +260,13 @@ fun ScreenContent(
                     .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
-            selectedTabIndex = selectedIndex,
+            selectedTabIndex = selectedIndexType,
             divider = {},
             indicator = {
-                if (selectedIndex < it.size) {
+                if (selectedIndexType < it.size) {
                     Column(
                         modifier =
-                            Modifier.tabIndicatorOffset(it[selectedIndex]).fillMaxSize().padding(8.dp)
+                            Modifier.tabIndicatorOffset(it[selectedIndexType]).fillMaxSize().padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
@@ -292,17 +279,63 @@ fun ScreenContent(
         ) {
             Tab(
                 modifier = Modifier.height(60.dp),
-                selected = selectedIndex == 0,
+                selected = selectedIndexType == 0,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.VIDEO)) },
             ) {
                 Text(stringResource(id = InterviewType.VIDEO.text))
             }
             Tab(
                 modifier = Modifier.height(60.dp),
-                selected = selectedIndex == 0,
+                selected = selectedIndexType == 1,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.PHONE_CALL)) },
             ) {
                 Text(stringResource(id = InterviewType.PHONE_CALL.text))
+            }
+        }
+        TabRow(
+            modifier =
+            Modifier
+                .fillMaxWidth().height(76.dp)
+                .padding(top = 12.dp, bottom = 16.dp),
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            selectedTabIndex = selectedIndexLang,
+            divider = {},
+            indicator = {
+                if (selectedIndexLang < it.size) {
+                    Column(
+                        modifier =
+                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize().padding(8.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.onSurface,
+                                RoundedCornerShape(10.dp),
+                            ).padding(10.dp),
+                    ) {
+                    }
+                }
+            },
+        ) {
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 0,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.EN.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.EN.text))
+            }
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 1,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.TR.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.TR.text))
+            }
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 2,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.FR.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.FR.text))
             }
         }
         Button(
@@ -320,7 +353,7 @@ fun ScreenContent(
                 ),
         ) {
             Text(
-                stringResource(id = R.string.add_step),
+                stringResource(id = R.string.create_interview_add_step_title),
                 fontFamily = fontFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
