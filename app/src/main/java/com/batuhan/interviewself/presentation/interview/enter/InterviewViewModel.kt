@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewStep
+import com.batuhan.interviewself.data.model.MixedString
 import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterview
 import com.batuhan.interviewself.domain.interview.UpsertInterviewStep
@@ -63,17 +64,17 @@ class InterviewViewModel
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentStepToTalk =
         currentStepFlow.filter { it != -2 }.flatMapLatest {
-            val string =
+            val mixedString =
                 if (it == -1) {
-                    "Welcome to the interview, I am HR Manager. Today I want to interview with you to check your knowledge."
+                    MixedString(R.string.interview_start)
                 }else if(it == uiState.value.steps?.size){
-                    "The interview has ended, thanks for your answers. You can close the call"
+                    MixedString(R.string.interview_ended)
                 } else if (it == 0) {
-                    "Let's start with the first question ," + uiState.value.currentStep?.question?.question
+                    MixedString(R.string.first_question_talk, null, uiState.value.currentStep?.question?.question)
                 } else {
-                    "Let's continue with question ${it + 1}," + uiState.value.currentStep?.question?.question
+                    MixedString(R.string.interview_question_talk, it + 1, uiState.value.currentStep?.question?.question)
                 }
-            flowOf(string)
+            flowOf(mixedString)
         }
 
     fun incrementMyTurnStep(){
