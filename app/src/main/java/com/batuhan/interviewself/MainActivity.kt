@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_ID
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_TYPE
+import com.batuhan.interviewself.MainActivity.Companion.KEY_LANG_CODE
 import com.batuhan.interviewself.presentation.container.ContainerScreen
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepScreen
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         internal const val KEY_INTERVIEW_ID = "interview_id"
         internal const val KEY_INTERVIEW_TYPE = "interview_type"
+        internal const val KEY_LANG_CODE = "lang_code"
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
                 Manifest.permission.CAMERA,
@@ -125,8 +127,8 @@ fun InterviewSelfApp(
                 navigateToDetail = {
                     navController.navigate("interview_detail/$it")
                 },
-                enterInterview = { id, type ->
-                    navController.navigate("enter_interview/$id/${type.name}")
+                enterInterview = { id, type, langCode ->
+                    navController.navigate("enter_interview/$id/${type.name}/$langCode")
                 },
                 sendBrowserEvent = sendBrowserEvent,
             )
@@ -167,15 +169,15 @@ fun InterviewSelfApp(
             InterviewDetailScreen(
                 interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
                 onBackPressed = { navController.popBackStack() },
-                enterInterview = { id, type ->
+                enterInterview = { id, type, langCode ->
                     navController.popBackStack()
-                    navController.navigate("enter_interview/$id/${type.name}")
+                    navController.navigate("enter_interview/$id/${type.name}/$langCode")
                 },
             )
         }
 
         composable(
-            "enter_interview/{$KEY_INTERVIEW_ID}/{$KEY_INTERVIEW_TYPE}",
+            "enter_interview/{$KEY_INTERVIEW_ID}/{$KEY_INTERVIEW_TYPE}/{$KEY_LANG_CODE}",
             arguments =
                 listOf(
                     navArgument(KEY_INTERVIEW_ID) {
@@ -184,11 +186,15 @@ fun InterviewSelfApp(
                     navArgument(KEY_INTERVIEW_TYPE) {
                         type = NavType.StringType
                     },
+                    navArgument(KEY_LANG_CODE) {
+                        type = NavType.StringType
+                    }
                 ),
         ) {
             InterviewScreen(
                 interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
                 interviewType = it.arguments?.getString(KEY_INTERVIEW_TYPE) ?: "",
+                langCode = it.arguments?.getString(KEY_LANG_CODE) ?: "",
                 onBackPressed = {
                     navController.popBackStack()
                 }
