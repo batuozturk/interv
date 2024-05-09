@@ -1,0 +1,182 @@
+package com.batuhan.interviewself.presentation.interview.enter.videocall
+
+import android.content.Context
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import com.batuhan.interviewself.R
+import com.batuhan.interviewself.presentation.interview.enter.InterviewButton
+import com.batuhan.interviewself.presentation.interview.enter.InterviewEvent
+import com.batuhan.interviewself.presentation.interview.enter.InterviewUiState
+import com.batuhan.interviewself.ui.theme.InterviewselfTheme
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import androidx.compose.ui.tooling.preview.Preview as ComposePreview
+
+@Composable
+fun VideoCallInterviewScreenForTablet(
+    uiState: InterviewUiState,
+    sendEvent: (InterviewEvent) -> Unit,
+) {
+    val isMicrophoneEnabled by remember(uiState.isMicrophoneEnabled) {
+        derivedStateOf { uiState.isMicrophoneEnabled }
+    }
+
+    val isVideoEnabled by remember(uiState.isVideoEnabled) {
+        derivedStateOf { uiState.isVideoEnabled }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val context = LocalContext.current
+
+    val cameraProvider =
+        remember {
+            ProcessCameraProvider.getInstance(context)
+        }
+
+    // lifecycle scope state resume
+
+    val previewView =
+        remember {
+            PreviewView(context)
+        }
+    val coroutineScope = rememberCoroutineScope()
+    Row(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            "HR Manager",
+            fontSize = 25.sp,
+            modifier = Modifier.weight(3f),
+            textAlign = TextAlign.Center,
+        )
+        AndroidView(modifier = Modifier.weight(3f), factory = { context ->
+            previewView.apply {
+                setBackgroundColor(Color.Transparent.toArgb())
+                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                scaleType = PreviewView.ScaleType.FIT_CENTER
+                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                post {
+                    cameraProvider.addListener(
+                        Runnable {
+                            val cameraProvider = cameraProvider.get()
+                            bindPreviewForTablet(
+                                cameraProvider,
+                                lifecycleOwner,
+                                this,
+                            )
+                        },
+                        ContextCompat.getMainExecutor(context),
+                    )
+                }
+            }
+        })
+
+        LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            userScrollEnabled = false,
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            item {
+                InterviewButton(
+                    title = if (isMicrophoneEnabled) R.string.microphone_title_enabled else R.string.microphone_title_not_enabled,
+                    if (isMicrophoneEnabled) R.drawable.ic_mic_none_24 else R.drawable.ic_mic_off_24,
+                ) {
+                    sendEvent.invoke(InterviewEvent.MicrophoneState(!isMicrophoneEnabled))
+                }
+            }
+            item {
+                InterviewButton(
+                    title = R.string.pause,
+                    icon = R.drawable.ic_phone_paused_24,
+                ) {
+                    coroutineScope.launch {
+                        val cameraProvider = context.getCameraProvider()
+                        cameraProvider.unbindAll()
+                        sendEvent.invoke(InterviewEvent.Back)
+                    }
+                }
+            }
+            item {
+                InterviewButton(
+                    title = R.string.close_call,
+                    icon = R.drawable.ic_call_end_24,
+                ) {
+                    sendEvent.invoke(InterviewEvent.Back)
+                }
+            }
+        }
+    }
+}
+
+private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
+    suspendCoroutine { continuation ->
+        ProcessCameraProvider.getInstance(this).also { cameraProvider ->
+            cameraProvider.addListener({
+                continuation.resume(cameraProvider.get())
+            }, ContextCompat.getMainExecutor(this))
+        }
+    }
+
+fun bindPreviewForTablet(
+    cameraProvider: ProcessCameraProvider,
+    lifecycleOwner: LifecycleOwner,
+    previewView: PreviewView,
+) {
+    val preview: Preview =
+        Preview.Builder()
+            .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
+            .build()
+
+    val cameraSelector: CameraSelector =
+        CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+            .build()
+
+    preview.setSurfaceProvider(previewView.surfaceProvider)
+
+    var camera = cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
+}
+
+@ComposePreview(device = Devices.TABLET)
+@Composable
+fun VideoCallInterviewScreenForTabletPreview() {
+    InterviewselfTheme {
+        VideoCallInterviewScreen(uiState = InterviewUiState(), {})
+    }
+}

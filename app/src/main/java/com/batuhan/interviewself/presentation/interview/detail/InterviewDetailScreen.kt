@@ -32,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +45,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.InterviewStep
+import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.ui.theme.fontFamily
 import com.batuhan.interviewself.util.BaseView
 import com.batuhan.interviewself.util.DialogData
+import com.batuhan.interviewself.util.EnterInterviewDialogData
+import com.batuhan.interviewself.util.EnterInterviewView
 import com.batuhan.interviewself.util.isTablet
 
 @Composable
@@ -54,7 +59,7 @@ fun InterviewDetailScreen(
     onBackPressed: () -> Unit,
     showDialog: (DialogData) -> Unit = {},
     clearDialog: () -> Unit = {},
-    enterInterview: (Long) -> Unit = {},
+    enterInterview: (Long, InterviewType) -> Unit = { _, _ ->},
 ) {
     val context = LocalContext.current
 
@@ -69,6 +74,10 @@ fun InterviewDetailScreen(
         derivedStateOf { uiState.dialogData }
     }
 
+    var enterInterviewDialogData: EnterInterviewDialogData? by remember {
+        mutableStateOf(null)
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collect {
             when (it) {
@@ -81,7 +90,18 @@ fun InterviewDetailScreen(
                 is InterviewDetailEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
                 is InterviewDetailEvent.RetryInterview -> viewModel.retryInterview(it.interview)
                 is InterviewDetailEvent.ShareInterview -> viewModel.shareInterview(it.interview)
-                is InterviewDetailEvent.EnterInterview -> enterInterview(it.interviewId)
+                is InterviewDetailEvent.EnterInterview -> {
+                    enterInterviewDialogData =
+                        EnterInterviewDialogData(
+                            it.interviewId,
+                            {
+                                enterInterview(it.interviewId, it.interviewType)
+                            },
+                            {
+                                enterInterviewDialogData = null
+                            },
+                        )
+                }
             }
         }
     }
@@ -96,9 +116,13 @@ fun InterviewDetailScreen(
         LaunchedEffect(dialogData) {
             dialogData?.let(showDialog)
         }
-        InterviewDetailScreenContentForTablet(interviewId, uiState, viewModel::sendEvent)
-    } else {
-        InterviewDetailScreenContent(interviewId, dialogData, uiState, viewModel::sendEvent)
+    }
+    EnterInterviewView(data = enterInterviewDialogData) {
+        if (isTablet) {
+            InterviewDetailScreenContentForTablet(interviewId, uiState, viewModel::sendEvent)
+        } else {
+            InterviewDetailScreenContent(interviewId, dialogData, uiState, viewModel::sendEvent)
+        }
     }
 }
 
@@ -198,6 +222,8 @@ fun ScreenContent(
                                             InterviewDetailEvent.EnterInterview(
                                                 interviewWithSteps!!.interview!!.interviewId
                                                     ?: return@IconButton,
+                                                interviewWithSteps!!.interview!!.interviewType
+                                                    ?: return@IconButton,
                                             ),
                                         )
                                     },
@@ -253,9 +279,9 @@ fun InterviewDetailListItem(interview: InterviewStep) {
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
                 .padding(10.dp),
         ) {
-            Text(interview.question?.question ?: "")
+            Text(interview.question?.question?.lowercase() ?: "")
             Spacer(modifier = Modifier.height(40.dp))
-            Text(interview.answer ?: "not answered yet")
+            Text(interview.answer?.lowercase() ?: "not answered yet")
         }
     }
 }

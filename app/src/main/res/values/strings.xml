@@ -59,4 +59,9 @@
 
     <string name="interview_detail_question_and_answers">questions and answers</string>
     <string name="save">save</string>
+    <string name="microphone_title_enabled">mic enabled</string>
+    <string name="microphone_title_not_enabled">mic not enabled</string>
+    <string name="close_call">close call</string>
+    <string name="pause">pause</string>
+    <string name="start_interview">start</string>
 </resources>
