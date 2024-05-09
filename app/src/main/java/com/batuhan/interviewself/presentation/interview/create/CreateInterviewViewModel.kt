@@ -46,7 +46,7 @@ class CreateInterviewViewModel @Inject constructor(
                 when (result) {
                     is Result.Success -> {
                         _uiState.update {
-                            val interview = it.currentInterview.copy(interviewId = result.data)
+                            val interview = it.currentInterview.copy(interviewId = result.data, interviewType = InterviewType.VIDEO)
                             it.copy(currentInterview = interview)
                         }
                     }
