@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.data.model.InterviewWithSteps
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterview
+import com.batuhan.interviewself.domain.interview.UpsertInterviewSteps
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewError
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewEvent
 import com.batuhan.interviewself.util.DialogAction
@@ -35,6 +37,7 @@ class InterviewDetailViewModel @Inject constructor(
     private val upsertInterview: UpsertInterview,
     private val getInterviewWithSteps: GetInterviewWithSteps,
     private val deleteInterviewSteps: DeleteInterviewSteps,
+    private val upsertInterviewSteps: UpsertInterviewSteps,
 ) : ViewModel(), InterviewDetailEventHandler, ViewModelEventHandler<InterviewDetailEvent, InterviewDetailError> {
 
     // TODO upsert interview steps when copying
@@ -113,7 +116,35 @@ class InterviewDetailViewModel @Inject constructor(
         val newInterview = interview.copy(interviewId = null, interviewName = interview.interviewName + " - copy", completed = false)
         viewModelScope.launch {
             val result = upsertInterview.invoke(UpsertInterview.Params(newInterview))
-            // TODO upsert interview steps
+            when (result) {
+                is Result.Success -> {
+                    val newInterviewId = result.data
+                    val steps = uiState.value.interviewWithSteps?.steps?.map {
+                        it.copy(interviewStepId = null, interviewId = newInterviewId)
+                    }
+                    upsertInterviewSteps(newInterviewId, steps!!)
+                }
+
+                is Result.Error -> {
+                    showDialog(
+                        DialogData(
+                            title = R.string.app_name,
+                            type = DialogType.ERROR,
+                            actions = listOf(
+                                DialogAction(R.string.app_name) {
+                                    retryOperation(InterviewDetailError.RetryInterview(interview))
+                                }
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    override fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>) {
+        viewModelScope.launch {
+            val result = upsertInterviewSteps.invoke(UpsertInterviewSteps.Params(steps))
             when (result) {
                 is Result.Success -> {
                     showDialog(
@@ -123,7 +154,7 @@ class InterviewDetailViewModel @Inject constructor(
                             actions = listOf(
                                 DialogAction(R.string.start_interview){
                                     clearDialog()
-                                    sendEvent(InterviewDetailEvent.EnterInterview(result.data, interview.interviewType!!))
+                                    sendEvent(InterviewDetailEvent.EnterInterview(interviewId, uiState.value.interviewWithSteps?.interview?.interviewType!!))
                                 },
                                 DialogAction(R.string.dismiss, ::clearDialog)
                             )
@@ -138,7 +169,7 @@ class InterviewDetailViewModel @Inject constructor(
                             type = DialogType.ERROR,
                             actions = listOf(
                                 DialogAction(R.string.app_name) {
-                                    retryOperation(InterviewDetailError.RetryInterview(interview))
+                                    retryOperation(InterviewDetailError.UpsertInterviewSteps(interviewId, steps))
                                 }
                             )
                         )
@@ -211,6 +242,7 @@ class InterviewDetailViewModel @Inject constructor(
             is InterviewDetailError.RetryInterview-> retryInterview(error.interview)
             is InterviewDetailError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
             is InterviewDetailError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
+            is InterviewDetailError.UpsertInterviewSteps -> upsertInterviewSteps(error.interviewId, error.steps)
         }
     }
 
@@ -234,6 +266,7 @@ sealed class InterviewDetailError {
     data class GetInterviewWithSteps(val interviewId: Long) : InterviewDetailError()
 
     data class DeleteInterviewSteps(val interviewId: Long): InterviewDetailError()
+    data class UpsertInterviewSteps(val interviewId: Long, val steps: List<InterviewStep>) : InterviewDetailError()
 }
 
 sealed class InterviewDetailEvent {

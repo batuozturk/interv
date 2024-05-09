@@ -34,4 +34,7 @@ interface InterviewDao {
     @Transaction
     @Query("SELECT * FROM interview WHERE :id = interviewId")
     suspend fun getInterviewWithSteps(id: Long): InterviewWithSteps
+
+    @Upsert
+    suspend fun upsertInterviewSteps(steps: List<InterviewStep>)
 }
