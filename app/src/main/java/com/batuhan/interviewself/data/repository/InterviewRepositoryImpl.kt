@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewFilterType
 import com.batuhan.interviewself.data.model.InterviewWithSteps
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.source.InterviewLocalDataSource
@@ -17,7 +18,7 @@ class InterviewRepositoryImpl @Inject constructor(private val localDataSource: I
         private const val PAGE_SIZE = 20
     }
 
-    override fun getAllInterviews(): Flow<PagingData<Interview>> {
+    override fun getAllInterviews(searchText: String, filterType: InterviewFilterType): Flow<PagingData<Interview>> {
         return Pager(
             config = PagingConfig(
                 PAGE_SIZE,
@@ -25,7 +26,7 @@ class InterviewRepositoryImpl @Inject constructor(private val localDataSource: I
                 prefetchDistance = 2 * PAGE_SIZE
             ),
             pagingSourceFactory = {
-                localDataSource.getAllInterviews()
+                localDataSource.getAllInterviews(searchText, filterType)
             }
         ).flow
     }
