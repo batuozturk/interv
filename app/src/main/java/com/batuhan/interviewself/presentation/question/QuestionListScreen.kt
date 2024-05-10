@@ -37,9 +37,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.util.ActionView
 import com.batuhan.interviewself.util.DialogData
+import com.batuhan.interviewself.util.FilterDialogView
 import com.batuhan.interviewself.util.isTablet
 
 @Composable
@@ -70,34 +72,45 @@ fun QuestionListScreen(
 
                 QuestionListEvent.ClearDialog -> clearDialog.invoke()
                 is QuestionListEvent.DeleteQuestion -> viewModel.deleteQuestion(it.question)
+                QuestionListEvent.OpenFilter -> viewModel.setFilterType()
             }
         }
     }
-    val isTablet by remember(context.isTablet()){
+    val isTablet by remember(context.isTablet()) {
         derivedStateOf { context.isTablet() }
     }
-    if (isTablet) {
-        QuestionListScreenContentForTablet(
-            uiState,
-            questions,
-            viewModel::sendEvent,
-            viewModel::updateQuestionText,
-            viewModel::updateLangCode,
-            onEditDismiss = {
-                viewModel.setQuestionEditing(false)
-            },
-        )
-    } else {
-        QuestionListScreenContent(
-            uiState,
-            questions,
-            viewModel::sendEvent,
-            viewModel::updateQuestionText,
-            viewModel::updateLangCode,
-            onEditDismiss = {
-                viewModel.setQuestionEditing(false)
-            },
-        )
+    val filterType: FilterType.Question? by remember {
+        derivedStateOf { uiState.filterType }
+    }
+    val selectedFilter by remember(uiState.selectedFilter){
+        derivedStateOf { uiState.selectedFilter }
+    }
+    FilterDialogView(filterType =filterType, selectedFilter =selectedFilter, updateFilterType =viewModel::filter) {
+        if (isTablet) {
+            QuestionListScreenContentForTablet(
+                uiState,
+                questions,
+                viewModel::sendEvent,
+                viewModel::updateQuestionText,
+                viewModel::updateLangCode,
+                onEditDismiss = {
+                    viewModel.setQuestionEditing(false)
+                },
+                viewModel::filterByText,
+            )
+        } else {
+            QuestionListScreenContent(
+                uiState,
+                questions,
+                viewModel::sendEvent,
+                viewModel::updateQuestionText,
+                viewModel::updateLangCode,
+                onEditDismiss = {
+                    viewModel.setQuestionEditing(false)
+                },
+                viewModel::filterByText,
+            )
+        }
     }
 }
 
@@ -109,6 +122,7 @@ fun QuestionListScreenContentForTablet(
     updateQuestionText: (String) -> Unit,
     updateLangCode: (String) -> Unit,
     onEditDismiss: () -> Unit,
+    updateFilterText: (String) -> Unit,
 ) {
     val isEditing by remember(uiState.isEditing) {
         derivedStateOf { uiState.isEditing }
@@ -126,11 +140,11 @@ fun QuestionListScreenContentForTablet(
     Row(Modifier.fillMaxSize()) {
         Column(Modifier.weight(9f - weight)) {
             ActionView(
-                searchString = { filterText -> },
+                searchString = updateFilterText,
                 Icons.AutoMirrored.Default.List,
                 Icons.Default.Add,
                 "search questions",
-                action1 = { }, // filtering
+                action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
                 action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
             )
             LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxHeight()) {
@@ -165,6 +179,7 @@ fun QuestionListScreenContent(
     updateQuestionText: (String) -> Unit,
     updateLangCode: (String) -> Unit,
     onEditDismiss: () -> Unit,
+    updateFilterText: (String) -> Unit,
 ) {
     val isEditing by remember(uiState.isEditing) {
         derivedStateOf { uiState.isEditing }
@@ -177,11 +192,11 @@ fun QuestionListScreenContent(
     }
     Column(Modifier.fillMaxSize()) {
         ActionView(
-            searchString = { filterText -> },
+            searchString = updateFilterText,
             Icons.AutoMirrored.Default.List,
             Icons.Default.Add,
             "search questions",
-            action1 = { }, // filtering
+            action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
             action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
         )
         AnimatedVisibility(visible = isEditing) {
