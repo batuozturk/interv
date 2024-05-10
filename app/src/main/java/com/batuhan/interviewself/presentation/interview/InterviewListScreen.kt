@@ -41,13 +41,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewFilterType
 import com.batuhan.interviewself.data.model.InterviewType
+import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepScreen
 import com.batuhan.interviewself.presentation.interview.detail.InterviewDetailScreen
 import com.batuhan.interviewself.util.ActionView
 import com.batuhan.interviewself.util.DialogData
+import com.batuhan.interviewself.util.FilterDialogView
 import com.batuhan.interviewself.util.isTablet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,21 +87,33 @@ fun InterviewListScreen(
                         it.interviewType,
                         it.langCode,
                     )
+                is InterviewListEvent.OpenFilter -> {
+                    viewModel.setFilterType()
+                }
             }
         }
     }
     val isTablet by remember(context.isTablet()) {
         derivedStateOf { context.isTablet() }
     }
-    if (isTablet) {
-        InterviewListScreenContentForTablets(
-            interviews,
-            viewModel::sendEvent,
-            viewModel::showDialog,
-            viewModel::clearDialog,
-        )
-    } else {
-        InterviewListScreenContent(interviews, viewModel::sendEvent)
+    val filterType: FilterType.Interview? by remember(uiState.filterType) {
+        derivedStateOf { uiState.filterType }
+    }
+    val selectedFilter by remember(uiState.selectedFilter){
+        derivedStateOf { uiState.selectedFilter}
+    }
+    FilterDialogView(filterType =filterType, selectedFilter = selectedFilter, updateFilterType =viewModel::filter) {
+        if (isTablet) {
+            InterviewListScreenContentForTablets(
+                interviews,
+                viewModel::sendEvent,
+                viewModel::showDialog,
+                viewModel::clearDialog,
+                viewModel::filterByText
+            )
+        } else {
+            InterviewListScreenContent(interviews, viewModel::sendEvent, viewModel::filterByText)
+        }
     }
 }
 
@@ -105,14 +121,15 @@ fun InterviewListScreen(
 fun InterviewListScreenContent(
     interviews: LazyPagingItems<Interview>,
     sendEvent: (InterviewListEvent) -> Unit,
+    updateFilterText: (String) -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         ActionView(
-            searchString = { filterText -> },
+            searchString = updateFilterText,
             Icons.AutoMirrored.Default.List,
             Icons.Default.Add,
             "search interviews",
-            action1 = { }, // filtering
+            action1 = { sendEvent(InterviewListEvent.OpenFilter) },
             action2 = { sendEvent(InterviewListEvent.CreateInterview) },
         )
         LazyColumn(Modifier.fillMaxSize()) {
@@ -133,6 +150,7 @@ fun InterviewListScreenContentForTablets(
     sendEvent: (InterviewListEvent) -> Unit,
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
+    updateFilterText: (String) -> Unit
 ) {
     var isCreating by remember {
         mutableStateOf(false)
@@ -164,11 +182,11 @@ fun InterviewListScreenContentForTablets(
     Row(Modifier.fillMaxSize()) {
         Column(Modifier.weight(9f - weight - weight2 - weight3)) {
             ActionView(
-                searchString = { filterText -> },
+                searchString = updateFilterText,
                 Icons.AutoMirrored.Default.List,
                 Icons.Default.Add,
                 "search interviews",
-                action1 = { }, // filtering
+                action1 = { sendEvent.invoke(InterviewListEvent.OpenFilter)}, // filtering
                 action2 = {
                     interviewDetailId = null
                     isCreating = true
