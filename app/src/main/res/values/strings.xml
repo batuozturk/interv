@@ -72,4 +72,16 @@
     <string name="interview_ended">The interview has ended, thanks for your answers. You can close the call</string>
     <string name="interview_start">Welcome to the interview, I am HR Manager. Today I want to interview with you to check your knowledge.</string>
     <string name="interview_question_talk">Let\'s continue with question %d</string>
+    <string name="created_at">time</string>
+    <string name="created_at_reverse">time reversed</string>
+    <string name="only_english">only english</string>
+    <string name="filter_turkish">turkish</string>
+    <string name="filter_english">english</string>
+    <string name="filter_french">french</string>
+    <string name="filter_default">default</string>
+    <string name="filter_name">name</string>
+    <string name="filter_completed">completed</string>
+    <string name="filter_not_completed">not completed</string>
+    <string name="filter">filter</string>
+    <string name="filter_name_reversed">name_reversed</string>
 </resources>
