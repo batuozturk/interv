@@ -4,8 +4,11 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Upsert
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewWithSteps
 import com.batuhan.interviewself.data.model.InterviewStep
@@ -13,8 +16,8 @@ import com.batuhan.interviewself.data.model.InterviewStep
 @Dao
 interface InterviewDao {
 
-    @Query("SELECT * FROM interview")
-    fun getAllInterviews(): PagingSource<Int, Interview>
+    @RawQuery(observedEntities = [Interview::class])
+    fun getAllInterviews(query: SimpleSQLiteQuery): PagingSource<Int, Interview>
 
     @Upsert
     suspend fun upsertInterview(interview: Interview): Long
