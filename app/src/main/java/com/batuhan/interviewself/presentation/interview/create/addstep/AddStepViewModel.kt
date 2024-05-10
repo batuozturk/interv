@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.Question
+import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.domain.interview.DeleteInterviewStep
 import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterviewStep
@@ -46,7 +47,7 @@ class AddStepViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddStepUiState())
     val uiState = _uiState.asStateFlow()
 
-    val questions = getAllQuestions.invoke().cachedIn(viewModelScope)
+    val questions = getAllQuestions.invoke(GetAllQuestions.Params("", QuestionFilterType.DEFAULT)).cachedIn(viewModelScope)
 
     var interviewId = savedStateHandle.get<Long>(KEY_INTERVIEW_ID)
 
