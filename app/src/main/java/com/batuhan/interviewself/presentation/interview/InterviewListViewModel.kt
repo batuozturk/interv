@@ -2,9 +2,13 @@ package com.batuhan.interviewself.presentation.interview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.batuhan.interviewself.R
+import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewFilterType
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.InterviewType
 import com.batuhan.interviewself.data.model.LanguageType
@@ -18,11 +22,15 @@ import com.batuhan.interviewself.util.DialogType
 import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,13 +44,34 @@ class InterviewListViewModel @Inject constructor(
     private val deleteInterviewSteps: DeleteInterviewSteps
 ) : ViewModel(), InterviewListEventHandler, ViewModelEventHandler<InterviewListEvent, InterviewListError> {
 
-    val interviews = getAllInterviews.invoke().cachedIn(viewModelScope)
+    val filterPair = MutableStateFlow(Pair("", InterviewFilterType.DEFAULT))
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val interviews = filterPair.flatMapLatest { pair ->
+        getAllInterviews.invoke(GetAllInterviews.Params(pair.first, pair.second)).cachedIn(viewModelScope)
+    }.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(InterviewListUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _event = Channel<InterviewListEvent> { Channel.BUFFERED }
     val event = _event.receiveAsFlow()
+
+    private fun PagingData<Interview>.filterPagingData(filterType: InterviewFilterType, searchText: String): PagingData<Interview> {
+        return this.filter {
+            val condition1 = if(searchText.isNotEmpty() && searchText.isNotBlank()) it.interviewName!!.startsWith(searchText) else true
+            val condition2 = when(filterType){
+                        InterviewFilterType.LANG_EN -> it.langCode == "en-US"
+                        InterviewFilterType.LANG_TR -> it.langCode == "tr-TR"
+                        InterviewFilterType.LANG_FR -> it.langCode == "fr-FR"
+                        InterviewFilterType.COMPLETED -> it.completed == true
+                        InterviewFilterType.NOT_COMPLETED -> it.completed == false
+                        else -> true
+                    }
+            condition1 && condition2
+        }
+
+    }
 
     private fun deleteInterviewStepsJob(interviewId: Long) =
         viewModelScope.launch {
@@ -150,6 +179,34 @@ class InterviewListViewModel @Inject constructor(
         }
     }
 
+    override fun filterByText(filterText: String) {
+        filterPair.update {
+            it.copy(filterText, it.second)
+        }
+    }
+
+    override fun filter(filterType: InterviewFilterType) {
+        filterPair.update {
+            it.copy(it.first, filterType)
+        }
+        _uiState.update {
+            it.copy(selectedFilter = filterType)
+        }
+        clearFilterType()
+    }
+
+    fun setFilterType() {
+        _uiState.update {
+            it.copy(filterType = FilterType.Interview)
+        }
+    }
+
+    fun clearFilterType(){
+        _uiState.update {
+            it.copy(filterType = null)
+        }
+    }
+
 
     override fun sendEvent(event: InterviewListEvent) {
         viewModelScope.launch {
@@ -192,6 +249,8 @@ class InterviewListViewModel @Inject constructor(
 data class InterviewListUiState(
     internal val dialogData: DialogData? = null,
     internal val deletedInterview: Interview? = null,
+    internal val filterType: FilterType.Interview? = null,
+    internal val selectedFilter: InterviewFilterType = InterviewFilterType.DEFAULT
 )
 
 sealed class InterviewListError {
@@ -207,6 +266,8 @@ sealed class InterviewListEvent {
     data class Detail(val interviewId: Long):InterviewListEvent()
 
     data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val langCode: String): InterviewListEvent()
+
+    object OpenFilter: InterviewListEvent()
 
     object ClearDialog: InterviewListEvent()
 }

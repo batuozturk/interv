@@ -2,12 +2,13 @@ package com.batuhan.interviewself.data.repository
 
 import androidx.paging.PagingData
 import com.batuhan.interviewself.data.model.Interview
+import com.batuhan.interviewself.data.model.InterviewFilterType
 import com.batuhan.interviewself.data.model.InterviewWithSteps
 import com.batuhan.interviewself.data.model.InterviewStep
 import kotlinx.coroutines.flow.Flow
 
 interface InterviewRepository {
-    fun getAllInterviews(): Flow<PagingData<Interview>>
+    fun getAllInterviews(searchText: String, filterType: InterviewFilterType): Flow<PagingData<Interview>>
 
     suspend fun deleteInterview(question: Interview)
 

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.batuhan.interviewself.data.model.Question
+import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.data.source.QuestionLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class QuestionRepositoryImpl @Inject constructor(private val localDataSource: Qu
         private const val PAGE_SIZE = 20
     }
 
-    override fun getAllQuestions(): Flow<PagingData<Question>> {
+    override fun getAllQuestions(searchText: String, filterType: QuestionFilterType): Flow<PagingData<Question>> {
         return Pager(
             config = PagingConfig(
                 PAGE_SIZE,
@@ -23,7 +24,7 @@ class QuestionRepositoryImpl @Inject constructor(private val localDataSource: Qu
                 prefetchDistance = 2 * PAGE_SIZE
             ),
             pagingSourceFactory = {
-                localDataSource.getAllQuestions()
+                localDataSource.getAllQuestions(searchText, filterType)
             }
         ).flow
     }

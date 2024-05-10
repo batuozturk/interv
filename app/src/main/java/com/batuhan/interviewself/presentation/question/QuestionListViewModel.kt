@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.batuhan.interviewself.R
+import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Question
+import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.domain.question.DeleteQuestion
 import com.batuhan.interviewself.domain.question.GetAllQuestions
 import com.batuhan.interviewself.domain.question.UpsertQuestion
@@ -14,10 +16,12 @@ import com.batuhan.interviewself.util.DialogType
 import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +34,12 @@ class QuestionListViewModel @Inject constructor(
     getAllQuestions: GetAllQuestions
 ) : ViewModel(), QuestionListEventHandler, ViewModelEventHandler<QuestionListEvent,QuestionListError> {
 
-    val questions = getAllQuestions.invoke().cachedIn(viewModelScope)
+    val filterPair = MutableStateFlow(Pair("", QuestionFilterType.DEFAULT))
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val questions = filterPair.flatMapLatest {
+        getAllQuestions.invoke(GetAllQuestions.Params(it.first, it.second)).cachedIn(viewModelScope)
+    }.cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(QuestionListUiState())
     val uiState = _uiState.asStateFlow()
@@ -248,6 +257,34 @@ class QuestionListViewModel @Inject constructor(
         }
     }
 
+    override fun filterByText(filterText: String) {
+        filterPair.update {
+            it.copy(filterText, it.second)
+        }
+    }
+
+    override fun filter(filterType: QuestionFilterType) {
+        filterPair.update {
+            it.copy(it.first, filterType)
+        }
+        _uiState.update {
+            it.copy(selectedFilter = filterType)
+        }
+        clearFilterType()
+    }
+
+    fun setFilterType() {
+        _uiState.update {
+            it.copy(filterType = FilterType.Question)
+        }
+    }
+
+    fun clearFilterType(){
+        _uiState.update {
+            it.copy(filterType = null)
+        }
+    }
+
     override fun undoDeleteQuestion() {
         viewModelScope.launch {
             val result = upsertQuestion.invoke(
@@ -285,7 +322,9 @@ data class QuestionListUiState(
     internal val deletedQuestion: Question? = null,
     internal val questionText: String? = null,
     internal val langCode: String? = null,
-    internal val isEditing: Boolean = false
+    internal val isEditing: Boolean = false,
+    internal val filterType: FilterType.Question? = null,
+    internal val selectedFilter: QuestionFilterType = QuestionFilterType.DEFAULT
 )
 
 sealed class QuestionListError {
@@ -302,6 +341,8 @@ sealed class QuestionListEvent {
 
     object InitializeQuestion: QuestionListEvent()
     data class DeleteQuestion(val question: Question) : QuestionListEvent()
+
+    object OpenFilter: QuestionListEvent()
 
     object ClearDialog: QuestionListEvent()
 }
