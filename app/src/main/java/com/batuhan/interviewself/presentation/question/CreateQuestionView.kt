@@ -1,11 +1,15 @@
 package com.batuhan.interviewself.presentation.question
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -13,8 +17,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.batuhan.interviewself.R
+import com.batuhan.interviewself.data.model.LanguageType
+import com.batuhan.interviewself.data.model.findType
+import com.batuhan.interviewself.presentation.interview.create.InterviewField
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
 import com.batuhan.interviewself.ui.theme.fontFamily
 
@@ -42,6 +55,10 @@ fun CreateQuestionView(
         BackHandler {
             onDismiss.invoke()
         }
+    }
+
+    val selectedIndexLang by remember(langCode) {
+        mutableStateOf(findType(langCode))
     }
     Column(
         modifier =
@@ -75,28 +92,51 @@ fun CreateQuestionView(
                 singleLine = true,
             )
         }
-        Row(
+        TabRow(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier
+                .fillMaxWidth().height(76.dp)
+                .padding(top = 12.dp, bottom = 16.dp),
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            selectedTabIndex = selectedIndexLang,
+            divider = {},
+            indicator = {
+                if (selectedIndexLang < it.size) {
+                    Column(
+                        modifier =
+                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize().padding(8.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.onSurface,
+                                RoundedCornerShape(10.dp),
+                            ).padding(10.dp),
+                    ) {
+                    }
+                }
+            },
         ) {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(stringResource(id = R.string.lang_code_placeholder))
-                },
-                leadingIcon = {
-                    Icon(painterResource(id = R.drawable.ic_language_24), contentDescription = null)
-                },
-                colors = OutlinedTextFieldDefaults.colors(),
-                value = langCode ?: "",
-                onValueChange = {
-                    updateLangCode.invoke(it)
-                },
-                singleLine = true,
-            )
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 0,
+                onClick = { updateLangCode(LanguageType.EN.code) },
+            ) {
+                Text(stringResource(id = LanguageType.EN.text))
+            }
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 1,
+                onClick = { updateLangCode(LanguageType.TR.code) },
+            ) {
+                Text(stringResource(id = LanguageType.TR.text))
+            }
+            Tab(
+                modifier = Modifier.height(60.dp),
+                selected = selectedIndexLang == 2,
+                onClick = { updateLangCode(LanguageType.FR.code) },
+            ) {
+                Text(stringResource(id = LanguageType.FR.text))
+            }
         }
         Row(
             Modifier
