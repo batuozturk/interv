@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,12 +32,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.util.ActionView
@@ -82,10 +87,10 @@ fun QuestionListScreen(
     val filterType: FilterType.Question? by remember {
         derivedStateOf { uiState.filterType }
     }
-    val selectedFilter by remember(uiState.selectedFilter){
+    val selectedFilter by remember(uiState.selectedFilter) {
         derivedStateOf { uiState.selectedFilter }
     }
-    FilterDialogView(filterType =filterType, selectedFilter =selectedFilter, updateFilterType =viewModel::filter) {
+    FilterDialogView(filterType = filterType, selectedFilter = selectedFilter, updateFilterType = viewModel::filter) {
         if (isTablet) {
             QuestionListScreenContentForTablet(
                 uiState,
@@ -143,7 +148,7 @@ fun QuestionListScreenContentForTablet(
                 searchString = updateFilterText,
                 Icons.AutoMirrored.Default.List,
                 Icons.Default.Add,
-                "search questions",
+                stringResource(R.string.search_questions),
                 action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
                 action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
             )
@@ -195,7 +200,7 @@ fun QuestionListScreenContent(
             searchString = updateFilterText,
             Icons.AutoMirrored.Default.List,
             Icons.Default.Add,
-            "search questions",
+            stringResource(id = R.string.search_questions),
             action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
             action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
         )
