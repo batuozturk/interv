@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,17 +36,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.FilterType
 import com.batuhan.interviewself.data.model.Interview
-import com.batuhan.interviewself.data.model.InterviewFilterType
 import com.batuhan.interviewself.data.model.InterviewType
-import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepScreen
 import com.batuhan.interviewself.presentation.interview.detail.InterviewDetailScreen
@@ -87,6 +90,7 @@ fun InterviewListScreen(
                         it.interviewType,
                         it.langCode,
                     )
+
                 is InterviewListEvent.OpenFilter -> {
                     viewModel.setFilterType()
                 }
@@ -99,17 +103,21 @@ fun InterviewListScreen(
     val filterType: FilterType.Interview? by remember(uiState.filterType) {
         derivedStateOf { uiState.filterType }
     }
-    val selectedFilter by remember(uiState.selectedFilter){
-        derivedStateOf { uiState.selectedFilter}
+    val selectedFilter by remember(uiState.selectedFilter) {
+        derivedStateOf { uiState.selectedFilter }
     }
-    FilterDialogView(filterType =filterType, selectedFilter = selectedFilter, updateFilterType =viewModel::filter) {
+    FilterDialogView(
+        filterType = filterType,
+        selectedFilter = selectedFilter,
+        updateFilterType = viewModel::filter,
+    ) {
         if (isTablet) {
             InterviewListScreenContentForTablets(
                 interviews,
                 viewModel::sendEvent,
                 viewModel::showDialog,
                 viewModel::clearDialog,
-                viewModel::filterByText
+                viewModel::filterByText,
             )
         } else {
             InterviewListScreenContent(interviews, viewModel::sendEvent, viewModel::filterByText)
@@ -121,14 +129,14 @@ fun InterviewListScreen(
 fun InterviewListScreenContent(
     interviews: LazyPagingItems<Interview>,
     sendEvent: (InterviewListEvent) -> Unit,
-    updateFilterText: (String) -> Unit
+    updateFilterText: (String) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
         ActionView(
             searchString = updateFilterText,
             Icons.AutoMirrored.Default.List,
             Icons.Default.Add,
-            "search interviews",
+            stringResource(R.string.search_interviews),
             action1 = { sendEvent(InterviewListEvent.OpenFilter) },
             action2 = { sendEvent(InterviewListEvent.CreateInterview) },
         )
@@ -150,7 +158,7 @@ fun InterviewListScreenContentForTablets(
     sendEvent: (InterviewListEvent) -> Unit,
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
-    updateFilterText: (String) -> Unit
+    updateFilterText: (String) -> Unit,
 ) {
     var isCreating by remember {
         mutableStateOf(false)
@@ -185,8 +193,8 @@ fun InterviewListScreenContentForTablets(
                 searchString = updateFilterText,
                 Icons.AutoMirrored.Default.List,
                 Icons.Default.Add,
-                "search interviews",
-                action1 = { sendEvent.invoke(InterviewListEvent.OpenFilter)}, // filtering
+                stringResource(R.string.search_interviews),
+                action1 = { sendEvent.invoke(InterviewListEvent.OpenFilter) }, // filtering
                 action2 = {
                     interviewDetailId = null
                     isCreating = true
