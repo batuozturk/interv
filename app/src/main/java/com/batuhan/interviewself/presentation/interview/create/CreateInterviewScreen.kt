@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +57,7 @@ import com.batuhan.interviewself.util.DialogAction
 import com.batuhan.interviewself.util.DialogData
 import com.batuhan.interviewself.util.DialogType
 import com.batuhan.interviewself.util.isTablet
+import com.batuhan.interviewself.util.keyboardAsState
 
 @Composable
 fun CreateInterviewScreen(
@@ -208,6 +210,12 @@ fun ScreenContent(
     }
     val selectedIndexLang by remember(langCode) {
         mutableStateOf(findType(langCode))
+    }
+
+    val focusManager = LocalFocusManager.current
+    val isKeyboardOpen by keyboardAsState()
+    LaunchedEffect(isKeyboardOpen) {
+        if(!isKeyboardOpen) focusManager.clearFocus()
     }
     Column(
         modifier =
