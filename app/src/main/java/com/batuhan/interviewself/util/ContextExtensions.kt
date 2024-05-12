@@ -10,7 +10,7 @@ import java.util.Locale
 fun Context.isTablet() =
     resources.configuration.screenWidthDp >= 600 && resources.configuration.screenWidthDp * 0.75 > resources.configuration.screenHeightDp
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 fun Context.getLocaleStringResource(
     langCode: String,

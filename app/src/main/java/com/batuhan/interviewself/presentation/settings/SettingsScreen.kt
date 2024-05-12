@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.presentation.settings.detail.SettingsDetailScreen
@@ -40,30 +43,66 @@ import com.batuhan.interviewself.util.SettingsDetailAction
 import com.batuhan.interviewself.util.dataStore
 import com.batuhan.interviewself.util.decideDialogType
 import com.batuhan.interviewself.util.isTablet
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun SettingsScreen(
     exportQuestions: () -> Unit,
     importQuestions: () -> Unit,
-    language: () -> Unit,
-    setStyle: () -> Unit,
+    restartApplication: () -> Unit,
+    setStyle: (isDarkMode: Boolean) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
 ) {
     val context = LocalContext.current
-
-    // TODO datastore
-    val dataStore by context.dataStore.data.collectAsStateWithLifecycle(initialValue = emptyFlow<Preferences>())
+    val datastore = context.dataStore
+    val viewModel = hiltViewModel<SettingsViewModel>()
 
     val isTablet by remember(context.isTablet()) {
         derivedStateOf { context.isTablet() }
     }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val dialogData by remember(uiState.dialogData) {
+        derivedStateOf { uiState.dialogData }
+    }
+    LaunchedEffect(dialogData) {
+        dialogData?.let(showDialog)
+    }
 
-    val darkTheme = isSystemInDarkTheme()
+    LaunchedEffect(true) {
+        viewModel.event.collect {
+            when (it) {
+                is SettingsEvent.ChangeStyle -> setStyle.invoke(it.isDarkMode)
+                SettingsEvent.ClearDialog -> clearDialog.invoke()
+                SettingsEvent.RestartApplication -> restartApplication()
+            }
+        }
+    }
+
+    LaunchedEffect(true) {
+        context.dataStore.data.collect { data ->
+            val isDarkMode =
+                data[SettingsViewModel.KEY_PREFERENCES_STYLE] ?: run {
+                    datastore.writeData(SettingsType.Style(false), viewModel::writeData)
+                    false
+                }
+            val langCode =
+                data[SettingsViewModel.KEY_PREFERENCES_LANGUAGE] ?: run {
+                    datastore.writeData(
+                        SettingsType.LangCode(Locale.US.language + "-" + Locale.US.country),
+                        viewModel::writeData,
+                    )
+                    Locale.US.language + "-" + Locale.US.country
+                }
+            viewModel.readData(isDarkMode, langCode)
+        }
+    }
+
+    val darkTheme by remember(uiState.isDarkMode) {
+        derivedStateOf { uiState.isDarkMode }
+    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -72,45 +111,72 @@ fun SettingsScreen(
         exportQuestions = { },
         importQuestions = { },
         language = {
-            coroutineScope.launch {
-                clearDialog.invoke()
-                delay(500L)
-                showDialog(
-                    DialogData(
-                        R.string.settings_language_title,
-                        actions =
-                            listOf(
-                                DialogAction(R.string.dismiss, clearDialog),
-                            ),
+            viewModel.showDialog(
+                DialogData(
+                    R.string.settings_language_title,
+                    actions =
                         listOf(
-                            DialogAction(R.string.settings_lang_option_one, {}),
-                            DialogAction(R.string.settings_lang_option_two, {}),
-                            DialogAction(R.string.settings_lang_option_three, {}),
+                            DialogAction(R.string.dismiss, viewModel::clearDialog),
                         ),
-                        decideDialogType(darkTheme),
+                    listOf(
+                        DialogAction(
+                            R.string.settings_lang_option_one,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("en-US"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_two,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("tr-TR"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_three,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("fr-FR"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
                     ),
-                )
-            }
+                    decideDialogType(darkTheme),
+                ),
+            )
         },
         setStyle = {
-            coroutineScope.launch {
-                clearDialog.invoke()
-                delay(500L)
-                showDialog(
-                    DialogData(
-                        R.string.settings_style_title,
-                        actions =
-                            listOf(
-                                DialogAction(R.string.dismiss, clearDialog),
-                            ),
+            viewModel.showDialog(
+                DialogData(
+                    R.string.settings_style_title,
+                    actions =
                         listOf(
-                            DialogAction(R.string.settings_style_option_one, {}),
-                            DialogAction(R.string.settings_style_option_two, {}),
+                            DialogAction(R.string.dismiss, clearDialog),
                         ),
-                        decideDialogType(darkTheme),
+                    listOf(
+                        DialogAction(R.string.settings_style_option_one) {
+                            viewModel.writeData(
+                                SettingsType.Style(false),
+                            )
+                        },
+                        DialogAction(R.string.settings_style_option_two) {
+                            viewModel.writeData(
+                                SettingsType.Style(true),
+                            )
+                        },
                     ),
-                )
-            }
+                    decideDialogType(darkTheme),
+                ),
+            )
         },
         sendBrowserEvent = sendBrowserEvent,
     )
@@ -231,4 +297,22 @@ fun SettingsListItem(
     ) {
         Text(stringResource(id = title))
     }
+}
+
+suspend fun DataStore<Preferences>.writeData(
+    settingsType: SettingsType,
+    afterCompletion: (SettingsType) -> Unit,
+) {
+    edit { prefs ->
+        when (settingsType) {
+            is SettingsType.Style ->
+                prefs[SettingsViewModel.KEY_PREFERENCES_STYLE] =
+                    settingsType.isDarkMode
+
+            is SettingsType.LangCode ->
+                prefs[SettingsViewModel.KEY_PREFERENCES_LANGUAGE] =
+                    settingsType.langCode
+        }
+    }
+    afterCompletion.invoke(settingsType)
 }
