@@ -45,11 +45,9 @@ fun EnterInterviewDialogView(data: EnterInterviewDialogData?) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     mediaPlayer.pause()
                     mediaPlayer.release()
-                }
-                else if(event == Lifecycle.Event.ON_RESUME){
+                } else if (event == Lifecycle.Event.ON_RESUME) {
                     mediaPlayer.start()
-                }
-                else if(event == Lifecycle.Event.ON_PAUSE){
+                } else if (event == Lifecycle.Event.ON_PAUSE) {
                     mediaPlayer.pause()
                 }
             }
@@ -71,7 +69,7 @@ fun EnterInterviewDialogView(data: EnterInterviewDialogData?) {
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                "hr manager is calling you",
+                stringResource(R.string.hr_manager_calling_text),
                 fontSize = 20.sp,
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textAlign = TextAlign.Center,
@@ -91,7 +89,7 @@ fun EnterInterviewDialogView(data: EnterInterviewDialogData?) {
                             contentColor = Color.White,
                         ),
                 ) {
-                    Text("open call", fontSize = 20.sp, fontFamily = fontFamily)
+                    Text(stringResource(R.string.open_call), fontSize = 20.sp, fontFamily = fontFamily)
                 }
                 Button(
                     onClick = data.action2,
