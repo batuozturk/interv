@@ -79,9 +79,13 @@
     <string name="filter_english">english</string>
     <string name="filter_french">french</string>
     <string name="filter_default">default</string>
-    <string name="filter_name">name</string>
+    <string name="filter_name">a-z</string>
     <string name="filter_completed">completed</string>
     <string name="filter_not_completed">not completed</string>
     <string name="filter">filter</string>
-    <string name="filter_name_reversed">name_reversed</string>
+    <string name="filter_name_reversed">z-a</string>
+    <string name="search_interviews">search interviews</string>
+    <string name="search_questions">search questions</string>
+    <string name="hr_manager_calling_text">hr manager is calling you</string>
+    <string name="open_call">open call</string>
 </resources>

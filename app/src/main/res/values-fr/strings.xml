@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Interviewself</string>
+    <string name="retry">réessayer</string>
+    <string name="dismiss">rejeter</string>
+    <string name="ok">ok</string>
+    <string name="undo">annuler</string>
+    <string name="error_unknown">une erreur inconnue s\'est produite</string>
+
+    <string name="error_question_not_saved">la question ne peut pas être enregistrée</string>
+    <string name="error_question_empty">la question est vide</string>
+    <string name="error_question_lang_code_empty">code de langue vide</string>
+    <string name="success_question_saved">question enregistrée</string>
+    <string name="delete_question">question supprimée</string>
+    <string name="update_question">question mise à jour</string>
+
+    <string name="error_interview_not_saved">l\'entretien ne peut pas être enregistré</string>
+    <string name="error_interview_empty">l\'entretien est vide</string>
+    <string name="error_interview_lang_code_empty">code de langue vide</string>
+    <string name="error_interview_duration_invalid">la durée est invalide</string>
+    <string name="error_interview_type_not_selected">le type n\'a pas été sélectionné</string>
+    <string name="success_interview_saved">entretien enregistré</string>
+    <string name="delete_interview">entretien supprimé</string>
+    <string name="update_interview">entretien mis à jour</string>
+
+    <string name="type_video">vidéo</string>
+    <string name="type_phone_call">appel téléphonique</string>
+    <string name="add_step">étape ajoutée</string>
+    <string name="delete_step">étape supprimée</string>
+
+    <string name="navitem_one">entretiens</string>
+    <string name="navitem_two">questions</string>
+    <string name="navitem_three">paramètres</string>
+
+    <string name="create_interview_title">créer un entretien</string>
+
+
+    <string name="create_question_name_placeholder">question</string>
+    <string name="create_interview_name_placeholder">nom de l\'entretien</string>
+    <string name="create_interview_question_duration_placeholder">durée de la question</string>
+    <string name="lang_code_placeholder">code de langue ex. fr</string>
+    <string name="create_interview_add_step_title">ajouter une étape</string>
+
+
+    <string name="settings_import_questions">importer des questions</string>
+    <string name="settings_export_questions">exporter des questions</string>
+    <string name="settings_rate_us">évaluez-nous</string>
+    <string name="settings_contact_us">contactez-nous</string>
+    <string name="settings_language">langue</string>
+    <string name="settings_tos">conditions d\'utilisation</string>
+    <string name="settings_privacy_policy">politique de confidentialité</string>
+    <string name="settings_download_konsol">télécharger konsol, gestionnaire de projet firebase pour android</string>
+    <string name="settings_style">style</string>
+    <string name="settings_style_option_one">mode clair</string>
+    <string name="settings_style_option_two">mode sombre</string>
+    <string name="settings_lang_option_one">anglais</string>
+    <string name="settings_lang_option_two">turc</string>
+    <string name="settings_lang_option_three">français</string>
+    <string name="settings_language_title">définir la langue de l\'application</string>
+    <string name="settings_style_title">définir le style de l\'application</string>
+
+    <string name="interview_detail_question_and_answers">questions et réponses</string>
+    <string name="save">enregistrer</string>
+    <string name="microphone_title_enabled">micro activé</string>
+    <string name="microphone_title_not_enabled">micro désactivé</string>
+    <string name="close_call">terminer l\'appel</string>
+    <string name="pause">pause</string>
+    <string name="start_interview">démarrer</string>
+    <string name="language_type_en">anglais</string>
+    <string name="language_type_tr">turc</string>
+    <string name="language_type_fr">français</string>
+    <string name="first_question_talk">Commençons par la première question ,</string>
+    <string name="interview_ended">L\'entretien est terminé, merci pour vos réponses. Vous pouvez fermer l\'appel</string>
+    <string name="interview_start">Bienvenue à l\'entretien, je suis le responsable RH. Aujourd\'hui, je souhaite vous interviewer pour vérifier vos connaissances.</string>
+    <string name="interview_question_talk">Continuons avec la question %d</string>
+    <string name="created_at">temps</string>
+    <string name="created_at_reverse">temps inversé</string>
+    <string name="only_english">seulement anglais</string>
+    <string name="filter_turkish">turc</string>
+    <string name="filter_english">anglais</string>
+    <string name="filter_french">français</string>
+    <string name="filter_default">par défaut</string>
+    <string name="filter_name">a-z</string>
+    <string name="filter_completed">terminé</string>
+    <string name="filter_not_completed">non terminé</string>
+    <string name="filter">filtre</string>
+    <string name="filter_name_reversed">z-a</string>
+    <string name="search_interviews">rechercher des entretiens</string>
+    <string name="search_questions">rechercher des questions</string>
+    <string name="hr_manager_calling_text">le responsable rh vous appelle</string>
+    <string name="open_call">ouvrir l\'appel</string>
+</resources>
