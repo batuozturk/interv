@@ -170,6 +170,10 @@ fun InterviewListScreenContentForTablets(
         mutableStateOf(null)
     }
 
+    var addStepLanguage: String? by remember {
+        mutableStateOf(null)
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     var interviewDetailId: Long? by remember {
@@ -225,18 +229,21 @@ fun InterviewListScreenContentForTablets(
                     },
                     showDialog = showDialog,
                     clearDialog = clearDialog,
-                    addStep = {
-                        addStepInterviewId = it
+                    addStep = { id, language ->
+                        addStepInterviewId = id
+                        addStepLanguage = language
                         isAddingStep = true
                     },
                 )
             }
         }
         Column(modifier = Modifier.weight(weight2)) {
-            if (weight2 > 2.25 && addStepInterviewId != null) {
+            if (weight2 > 2.25 && addStepInterviewId != null && addStepLanguage != null) {
                 AddStepScreen(
                     interviewId = addStepInterviewId!!,
+                    language = addStepLanguage!!,
                     onBackPressed = {
+                        addStepLanguage = null
                         addStepInterviewId = null
                         isAddingStep = false
                     },
