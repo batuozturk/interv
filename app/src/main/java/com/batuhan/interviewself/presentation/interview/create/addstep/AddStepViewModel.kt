@@ -7,22 +7,25 @@ import androidx.paging.cachedIn
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.InterviewStep
 import com.batuhan.interviewself.data.model.Question
-import com.batuhan.interviewself.data.model.QuestionFilterType
+import com.batuhan.interviewself.data.model.findLanguageFilterType
 import com.batuhan.interviewself.domain.interview.DeleteInterviewStep
+import com.batuhan.interviewself.domain.interview.GetInterviewSteps
 import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterviewStep
 import com.batuhan.interviewself.domain.question.GetAllQuestions
-import com.batuhan.interviewself.presentation.interview.InterviewListEvent
 import com.batuhan.interviewself.util.DialogAction
 import com.batuhan.interviewself.util.DialogData
 import com.batuhan.interviewself.util.DialogType
 import com.batuhan.interviewself.util.Result
 import com.batuhan.interviewself.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,11 +37,13 @@ class AddStepViewModel @Inject constructor(
     private val deleteInterviewStep: DeleteInterviewStep,
     getAllQuestions: GetAllQuestions,
     private val getInterviewWithSteps: GetInterviewWithSteps,
+    getInterviewSteps: GetInterviewSteps,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), AddStepEventHandler, ViewModelEventHandler<AddStepEvent, AddStepError> {
 
     companion object {
         private const val KEY_INTERVIEW_ID = "interview_id"
+        private const val KEY_LANGUAGE = "language"
     }
 
     private val _event = Channel<AddStepEvent> { Channel.BUFFERED }
@@ -47,13 +52,35 @@ class AddStepViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddStepUiState())
     val uiState = _uiState.asStateFlow()
 
-    val questions = getAllQuestions.invoke(GetAllQuestions.Params("", QuestionFilterType.DEFAULT)).cachedIn(viewModelScope)
+    val interviewId = MutableStateFlow(savedStateHandle.get<Long>(KEY_INTERVIEW_ID))
 
-    var interviewId = savedStateHandle.get<Long>(KEY_INTERVIEW_ID)
+    val language = MutableStateFlow(savedStateHandle.get<String>(KEY_LANGUAGE))
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val questions = language.flatMapLatest {
+        if(it != null){
+            getAllQuestions.invoke(GetAllQuestions.Params("", findLanguageFilterType(it))).cachedIn(viewModelScope)
+        }
+        else emptyFlow()
+
+    }.cachedIn(viewModelScope)
+
+
+    val steps = interviewId.flatMapLatest {
+        if(it != null){
+            getInterviewSteps.invoke(GetInterviewSteps.Params(it)).cachedIn(viewModelScope)
+        }
+        else emptyFlow()
+    }.cachedIn(viewModelScope)
 
     fun initInterviewId(interviewId: Long){
-        this.interviewId = interviewId
-        getInterviewWithSteps(interviewId)
+        this.interviewId.value = interviewId
+        // todo remove this method
+        //getInterviewWithSteps(interviewId)
+    }
+
+    fun initLanguage(language: String){
+        this.language.value = language
     }
 
 
@@ -92,7 +119,7 @@ class AddStepViewModel @Inject constructor(
 
     override fun addStep(question: Question) {
         viewModelScope.launch {
-            val result = upsertInterviewStep.invoke(UpsertInterviewStep.Params(InterviewStep(question = question, interviewId = interviewId)))
+            val result = upsertInterviewStep.invoke(UpsertInterviewStep.Params(InterviewStep(question = question, interviewId = interviewId.value)))
             when (result) {
                 is Result.Success -> {
                     showDialog(
