@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.Interview
 import com.batuhan.interviewself.data.model.InterviewType
+import com.batuhan.interviewself.data.model.LanguageType
 import com.batuhan.interviewself.domain.interview.DeleteInterview
 import com.batuhan.interviewself.domain.interview.DeleteInterviewSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterview
@@ -46,7 +47,7 @@ class CreateInterviewViewModel @Inject constructor(
                 when (result) {
                     is Result.Success -> {
                         _uiState.update {
-                            val interview = it.currentInterview.copy(interviewId = result.data, interviewType = InterviewType.VIDEO)
+                            val interview = it.currentInterview.copy(interviewId = result.data, interviewType = InterviewType.VIDEO, langCode = LanguageType.EN.code)
                             it.copy(currentInterview = interview)
                         }
                     }

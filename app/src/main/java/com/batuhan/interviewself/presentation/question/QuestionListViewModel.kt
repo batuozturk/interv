@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.data.model.FilterType
+import com.batuhan.interviewself.data.model.LanguageType
 import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.data.model.QuestionFilterType
 import com.batuhan.interviewself.domain.question.DeleteQuestion
@@ -169,18 +170,9 @@ class QuestionListViewModel @Inject constructor(
         uiState.value.langCode.takeIf {
             it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
         } ?: run {
-            showDialog(
-                DialogData(
-                    title = R.string.error_question_lang_code_empty,
-                    type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.dismiss) {
-                            retryOperation(QuestionListError.LangCodeEmpty)
-                        }
-                    )
-                )
-            )
-            return
+            _uiState.update {
+                it.copy(langCode = LanguageType.EN.code)
+            }
         }
         uiState.value.questionText.takeIf {
             it?.isNotEmpty() ?: false && it?.isNotBlank() ?: false
