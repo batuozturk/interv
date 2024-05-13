@@ -35,6 +35,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_ID
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_TYPE
+import com.batuhan.interviewself.MainActivity.Companion.KEY_LANGUAGE
 import com.batuhan.interviewself.MainActivity.Companion.KEY_LANG_CODE
 import com.batuhan.interviewself.presentation.container.ContainerScreen
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
             ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
+        internal const val KEY_LANGUAGE = "language"
     }
 
     private lateinit var customTabsIntent: CustomTabsIntent
@@ -215,23 +217,27 @@ fun InterviewSelfApp(
         composable("create_interview") {
             CreateInterviewScreen(
                 onBackPressed = { navController.popBackStack() },
-                addStep = {
-                    navController.navigate("add_step/$it")
+                addStep = {id, language ->
+                    navController.navigate("add_step/$id/$language")
                 },
             )
         }
 
         composable(
-            "add_step/{$KEY_INTERVIEW_ID}",
+            "add_step/{$KEY_INTERVIEW_ID}/{$KEY_LANGUAGE}",
             arguments =
                 listOf(
                     navArgument(KEY_INTERVIEW_ID) {
                         type = NavType.LongType
                     },
+                    navArgument(KEY_LANGUAGE) {
+                        type = NavType.StringType
+                    },
                 ),
         ) {
             AddStepScreen(
                 interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
+                language = it.arguments?.getString(KEY_LANGUAGE) ?: "",
                 onBackPressed = { navController.popBackStack() },
             )
         }

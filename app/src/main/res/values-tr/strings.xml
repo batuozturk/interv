@@ -90,4 +90,6 @@
     <string name="search_questions">soruları ara</string>
     <string name="hr_manager_calling_text">ik yöneticisi sizi arıyor</string>
     <string name="open_call">aramayı aç</string>
+    <string name="added_steps">eklenen adımlar</string>
+    <string name="questions">sorular</string>
 </resources>

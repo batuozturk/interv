@@ -23,4 +23,6 @@ interface InterviewRepository {
     suspend fun deleteInterviewSteps(id: Long)
 
     suspend fun upsertInterviewSteps(steps: List<InterviewStep>)
+
+    fun getInterviewSteps(interviewId: Long): Flow<PagingData<InterviewStep>>
 }

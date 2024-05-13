@@ -32,3 +32,12 @@ fun QuestionFilterType.createQuery(searchText: String): String{
 
     return string
 }
+
+fun findLanguageFilterType(language: String?): QuestionFilterType{
+    return when(language){
+        LanguageType.EN.code -> QuestionFilterType.LANG_EN
+        LanguageType.TR.code -> QuestionFilterType.LANG_TR
+        LanguageType.FR.code -> QuestionFilterType.LANG_FR
+        else -> QuestionFilterType.DEFAULT
+    }
+}

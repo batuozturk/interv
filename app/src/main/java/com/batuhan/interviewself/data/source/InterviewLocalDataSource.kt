@@ -33,4 +33,6 @@ class InterviewLocalDataSource @Inject constructor(private val database: Intervi
     suspend fun deleteInterviewSteps(id:Long) = database.interviewDao.deleteInterviewSteps(id)
 
     suspend fun upsertInterviewSteps(steps: List<InterviewStep>) = database.interviewDao.upsertInterviewSteps(steps)
+
+    fun getInterviewSteps(interviewId: Long) = database.interviewDao.getInterviewSteps(interviewId)
 }
