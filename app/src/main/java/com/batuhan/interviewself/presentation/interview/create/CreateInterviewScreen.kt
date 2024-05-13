@@ -64,7 +64,7 @@ fun CreateInterviewScreen(
     onBackPressed: () -> Unit,
     showDialog: (DialogData) -> Unit = {},
     clearDialog: () -> Unit = {},
-    addStep: (interviewId: Long) -> Unit,
+    addStep: (interviewId: Long, language: String) -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<CreateInterviewViewModel>()
@@ -131,7 +131,7 @@ fun CreateInterviewScreenContentForTablet(
     updateConfiguration: (InterviewField) -> Unit,
     cancelInterview: (Interview) -> Unit,
     createInterview: () -> Unit,
-    addStep: (interviewId: Long) -> Unit,
+    addStep: (interviewId: Long, language: String) -> Unit,
 ) {
     ScreenContent(
         modifier = Modifier.fillMaxSize(),
@@ -150,7 +150,7 @@ fun CreateInterviewScreenContent(
     updateConfiguration: (InterviewField) -> Unit,
     cancelInterview: (Interview) -> Unit,
     createInterview: () -> Unit,
-    addStep: (interviewId: Long) -> Unit,
+    addStep: (interviewId: Long, language: String) -> Unit,
 ) {
     val dialogData by remember(uiState.dialogData) {
         derivedStateOf { uiState.dialogData }
@@ -159,7 +159,12 @@ fun CreateInterviewScreenContent(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = stringResource(id = R.string.create_interview_title), fontFamily = fontFamily) },
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.create_interview_title),
+                            fontFamily = fontFamily,
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = { cancelInterview(uiState.currentInterview) }) {
                             Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
@@ -170,9 +175,9 @@ fun CreateInterviewScreenContent(
         ) {
             ScreenContent(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it),
                 uiState = uiState,
                 updateConfiguration = updateConfiguration,
                 cancelInterview = cancelInterview,
@@ -190,7 +195,7 @@ fun ScreenContent(
     updateConfiguration: (InterviewField) -> Unit,
     cancelInterview: (Interview) -> Unit,
     createInterview: () -> Unit,
-    addStep: (interviewId: Long) -> Unit,
+    addStep: (interviewId: Long, language: String) -> Unit,
 ) {
     val interviewName by remember(uiState.currentInterview.interviewName) {
         derivedStateOf { uiState.currentInterview.interviewName }
@@ -215,7 +220,7 @@ fun ScreenContent(
     val focusManager = LocalFocusManager.current
     val isKeyboardOpen by keyboardAsState()
     LaunchedEffect(isKeyboardOpen) {
-        if(!isKeyboardOpen) focusManager.clearFocus()
+        if (!isKeyboardOpen) focusManager.clearFocus()
     }
     Column(
         modifier =
@@ -224,9 +229,9 @@ fun ScreenContent(
     ) {
         OutlinedTextField(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 4.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 4.dp),
             placeholder = {
                 Text(stringResource(R.string.create_interview_name_placeholder))
             },
@@ -274,7 +279,8 @@ fun ScreenContent(
                 if (selectedIndexType < it.size) {
                     Column(
                         modifier =
-                            Modifier.tabIndicatorOffset(it[selectedIndexType]).fillMaxSize().padding(8.dp)
+                            Modifier.tabIndicatorOffset(it[selectedIndexType]).fillMaxSize()
+                                .padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
@@ -302,9 +308,9 @@ fun ScreenContent(
         }
         TabRow(
             modifier =
-            Modifier
-                .fillMaxWidth().height(76.dp)
-                .padding(top = 12.dp, bottom = 16.dp),
+                Modifier
+                    .fillMaxWidth().height(76.dp)
+                    .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndexLang,
@@ -313,12 +319,13 @@ fun ScreenContent(
                 if (selectedIndexLang < it.size) {
                     Column(
                         modifier =
-                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize().padding(8.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.onSurface,
-                                RoundedCornerShape(10.dp),
-                            ).padding(10.dp),
+                            Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize()
+                                .padding(8.dp)
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.onSurface,
+                                    RoundedCornerShape(10.dp),
+                                ).padding(10.dp),
                     ) {
                     }
                 }
@@ -350,7 +357,10 @@ fun ScreenContent(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = ButtonDefaults.TextButtonContentPadding,
             onClick = {
-                addStep.invoke(uiState.currentInterview.interviewId ?: return@Button)
+                addStep.invoke(
+                    uiState.currentInterview.interviewId ?: return@Button,
+                    uiState.currentInterview.langCode ?: return@Button,
+                )
             },
             colors =
                 ButtonColors(
@@ -427,7 +437,7 @@ fun ScreenContentPreview() {
             cancelInterview = {},
             createInterview = { /*TODO*/ },
             modifier = Modifier.fillMaxSize(),
-            addStep = {},
+            addStep = {_, _ ->},
         )
     }
 }
