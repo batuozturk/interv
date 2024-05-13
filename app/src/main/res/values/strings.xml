@@ -88,4 +88,6 @@
     <string name="search_questions">search questions</string>
     <string name="hr_manager_calling_text">hr manager is calling you</string>
     <string name="open_call">open call</string>
+    <string name="added_steps">added steps</string>
+    <string name="questions">questions</string>
 </resources>
