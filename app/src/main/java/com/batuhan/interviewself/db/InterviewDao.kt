@@ -40,4 +40,7 @@ interface InterviewDao {
 
     @Upsert
     suspend fun upsertInterviewSteps(steps: List<InterviewStep>)
+
+    @Query("SELECT * FROM interviewstep WHERE :interviewId = interviewId")
+    fun getInterviewSteps(interviewId: Long): PagingSource<Int, InterviewStep>
 }

@@ -59,4 +59,17 @@ class InterviewRepositoryImpl @Inject constructor(private val localDataSource: I
         return localDataSource.upsertInterviewSteps(steps)
     }
 
+    override fun getInterviewSteps(interviewId: Long): Flow<PagingData<InterviewStep>> {
+        return Pager(
+            config = PagingConfig(
+                PAGE_SIZE,
+                enablePlaceholders = false,
+                prefetchDistance = 2 * PAGE_SIZE
+            ),
+            pagingSourceFactory = {
+                localDataSource.getInterviewSteps(interviewId)
+            }
+        ).flow
+    }
+
 }
