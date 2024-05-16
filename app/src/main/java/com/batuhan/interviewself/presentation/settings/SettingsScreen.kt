@@ -36,6 +36,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interviewself.R
 import com.batuhan.interviewself.presentation.settings.detail.SettingsDetailScreen
+import com.batuhan.interviewself.presentation.settings.exportquestions.ExportQuestionsScreen
+import com.batuhan.interviewself.presentation.settings.importquestions.ImportQuestionsScreen
 import com.batuhan.interviewself.util.BrowserEvent
 import com.batuhan.interviewself.util.DialogAction
 import com.batuhan.interviewself.util.DialogData
@@ -77,6 +79,8 @@ fun SettingsScreen(
                 is SettingsEvent.ChangeStyle -> setStyle.invoke(it.isDarkMode)
                 SettingsEvent.ClearDialog -> clearDialog.invoke()
                 SettingsEvent.RestartApplication -> restartApplication()
+                SettingsEvent.ExportQuestions -> exportQuestions.invoke()
+                SettingsEvent.ImportQuestions -> importQuestions.invoke()
             }
         }
     }
@@ -108,8 +112,12 @@ fun SettingsScreen(
 
     SettingsScreenContent(
         isTablet = isTablet,
-        exportQuestions = { },
-        importQuestions = { },
+        exportQuestions = {
+            viewModel.sendEvent(SettingsEvent.ExportQuestions)
+        },
+        importQuestions = {
+            viewModel.sendEvent(SettingsEvent.ImportQuestions)
+        },
         language = {
             viewModel.showDialog(
                 DialogData(
@@ -179,6 +187,8 @@ fun SettingsScreen(
             )
         },
         sendBrowserEvent = sendBrowserEvent,
+        showDialog = showDialog,
+        clearDialog = clearDialog
     )
 }
 
@@ -190,12 +200,21 @@ fun SettingsScreenContent(
     language: () -> Unit,
     setStyle: () -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
+    showDialog: (DialogData) -> Unit,
+    clearDialog: () -> Unit
 ) {
     var detailType: SettingsDetailAction? by remember {
         mutableStateOf(null)
     }
+
+    var exportQuestionsOpened: Boolean by remember {
+        mutableStateOf(false)
+    }
+    var importQuestionsOpened: Boolean by remember {
+        mutableStateOf(false)
+    }
     val weight by animateFloatAsState(
-        targetValue = if (detailType != null) 3f else 0.001f,
+        targetValue = if (detailType != null || exportQuestionsOpened || importQuestionsOpened) 3f else 0.001f,
         animationSpec =
             tween(
                 1000,
@@ -209,6 +228,7 @@ fun SettingsScreenContent(
             item {
                 SettingsListItem(title = R.string.settings_style) {
                     if (isTablet) {
+                        exportQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Style(
                                 listOf(
@@ -224,6 +244,7 @@ fun SettingsScreenContent(
             item {
                 SettingsListItem(title = R.string.settings_language) {
                     if (isTablet) {
+                        exportQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Language(
                                 listOf(
@@ -238,10 +259,28 @@ fun SettingsScreenContent(
                 }
             }
             item {
-                SettingsListItem(title = R.string.settings_export_questions, exportQuestions)
+                SettingsListItem(title = R.string.settings_export_questions) {
+                    if (isTablet) {
+                        clearDialog.invoke()
+                        exportQuestionsOpened = true
+                        importQuestionsOpened = false
+                        detailType = null
+                    } else {
+                        exportQuestions.invoke()
+                    }
+                }
             }
             item {
-                SettingsListItem(title = R.string.settings_import_questions, importQuestions)
+                SettingsListItem(title = R.string.settings_import_questions) {
+                    if (isTablet) {
+                        clearDialog.invoke()
+                        importQuestionsOpened = true
+                        exportQuestionsOpened = false
+                        detailType = null
+                    } else {
+                        importQuestions.invoke()
+                    }
+                }
             }
             item {
                 SettingsListItem(title = R.string.settings_rate_us) {
@@ -276,6 +315,15 @@ fun SettingsScreenContent(
                     title = detailType!!.title,
                     actions = detailType!!.actions,
                 )
+            } else if (weight > 2.25 && exportQuestionsOpened) {
+                ExportQuestionsScreen(onBackPressed = {
+                    clearDialog.invoke()
+                    exportQuestionsOpened = false }, showDialog = showDialog, clearDialog = clearDialog)
+            }
+            else if (weight > 2.25 && importQuestionsOpened) {
+                ImportQuestionsScreen(onBackPressed = {
+                    clearDialog.invoke()
+                    importQuestionsOpened = false }, showDialog = showDialog, clearDialog = clearDialog)
             }
         }
     }

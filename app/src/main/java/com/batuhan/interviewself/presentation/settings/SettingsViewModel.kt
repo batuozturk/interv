@@ -109,4 +109,8 @@ sealed class SettingsEvent {
     data class ChangeStyle(val isDarkMode: Boolean) : SettingsEvent()
 
     object ClearDialog : SettingsEvent()
+
+    object ExportQuestions: SettingsEvent()
+
+    object ImportQuestions: SettingsEvent()
 }
