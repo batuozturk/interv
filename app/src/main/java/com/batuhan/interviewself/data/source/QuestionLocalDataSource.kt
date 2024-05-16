@@ -24,4 +24,8 @@ class QuestionLocalDataSource @Inject constructor(private val database: Intervie
 
     suspend fun upsertQuestion(question: Question) = database.questionDao.upsertQuestion(question)
 
+    suspend fun getAllQuestionsAsList(langCode: String) = database.questionDao.getAllQuestionsAsList(langCode)
+
+    suspend fun upsertQuestions(list: List<Question>) = database.questionDao.upsertQuestions(list)
+
 }

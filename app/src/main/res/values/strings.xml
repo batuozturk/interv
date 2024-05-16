@@ -90,4 +90,9 @@
     <string name="open_call">open call</string>
     <string name="added_steps">added steps</string>
     <string name="questions">questions</string>
+    <string name="error_export_questions">questions cannot be exported</string>
+    <string name="save_and_share">save and share</string>
+    <string name="success_questions_imported">questions imported</string>
+    <string name="success_questions_exported">questions exported</string>
+    <string name="success_questions_shared">questions shared</string>
 </resources>

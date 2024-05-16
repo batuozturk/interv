@@ -43,8 +43,10 @@ fun ContainerScreen(
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
+    importQuestions: () -> Unit,
+    exportQuestions: () -> Unit
 ) {
-    ContainerScreenContent(createInterview, navigateToDetail, enterInterview, sendBrowserEvent, restartApplication, setStyle)
+    ContainerScreenContent(createInterview, navigateToDetail, enterInterview, sendBrowserEvent, restartApplication, setStyle, importQuestions, exportQuestions)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -55,7 +57,9 @@ fun ContainerScreenContent(
     enterInterview: (Long, InterviewType, String) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
-    setStyle: (Boolean) -> Unit
+    setStyle: (Boolean) -> Unit,
+    importQuestions: () -> Unit,
+    exportQuestions: () -> Unit
 ) {
     val pagerState =
         rememberPagerState {
@@ -184,8 +188,8 @@ fun ContainerScreenContent(
 
                         2 -> {
                             SettingsScreen(
-                                exportQuestions = { },
-                                importQuestions = { },
+                                exportQuestions = exportQuestions,
+                                importQuestions = importQuestions,
                                 restartApplication = restartApplication,
                                 setStyle = setStyle,
                                 showDialog = { data ->
