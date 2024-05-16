@@ -43,6 +43,8 @@ import com.batuhan.interviewself.presentation.interview.create.addstep.AddStepSc
 import com.batuhan.interviewself.presentation.interview.detail.InterviewDetailScreen
 import com.batuhan.interviewself.presentation.interview.enter.InterviewScreen
 import com.batuhan.interviewself.presentation.settings.SettingsType
+import com.batuhan.interviewself.presentation.settings.exportquestions.ExportQuestionsScreen
+import com.batuhan.interviewself.presentation.settings.importquestions.ImportQuestionsScreen
 import com.batuhan.interviewself.presentation.splash.SplashScreen
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
 import com.batuhan.interviewself.util.BrowserEvent
@@ -63,6 +65,8 @@ class MainActivity : ComponentActivity() {
             mutableListOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
             ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
@@ -212,12 +216,18 @@ fun InterviewSelfApp(
                 sendBrowserEvent = sendBrowserEvent,
                 restartApplication = restartApplication,
                 setStyle = setStyle,
+                importQuestions = {
+                    navController.navigate("import_questions")
+                },
+                exportQuestions = {
+                    navController.navigate("export_questions")
+                }
             )
         }
         composable("create_interview") {
             CreateInterviewScreen(
                 onBackPressed = { navController.popBackStack() },
-                addStep = {id, language ->
+                addStep = { id, language ->
                     navController.navigate("add_step/$id/$language")
                 },
             )
@@ -284,6 +294,16 @@ fun InterviewSelfApp(
                     navController.popBackStack()
                 },
             )
+        }
+        composable(
+            "export_questions",
+        ) {
+            ExportQuestionsScreen(onBackPressed = { navController.popBackStack() })
+        }
+        composable(
+            "import_questions",
+        ) {
+            ImportQuestionsScreen(onBackPressed = { navController.popBackStack() })
         }
     }
 }
