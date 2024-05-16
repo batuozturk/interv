@@ -11,4 +11,8 @@ interface QuestionRepository {
     suspend fun deleteQuestion(question: Question)
 
     suspend fun upsertQuestion(question: Question)
+
+    suspend fun getAllQuestionsAsList(langCode: String) : List<Question>?
+
+    suspend fun upsertQuestions(list: List<Question>)
 }

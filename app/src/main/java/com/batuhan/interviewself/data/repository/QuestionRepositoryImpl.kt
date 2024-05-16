@@ -37,4 +37,12 @@ class QuestionRepositoryImpl @Inject constructor(private val localDataSource: Qu
         return localDataSource.upsertQuestion(question)
     }
 
+    override suspend fun getAllQuestionsAsList(langCode: String): List<Question>? {
+        return localDataSource.getAllQuestionsAsList(langCode)
+    }
+
+    override suspend fun upsertQuestions(list: List<Question>) {
+        return localDataSource.upsertQuestions(list)
+    }
+
 }

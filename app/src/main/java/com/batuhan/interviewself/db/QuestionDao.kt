@@ -20,4 +20,10 @@ interface QuestionDao {
 
     @Delete
     suspend fun deleteQuestion(question: Question)
+
+    @Query("SELECT * FROM question WHERE :langCode = langCode")
+    suspend fun getAllQuestionsAsList(langCode: String) : List<Question>?
+
+    @Upsert
+    suspend fun upsertQuestions(list: List<Question>)
 }
