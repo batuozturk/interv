@@ -1,11 +1,14 @@
 package com.batuhan.interviewself.presentation.interview.enter
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -59,7 +63,6 @@ fun InterviewScreen(
                     RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
                 )
-                putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
             }
         }
 
@@ -88,9 +91,10 @@ fun InterviewScreen(
         derivedStateOf { uiState.dialogData }
     }
 
-    val size = remember(uiState.steps?.size) {
-        uiState.steps?.size
-    }
+    val size =
+        remember(uiState.steps?.size) {
+            uiState.steps?.size
+        }
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -101,21 +105,23 @@ fun InterviewScreen(
     val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(isMyTurn) {
-        if(isMyTurn >= 0 && isMyTurn != size){
-            speechToTextService.startListening(speechIntent)
-        }
-
+        if (isMyTurn >= 0 && isMyTurn != size)
+            {
+                speechToTextService.startListening(speechIntent)
+            }
     }
-    val params = remember(uiState.currentStepInt) {
-        Bundle().apply {
-            putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+    val params =
+        remember(uiState.currentStepInt) {
+            Bundle().apply {
+                putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+            }
         }
-    }
 
     LaunchedEffect(true) {
         viewModel.currentStepToTalk.collect {
-            if(Locale.forLanguageTag(langCode).displayName != ttsService.language.displayName)
+            if (Locale.forLanguageTag(langCode).displayName != ttsService.language.displayName) {
                 ttsService.setLanguage(Locale.forLanguageTag(langCode))
+            }
             ttsService.speak(
                 it.makeString(context, langCode),
                 TextToSpeech.QUEUE_ADD,
@@ -130,7 +136,7 @@ fun InterviewScreen(
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_PAUSE) {
                     ttsService.stop()
-                    //viewModel.sendEvent(InterviewEvent.Back)
+                    // viewModel.sendEvent(InterviewEvent.Back)
                 }
             }
         lifecycleOwner.lifecycle.addObserver(lifecycleEventObserver)
@@ -158,6 +164,12 @@ fun InterviewScreen(
 
                 is InterviewEvent.VideoState -> {
                     // enable or disable video
+                }
+                is InterviewEvent.ReinitializeSpeechRecognition -> {
+                    if (isMyTurn >= 0 && isMyTurn != size)
+                    {
+                        speechToTextService.startListening(speechIntent)
+                    }
                 }
             }
             viewModel.configureCall(it)

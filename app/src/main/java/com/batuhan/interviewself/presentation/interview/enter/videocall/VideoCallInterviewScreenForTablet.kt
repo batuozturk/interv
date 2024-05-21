@@ -8,10 +8,16 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -26,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.dp
@@ -79,60 +86,48 @@ fun VideoCallInterviewScreenForTablet(
                 .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            "HR Manager",
-            fontSize = 25.sp,
-            modifier = Modifier.weight(3f),
-            textAlign = TextAlign.Center,
-        )
-        AndroidView(modifier = Modifier.weight(3f), factory = { context ->
-            previewView.apply {
-                setBackgroundColor(Color.Transparent.toArgb())
-                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                scaleType = PreviewView.ScaleType.FIT_CENTER
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                post {
-                    cameraProvider.addListener(
-                        Runnable {
-                            val cameraProvider = cameraProvider.get()
-                            bindPreviewForTablet(
-                                cameraProvider,
-                                lifecycleOwner,
-                                this,
-                            )
-                        },
-                        ContextCompat.getMainExecutor(context),
-                    )
-                }
-            }
-        })
-
-        LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxHeight(),
-            userScrollEnabled = false,
-            verticalArrangement = Arrangement.SpaceEvenly,
+        Box(
+            modifier =
+            Modifier
+                .fillMaxWidth()
+                .weight(3f),
+            contentAlignment = Alignment.Center,
         ) {
-            item {
-                InterviewButton(
-                    title = if (isMicrophoneEnabled) R.string.microphone_title_enabled else R.string.microphone_title_not_enabled,
-                    if (isMicrophoneEnabled) R.drawable.ic_mic_none_24 else R.drawable.ic_mic_off_24,
-                ) {
-                    sendEvent.invoke(InterviewEvent.MicrophoneState(!isMicrophoneEnabled))
-                }
-            }
-            item {
-                InterviewButton(
-                    title = R.string.pause,
-                    icon = R.drawable.ic_phone_paused_24,
-                ) {
-                    coroutineScope.launch {
-                        val cameraProvider = context.getCameraProvider()
-                        cameraProvider.unbindAll()
-                        sendEvent.invoke(InterviewEvent.Back)
+            Image(painter = painterResource(id = R.drawable.ic_person_2_24), contentDescription = null, modifier = Modifier.fillMaxSize())
+            Text("HR Manager", fontSize = 18.sp, modifier = Modifier.align(Alignment.BottomStart))
+        }
+        Box(
+            modifier =
+            Modifier
+                .fillMaxWidth()
+                .weight(3f),
+            contentAlignment = Alignment.Center,
+        ) {
+            AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
+                previewView.apply {
+                    setBackgroundColor(Color.Transparent.toArgb())
+                    layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    post {
+                        cameraProvider.addListener(
+                            Runnable {
+                                val cameraProvider = cameraProvider.get()
+                                bindPreview(
+                                    cameraProvider,
+                                    lifecycleOwner,
+                                    this,
+                                )
+                            },
+                            ContextCompat.getMainExecutor(context),
+                        )
                     }
                 }
-            }
-            item {
+            })
+            Column(
+                modifier = Modifier.fillMaxWidth().height(80.dp).align(Alignment.BottomCenter).background(Color.Black.copy(0.2f)),
+                verticalArrangement = Arrangement.SpaceEvenly,
+            ) {
                 InterviewButton(
                     title = R.string.close_call,
                     icon = R.drawable.ic_call_end_24,
@@ -160,7 +155,6 @@ fun bindPreviewForTablet(
 ) {
     val preview: Preview =
         Preview.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
             .build()
 
     val cameraSelector: CameraSelector =

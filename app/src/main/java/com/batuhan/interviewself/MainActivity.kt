@@ -27,15 +27,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_ID
 import com.batuhan.interviewself.MainActivity.Companion.KEY_INTERVIEW_TYPE
-import com.batuhan.interviewself.MainActivity.Companion.KEY_LANGUAGE
 import com.batuhan.interviewself.MainActivity.Companion.KEY_LANG_CODE
 import com.batuhan.interviewself.presentation.container.ContainerScreen
 import com.batuhan.interviewself.presentation.interview.create.CreateInterviewScreen
@@ -48,6 +45,7 @@ import com.batuhan.interviewself.presentation.settings.importquestions.ImportQue
 import com.batuhan.interviewself.presentation.splash.SplashScreen
 import com.batuhan.interviewself.ui.theme.InterviewselfTheme
 import com.batuhan.interviewself.util.BrowserEvent
+import com.batuhan.interviewself.util.Screen
 import com.batuhan.interviewself.util.dataStore
 import com.batuhan.interviewself.util.isTablet
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,9 +56,9 @@ import kotlinx.coroutines.runBlocking
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     companion object {
-        internal const val KEY_INTERVIEW_ID = "interview_id"
-        internal const val KEY_INTERVIEW_TYPE = "interview_type"
-        internal const val KEY_LANG_CODE = "lang_code"
+        internal const val KEY_INTERVIEW_ID = "interviewId"
+        internal const val KEY_INTERVIEW_TYPE = "interviewType"
+        internal const val KEY_LANG_CODE = "langCode"
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
                 Manifest.permission.CAMERA,
@@ -70,7 +68,6 @@ class MainActivity : ComponentActivity() {
             ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
-        internal const val KEY_LANGUAGE = "language"
     }
 
     private lateinit var customTabsIntent: CustomTabsIntent
@@ -95,8 +92,8 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(true) {
                 dataStore.data.first().let {
                     darkTheme = it[KEY_PREFERENCES_STYLE] ?: run {
-                        writeData(SettingsType.Style(false))
-                        false
+                        writeData(SettingsType.Style(true))
+                        true
                     }
                     if (it[KEY_PREFERENCES_LANGUAGE] == null) {
                         writeData(SettingsType.LangCode("en-US"))
@@ -186,108 +183,78 @@ fun InterviewSelfApp(
     // todo navigation keys and argument keys
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "splash_screen") {
-        composable("splash_screen") {
+    NavHost(navController, startDestination = Screen.Splash.route) {
+        composable(Screen.Splash.route) {
             SplashScreen(onBackPressed = finishApplication) {
                 navController.navigate(
-                    "main_screen",
+                    Screen.Home.route,
                     navOptions =
                         navOptions {
-                            popUpTo("splash_screen") {
+                            popUpTo(Screen.Splash.route) {
                                 inclusive = true
                             }
                         },
                 )
             }
         }
-        composable("main_screen") { // todo on back pressed test edilecek
+        composable(Screen.Home.route) { // todo on back pressed test edilecek
             ContainerScreen(
                 createInterview = {
                     navController.navigate(
-                        "create_interview",
+                        Screen.CreateInterview.route,
                     )
                 },
                 navigateToDetail = {
-                    navController.navigate("interview_detail/$it")
+                    navController.navigate(Screen.InterviewDetail.createRoute(it))
                 },
                 enterInterview = { id, type, langCode ->
-                    navController.navigate("enter_interview/$id/${type.name}/$langCode")
+                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
                 },
                 sendBrowserEvent = sendBrowserEvent,
                 restartApplication = restartApplication,
                 setStyle = setStyle,
                 importQuestions = {
-                    navController.navigate("import_questions")
+                    navController.navigate(Screen.ImportQuestions.route)
                 },
                 exportQuestions = {
-                    navController.navigate("export_questions")
-                }
+                    navController.navigate(Screen.ExportQuestions.route)
+                },
             )
         }
-        composable("create_interview") {
+        composable(Screen.CreateInterview.route) {
             CreateInterviewScreen(
                 onBackPressed = { navController.popBackStack() },
                 addStep = { id, language ->
-                    navController.navigate("add_step/$id/$language")
+                    navController.navigate(Screen.AddStep.createRoute(id, language))
                 },
             )
         }
 
-        composable(
-            "add_step/{$KEY_INTERVIEW_ID}/{$KEY_LANGUAGE}",
-            arguments =
-                listOf(
-                    navArgument(KEY_INTERVIEW_ID) {
-                        type = NavType.LongType
-                    },
-                    navArgument(KEY_LANGUAGE) {
-                        type = NavType.StringType
-                    },
-                ),
-        ) {
+        composable(Screen.AddStep.route, Screen.AddStep.navArguments) {
             AddStepScreen(
-                interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
-                language = it.arguments?.getString(KEY_LANGUAGE) ?: "",
+                interviewId = it.arguments?.getString(KEY_INTERVIEW_ID)?.toLong() ?: -1,
+                language = it.arguments?.getString(KEY_LANG_CODE) ?: "",
                 onBackPressed = { navController.popBackStack() },
             )
         }
 
-        composable(
-            "interview_detail/{$KEY_INTERVIEW_ID}",
-            arguments =
-                listOf(
-                    navArgument(KEY_INTERVIEW_ID) {
-                        type = NavType.LongType
-                    },
-                ),
-        ) {
+        composable(Screen.InterviewDetail.route, Screen.InterviewDetail.navArguments) {
             InterviewDetailScreen(
-                interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
+                interviewId = it.arguments?.getString(KEY_INTERVIEW_ID)?.toLong() ?: -1,
                 onBackPressed = { navController.popBackStack() },
                 enterInterview = { id, type, langCode ->
                     navController.popBackStack()
-                    navController.navigate("enter_interview/$id/${type.name}/$langCode")
+                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
                 },
             )
         }
 
         composable(
-            "enter_interview/{$KEY_INTERVIEW_ID}/{$KEY_INTERVIEW_TYPE}/{$KEY_LANG_CODE}",
-            arguments =
-                listOf(
-                    navArgument(KEY_INTERVIEW_ID) {
-                        type = NavType.LongType
-                    },
-                    navArgument(KEY_INTERVIEW_TYPE) {
-                        type = NavType.StringType
-                    },
-                    navArgument(KEY_LANG_CODE) {
-                        type = NavType.StringType
-                    },
-                ),
+            Screen.EnterInterview.route,
+            Screen.EnterInterview.navArguments
         ) {
             InterviewScreen(
-                interviewId = it.arguments?.getLong(KEY_INTERVIEW_ID) ?: -1,
+                interviewId = it.arguments?.getString(KEY_INTERVIEW_ID)?.toLong() ?: -1,
                 interviewType = it.arguments?.getString(KEY_INTERVIEW_TYPE) ?: "",
                 langCode = it.arguments?.getString(KEY_LANG_CODE) ?: "",
                 onBackPressed = {
@@ -296,12 +263,12 @@ fun InterviewSelfApp(
             )
         }
         composable(
-            "export_questions",
+            Screen.ExportQuestions.route,
         ) {
             ExportQuestionsScreen(onBackPressed = { navController.popBackStack() })
         }
         composable(
-            "import_questions",
+            Screen.ImportQuestions.route,
         ) {
             ImportQuestionsScreen(onBackPressed = { navController.popBackStack() })
         }

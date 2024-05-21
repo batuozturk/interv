@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Interviewself</string>
+    <string name="app_name">interv</string>
     <string name="retry">retry</string>
     <string name="dismiss">dismiss</string>
     <string name="ok">ok</string>
@@ -71,7 +71,7 @@
     <string name="first_question_talk">Let\'s start with the first question ,</string>
     <string name="interview_ended">The interview has ended, thanks for your answers. You can close the call</string>
     <string name="interview_start">Welcome to the interview, I am HR Manager. Today I want to interview with you to check your knowledge.</string>
-    <string name="interview_question_talk">Let\'s continue with question %d</string>
+    <string name="interview_question_talk">Let\'s continue with question %d, </string>
     <string name="created_at">time</string>
     <string name="created_at_reverse">time reversed</string>
     <string name="only_english">only english</string>
@@ -95,4 +95,5 @@
     <string name="success_questions_imported">questions imported</string>
     <string name="success_questions_exported">questions exported</string>
     <string name="success_questions_shared">questions shared</string>
+    <string name="speech_recognition_requires_internet">no connection</string>
 </resources>

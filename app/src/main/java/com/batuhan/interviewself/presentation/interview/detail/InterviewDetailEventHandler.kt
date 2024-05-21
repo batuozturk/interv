@@ -9,11 +9,11 @@ interface InterviewDetailEventHandler {
 
     fun deleteInterview(interview: Interview)
 
-    fun retryInterview(interview: Interview)
+    fun retryInterview(interview: Interview, isTablet: Boolean)
 
     fun getInterviewWithSteps(interviewId: Long)
 
     fun setInterviewWithStepsAsInitial()
 
-    fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>)
+    fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>, isTablet: Boolean)
 }

@@ -72,7 +72,7 @@
     <string name="first_question_talk">Commençons par la première question ,</string>
     <string name="interview_ended">L\'entretien est terminé, merci pour vos réponses. Vous pouvez fermer l\'appel</string>
     <string name="interview_start">Bienvenue à l\'entretien, je suis le responsable RH. Aujourd\'hui, je souhaite vous interviewer pour vérifier vos connaissances.</string>
-    <string name="interview_question_talk">Continuons avec la question %d</string>
+    <string name="interview_question_talk">Continuons avec la question %d,</string>
     <string name="created_at">temps</string>
     <string name="created_at_reverse">temps inversé</string>
     <string name="only_english">seulement anglais</string>

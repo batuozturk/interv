@@ -10,7 +10,6 @@ import com.batuhan.interviewself.data.model.Question
 import com.batuhan.interviewself.data.model.findLanguageFilterType
 import com.batuhan.interviewself.domain.interview.DeleteInterviewStep
 import com.batuhan.interviewself.domain.interview.GetInterviewSteps
-import com.batuhan.interviewself.domain.interview.GetInterviewWithSteps
 import com.batuhan.interviewself.domain.interview.UpsertInterviewStep
 import com.batuhan.interviewself.domain.question.GetAllQuestions
 import com.batuhan.interviewself.util.DialogAction
@@ -36,14 +35,13 @@ class AddStepViewModel @Inject constructor(
     private val upsertInterviewStep: UpsertInterviewStep,
     private val deleteInterviewStep: DeleteInterviewStep,
     getAllQuestions: GetAllQuestions,
-    private val getInterviewWithSteps: GetInterviewWithSteps,
     getInterviewSteps: GetInterviewSteps,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), AddStepEventHandler, ViewModelEventHandler<AddStepEvent, AddStepError> {
 
     companion object {
-        private const val KEY_INTERVIEW_ID = "interview_id"
-        private const val KEY_LANGUAGE = "language"
+        private const val KEY_INTERVIEW_ID = "interviewId"
+        private const val KEY_LANG_CODE = "langCode"
     }
 
     private val _event = Channel<AddStepEvent> { Channel.BUFFERED }
@@ -52,9 +50,9 @@ class AddStepViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddStepUiState())
     val uiState = _uiState.asStateFlow()
 
-    val interviewId = MutableStateFlow(savedStateHandle.get<Long>(KEY_INTERVIEW_ID))
+    val interviewId = MutableStateFlow(savedStateHandle.get<String>(KEY_INTERVIEW_ID)?.toLong())
 
-    val language = MutableStateFlow(savedStateHandle.get<String>(KEY_LANGUAGE))
+    val language = MutableStateFlow(savedStateHandle.get<String>(KEY_LANG_CODE))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val questions = language.flatMapLatest {
@@ -75,8 +73,6 @@ class AddStepViewModel @Inject constructor(
 
     fun initInterviewId(interviewId: Long){
         this.interviewId.value = interviewId
-        // todo remove this method
-        //getInterviewWithSteps(interviewId)
     }
 
     fun initLanguage(language: String){
@@ -113,7 +109,6 @@ class AddStepViewModel @Inject constructor(
         when(error){
             is AddStepError.AddStep -> addStep(error.question)
             is AddStepError.DeleteStep -> deleteStep(error.interviewStep)
-            is AddStepError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
         }
     }
 
@@ -185,33 +180,6 @@ class AddStepViewModel @Inject constructor(
         }
     }
 
-    override fun getInterviewWithSteps(interviewId: Long) {
-        viewModelScope.launch {
-            val result = getInterviewWithSteps.invoke(GetInterviewWithSteps.Params(interviewId))
-            when (result) {
-                is Result.Success -> {
-                    _uiState.update {
-                        it.copy(interviewSteps = result.data.steps)
-                    }
-                }
-
-                is Result.Error -> {
-                    showDialog(
-                        DialogData(
-                            title = R.string.error_unknown,
-                            type = DialogType.ERROR,
-                            actions = listOf(
-                                DialogAction(R.string.retry) {
-                                    retryOperation(AddStepError.GetInterviewWithSteps(interviewId))
-                                }
-                            )
-                        )
-                    )
-                }
-            }
-        }
-    }
-
 }
 
 data class AddStepUiState(
@@ -222,8 +190,6 @@ data class AddStepUiState(
 sealed class AddStepError {
     data class AddStep(val question: Question): AddStepError()
     data class DeleteStep(val interviewStep: InterviewStep): AddStepError()
-
-    data class GetInterviewWithSteps(val interviewId: Long): AddStepError()
 }
 
 sealed class AddStepEvent {

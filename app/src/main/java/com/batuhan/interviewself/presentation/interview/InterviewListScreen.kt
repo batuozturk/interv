@@ -4,14 +4,13 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -36,9 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -278,7 +275,7 @@ fun InterviewListItem(
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .defaultMinSize(minHeight = 100.dp)
                 .padding(8.dp)
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
                 .clickable {
@@ -290,26 +287,31 @@ fun InterviewListItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(interview.interviewName)
-            Row {
-                if (interview.completed != true) {
-                    IconButton(
-                        onClick = {
-                            sendEvent(
-                                InterviewListEvent.EnterInterview(
-                                    interview.interviewId ?: return@IconButton,
-                                    interview.interviewType ?: return@IconButton,
-                                    interview.langCode ?: return@IconButton,
-                                ),
-                            )
-                        },
-                    ) {
-                        Icon(Icons.Outlined.PlayArrow, contentDescription = null)
-                    }
+            Text(
+                interview.interviewName,
+                modifier = Modifier.weight(if (interview.completed != true) 6f else 7f),
+            )
+            if (interview.completed != true) {
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        sendEvent(
+                            InterviewListEvent.EnterInterview(
+                                interview.interviewId ?: return@IconButton,
+                                interview.interviewType ?: return@IconButton,
+                                interview.langCode ?: return@IconButton,
+                            ),
+                        )
+                    },
+                ) {
+                    Icon(Icons.Outlined.PlayArrow, contentDescription = null)
                 }
-                IconButton(onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) }) {
-                    Icon(Icons.Outlined.Delete, contentDescription = null)
-                }
+            }
+            IconButton(
+                modifier = Modifier.weight(1f),
+                onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
+            ) {
+                Icon(Icons.Outlined.Delete, contentDescription = null)
             }
         }
     }

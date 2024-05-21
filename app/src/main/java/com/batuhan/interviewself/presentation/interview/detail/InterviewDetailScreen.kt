@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -88,7 +89,7 @@ fun InterviewDetailScreen(
 
                 is InterviewDetailEvent.ClearDialog -> clearDialog.invoke()
                 is InterviewDetailEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
-                is InterviewDetailEvent.RetryInterview -> viewModel.retryInterview(it.interview)
+                is InterviewDetailEvent.RetryInterview -> viewModel.retryInterview(it.interview, it.isTablet)
                 is InterviewDetailEvent.ShareInterview -> viewModel.shareInterview(it.interview)
                 is InterviewDetailEvent.EnterInterview -> {
                     enterInterviewDialogData =
@@ -169,6 +170,8 @@ fun ScreenContent(
                         Text(
                             interviewWithSteps!!.interview?.interviewName ?: "",
                             fontFamily = fontFamily,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     },
                     colors =
@@ -197,12 +200,14 @@ fun ScreenContent(
                                     sendEvent.invoke(
                                         InterviewDetailEvent.RetryInterview(
                                             interviewWithSteps!!.interview!!,
+                                            isTablet
                                         ),
                                     )
                                 },
                             ) {
                                 Icon(Icons.Outlined.Refresh, contentDescription = null)
                             }
+                            /*
                             IconButton(
                                 onClick = {
                                     sendEvent.invoke(
@@ -214,6 +219,7 @@ fun ScreenContent(
                             ) {
                                 Icon(Icons.Outlined.Share, contentDescription = null)
                             }
+                            */
                         } else {
                             if (!isTablet) {
                                 IconButton(
