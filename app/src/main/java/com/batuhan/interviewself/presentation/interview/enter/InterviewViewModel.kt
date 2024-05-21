@@ -46,7 +46,7 @@ class InterviewViewModel
         ViewModelEventHandler<InterviewEvent, InterviewError>,
         TextToSpeech.OnInitListener, RecognitionListener {
     companion object {
-        private const val KEY_INTERVIEW_ID = "interview_id"
+        private const val KEY_INTERVIEW_ID = "interviewId"
     }
 
     private val _event = Channel<InterviewEvent> { Channel.BUFFERED }
@@ -55,7 +55,7 @@ class InterviewViewModel
     private val _uiState = MutableStateFlow(InterviewUiState())
     val uiState = _uiState.asStateFlow()
 
-    val interviewId = savedStateHandle.get<Long>(KEY_INTERVIEW_ID)
+    val interviewId = savedStateHandle.get<String>(KEY_INTERVIEW_ID)?.toLong()
 
     val currentStepFlow = MutableStateFlow(-2)
 
@@ -182,11 +182,11 @@ class InterviewViewModel
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions =
                                 listOf(
-                                    DialogAction(R.string.app_name) {
+                                    DialogAction(R.string.retry) {
                                         retryOperation(InterviewError.UpsertInterviewStep(answer))
                                     },
                                 ),
@@ -241,7 +241,21 @@ class InterviewViewModel
     }
 
     override fun onError(p0: Int) {
-        // no-op for now
+        if(p0 == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE){
+            showDialog(
+                DialogData(
+                    title = R.string.speech_recognition_requires_internet,
+                    type = DialogType.ERROR,
+                    actions =
+                    listOf(
+                        DialogAction(R.string.retry) {
+                            clearDialog()
+                            sendEvent(InterviewEvent.ReinitializeSpeechRecognition)
+                        },
+                    ),
+                ),
+            )
+        }
     }
 
     override fun onResults(p0: Bundle?) {
@@ -282,4 +296,6 @@ sealed class InterviewEvent {
     data class MicrophoneState(internal val isEnabled: Boolean) : InterviewEvent()
 
     data class VideoState(internal val isEnabled: Boolean) : InterviewEvent()
+
+    object ReinitializeSpeechRecognition: InterviewEvent()
 }
