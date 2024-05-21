@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -235,15 +236,15 @@ fun QuestionListItem(
     Row(
         Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .defaultMinSize(minHeight = 100.dp)
             .padding(8.dp)
             .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(question.question ?: "undefined")
-        IconButton(onClick = { sendEvent(QuestionListEvent.DeleteQuestion(question)) }) {
+        Text(question.question ?: "undefined",modifier = Modifier.weight(7f))
+        IconButton(modifier = Modifier.weight(1f), onClick = { sendEvent(QuestionListEvent.DeleteQuestion(question)) }) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
         }
     }
