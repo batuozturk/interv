@@ -72,7 +72,7 @@
     <string name="first_question_talk">İlk soru ile başlayalım,</string>
     <string name="interview_ended">Mülakat sona erdi, cevaplarınız için teşekkür ederiz. Görüşmeyi kapatabilirsiniz.</string>
     <string name="interview_start">Mülakata hoş geldiniz, Ben İK Müdürüyüm. Bugün sizinle görüşmek ve bilginizi kontrol etmek için mülakat yapmak istiyorum.</string>
-    <string name="interview_question_talk">Hadi soru %d ile devam edelim</string>
+    <string name="interview_question_talk">Hadi soru %d ile devam edelim, </string>
 
     <string name="created_at">zaman</string>
     <string name="created_at_reverse">zaman tersine çevrildi</string>
