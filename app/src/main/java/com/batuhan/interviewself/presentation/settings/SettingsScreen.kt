@@ -89,8 +89,8 @@ fun SettingsScreen(
         context.dataStore.data.collect { data ->
             val isDarkMode =
                 data[SettingsViewModel.KEY_PREFERENCES_STYLE] ?: run {
-                    datastore.writeData(SettingsType.Style(false), viewModel::writeData)
-                    false
+                    datastore.writeData(SettingsType.Style(true), viewModel::writeData)
+                    true
                 }
             val langCode =
                 data[SettingsViewModel.KEY_PREFERENCES_LANGUAGE] ?: run {
@@ -172,14 +172,22 @@ fun SettingsScreen(
                         ),
                     listOf(
                         DialogAction(R.string.settings_style_option_one) {
-                            viewModel.writeData(
-                                SettingsType.Style(false),
-                            )
+                            coroutineScope.launch {
+                                context.dataStore.writeData(SettingsType.Style(false)){
+                                    viewModel.writeData(
+                                        SettingsType.Style(false),
+                                    )
+                                }
+                            }
                         },
                         DialogAction(R.string.settings_style_option_two) {
-                            viewModel.writeData(
-                                SettingsType.Style(true),
-                            )
+                            coroutineScope.launch {
+                                context.dataStore.writeData(SettingsType.Style(true)){
+                                    viewModel.writeData(
+                                        SettingsType.Style(true),
+                                    )
+                                }
+                            }
                         },
                     ),
                     decideDialogType(darkTheme),
@@ -188,7 +196,14 @@ fun SettingsScreen(
         },
         sendBrowserEvent = sendBrowserEvent,
         showDialog = showDialog,
-        clearDialog = clearDialog
+        clearDialog = clearDialog,
+        writeData = {
+            coroutineScope.launch {
+                datastore.writeData(it){
+                    viewModel.writeData(it)
+                }
+            }
+        }
     )
 }
 
@@ -201,7 +216,8 @@ fun SettingsScreenContent(
     setStyle: () -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
     showDialog: (DialogData) -> Unit,
-    clearDialog: () -> Unit
+    clearDialog: () -> Unit,
+    writeData: (SettingsType) -> Unit
 ) {
     var detailType: SettingsDetailAction? by remember {
         mutableStateOf(null)
@@ -232,8 +248,16 @@ fun SettingsScreenContent(
                         detailType =
                             SettingsDetailAction.Style(
                                 listOf(
-                                    DialogAction(R.string.settings_style_option_one, {}),
-                                    DialogAction(R.string.settings_style_option_two, {}),
+                                    DialogAction(R.string.settings_style_option_one) {
+                                        writeData.invoke(
+                                            SettingsType.Style(false)
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_style_option_two) {
+                                        writeData.invoke(
+                                            SettingsType.Style(true)
+                                        )
+                                    },
                                 ),
                             )
                     } else {
@@ -248,9 +272,21 @@ fun SettingsScreenContent(
                         detailType =
                             SettingsDetailAction.Language(
                                 listOf(
-                                    DialogAction(R.string.settings_lang_option_one, {}),
-                                    DialogAction(R.string.settings_lang_option_two, {}),
-                                    DialogAction(R.string.settings_lang_option_three, {}),
+                                    DialogAction(R.string.settings_lang_option_one) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("en-US")
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_two) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("tr-TR")
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_three) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("fr-FR")
+                                        )
+                                    },
                                 ),
                             )
                     } else {
