@@ -113,7 +113,7 @@ class InterviewDetailViewModel @Inject constructor(
         }
     }
 
-    override fun retryInterview(interview: Interview) {
+    override fun retryInterview(interview: Interview, isTablet: Boolean) {
         val newInterview = interview.copy(interviewId = null, interviewName = interview.interviewName + " - copy", completed = false)
         viewModelScope.launch {
             val result = upsertInterview.invoke(UpsertInterview.Params(newInterview))
@@ -123,7 +123,7 @@ class InterviewDetailViewModel @Inject constructor(
                     val steps = uiState.value.interviewWithSteps?.steps?.map {
                         it.copy(interviewStepId = null, interviewId = newInterviewId)
                     }
-                    upsertInterviewSteps(newInterviewId, steps!!)
+                    upsertInterviewSteps(newInterviewId, steps!!, isTablet)
                 }
 
                 is Result.Error -> {
@@ -133,7 +133,7 @@ class InterviewDetailViewModel @Inject constructor(
                             type = DialogType.ERROR,
                             actions = listOf(
                                 DialogAction(R.string.app_name) {
-                                    retryOperation(InterviewDetailError.RetryInterview(interview))
+                                    retryOperation(InterviewDetailError.RetryInterview(interview, isTablet))
                                 }
                             )
                         )
@@ -143,7 +143,7 @@ class InterviewDetailViewModel @Inject constructor(
         }
     }
 
-    override fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>) {
+    override fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>, isTablet: Boolean) {
         viewModelScope.launch {
             val result = upsertInterviewSteps.invoke(UpsertInterviewSteps.Params(steps))
             when (result) {
@@ -154,13 +154,16 @@ class InterviewDetailViewModel @Inject constructor(
                         DialogData(
                             title = R.string.success_interview_saved,
                             type = DialogType.SUCCESS_INFO,
-                            actions = listOf(
-                                DialogAction(R.string.start_interview){
-                                    clearDialog()
-                                    sendEvent(InterviewDetailEvent.EnterInterview(interviewId, interviewType, langCode))
-                                },
-                                DialogAction(R.string.dismiss, ::clearDialog)
-                            )
+                            actions = if(!isTablet){
+                                listOf(
+                                    DialogAction(R.string.start_interview){
+                                        clearDialog()
+                                        sendEvent(InterviewDetailEvent.EnterInterview(interviewId, interviewType, langCode))
+                                    },
+                                    DialogAction(R.string.dismiss, ::clearDialog)
+                                )
+                            }
+                            else listOf(DialogAction(R.string.dismiss, ::clearDialog))
                         )
                     )
                 }
@@ -172,7 +175,7 @@ class InterviewDetailViewModel @Inject constructor(
                             type = DialogType.ERROR,
                             actions = listOf(
                                 DialogAction(R.string.app_name) {
-                                    retryOperation(InterviewDetailError.UpsertInterviewSteps(interviewId, steps))
+                                    retryOperation(InterviewDetailError.UpsertInterviewSteps(interviewId, steps, isTablet))
                                 }
                             )
                         )
@@ -242,10 +245,10 @@ class InterviewDetailViewModel @Inject constructor(
                 deleteInterviewStepsJob(error.interview.interviewId!!)
             }
             is InterviewDetailError.ShareInterview -> shareInterview(error.interview)
-            is InterviewDetailError.RetryInterview-> retryInterview(error.interview)
+            is InterviewDetailError.RetryInterview-> retryInterview(error.interview, error.isTablet)
             is InterviewDetailError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
             is InterviewDetailError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
-            is InterviewDetailError.UpsertInterviewSteps -> upsertInterviewSteps(error.interviewId, error.steps)
+            is InterviewDetailError.UpsertInterviewSteps -> upsertInterviewSteps(error.interviewId, error.steps, error.isTablet)
         }
     }
 
@@ -265,11 +268,11 @@ data class InterviewDetailUiState(
 sealed class InterviewDetailError {
     data class DeleteInterview(val interview: Interview): InterviewDetailError()
     data class ShareInterview(val interview: Interview): InterviewDetailError()
-    data class RetryInterview(val interview: Interview): InterviewDetailError()
+    data class RetryInterview(val interview: Interview, val isTablet: Boolean): InterviewDetailError()
     data class GetInterviewWithSteps(val interviewId: Long) : InterviewDetailError()
 
     data class DeleteInterviewSteps(val interviewId: Long): InterviewDetailError()
-    data class UpsertInterviewSteps(val interviewId: Long, val steps: List<InterviewStep>) : InterviewDetailError()
+    data class UpsertInterviewSteps(val interviewId: Long, val steps: List<InterviewStep>, val isTablet: Boolean) : InterviewDetailError()
 }
 
 sealed class InterviewDetailEvent {
@@ -277,7 +280,7 @@ sealed class InterviewDetailEvent {
     data class DeleteInterview(val interview: Interview) : InterviewDetailEvent()
     data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val languageCode: String) : InterviewDetailEvent()
     data class ShareInterview(val interview: Interview) : InterviewDetailEvent()
-    data class RetryInterview(val interview: Interview): InterviewDetailEvent()
+    data class RetryInterview(val interview: Interview, val isTablet: Boolean): InterviewDetailEvent()
 
     object ClearDialog: InterviewDetailEvent()
 }
