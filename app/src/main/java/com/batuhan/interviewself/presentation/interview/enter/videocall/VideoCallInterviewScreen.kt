@@ -3,17 +3,18 @@ package com.batuhan.interviewself.presentation.interview.enter.videocall
 import android.content.Context
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -36,8 +38,10 @@ import com.batuhan.interviewself.R
 import com.batuhan.interviewself.presentation.interview.enter.InterviewButton
 import com.batuhan.interviewself.presentation.interview.enter.InterviewEvent
 import com.batuhan.interviewself.presentation.interview.enter.InterviewUiState
+import com.batuhan.interviewself.ui.theme.InterviewselfTheme
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import androidx.compose.ui.tooling.preview.Preview as ComposePreview
 
 @Composable
 fun VideoCallInterviewScreen(
@@ -68,33 +72,32 @@ fun VideoCallInterviewScreen(
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(8.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(8.dp),
     ) {
-        Row(
+        Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .weight(3f),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier
+                .fillMaxWidth()
+                .weight(2f),
+            contentAlignment = Alignment.Center,
         ) {
-            Text("HR Manager", fontSize = 25.sp)
+            Image(painter = painterResource(id = R.drawable.ic_person_2_24), contentDescription = null, modifier = Modifier.fillMaxSize())
+            Text("HR Manager", fontSize = 18.sp, modifier = Modifier.align(Alignment.BottomStart))
         }
-        Row(
+        Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .weight(3f),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+                    .weight(4f),
+            contentAlignment = Alignment.Center,
         ) {
-            AndroidView(modifier = Modifier.weight(3f), factory = { context ->
+            AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
                 previewView.apply {
                     setBackgroundColor(Color.Transparent.toArgb())
                     layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                    scaleType = PreviewView.ScaleType.FIT_CENTER
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                     post {
                         cameraProvider.addListener(
@@ -111,10 +114,8 @@ fun VideoCallInterviewScreen(
                     }
                 }
             })
-
-            // todo column remove
             Column(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth().height(80.dp).align(Alignment.BottomCenter).background(Color.Black.copy(0.2f)),
                 verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 InterviewButton(
@@ -128,6 +129,15 @@ fun VideoCallInterviewScreen(
     }
 }
 
+@ComposePreview
+@Composable
+fun VideoCallInterviewPreview() {
+    InterviewselfTheme {
+        VideoCallInterviewScreen(uiState = InterviewUiState()) {
+        }
+    }
+}
+
 fun bindPreview(
     cameraProvider: ProcessCameraProvider,
     lifecycleOwner: LifecycleOwner,
@@ -135,7 +145,6 @@ fun bindPreview(
 ) {
     val preview: Preview =
         Preview.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .build()
 
     val cameraSelector: CameraSelector =
