@@ -9,7 +9,4 @@ interface AddStepEventHandler {
 
     fun deleteStep(interviewStep: InterviewStep)
 
-
-    fun getInterviewWithSteps(interviewId: Long)
-
 }
