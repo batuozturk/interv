@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.batuhan.interviewself"
+    namespace = "com.batuhan.interv"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.batuhan.interviewself"
+        applicationId = "com.batuhan.interv"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
