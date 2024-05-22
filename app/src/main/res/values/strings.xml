@@ -96,4 +96,7 @@
     <string name="success_questions_exported">questions exported</string>
     <string name="success_questions_shared">questions shared</string>
     <string name="speech_recognition_requires_internet">no connection</string>
+    <string name="topic_subscribe">interv-en</string>
+    <string name="topic_unsubscribe_1">interv-tr</string>
+    <string name="topic_unsubscribe_2">interv-fr</string>
 </resources>

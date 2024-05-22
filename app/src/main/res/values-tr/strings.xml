@@ -92,4 +92,7 @@
     <string name="open_call">aramayı aç</string>
     <string name="added_steps">eklenen adımlar</string>
     <string name="questions">sorular</string>
+    <string name="topic_subscribe">interv-tr</string>
+    <string name="topic_unsubscribe_1">interv-en</string>
+    <string name="topic_unsubscribe_2">interv-fr</string>
 </resources>

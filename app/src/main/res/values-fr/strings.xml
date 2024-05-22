@@ -91,4 +91,7 @@
     <string name="open_call">ouvrir l\'appel</string>
     <string name="added_steps">étapes ajoutées</string>
     <string name="questions">questions</string>
+    <string name="topic_subscribe">interv-fr</string>
+    <string name="topic_unsubscribe_1">interv-en</string>
+    <string name="topic_unsubscribe_2">interv-tr</string>
 </resources>
