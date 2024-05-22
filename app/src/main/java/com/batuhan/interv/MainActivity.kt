@@ -50,6 +50,8 @@ import com.batuhan.interv.util.Screen
 import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -162,6 +164,11 @@ class MainActivity : ComponentActivity() {
             permissions.entries.forEach {
                 if (it.value == false) {
                     permissionGranted = false
+                }
+                else if(it.value && it.key == Manifest.permission.POST_NOTIFICATIONS){
+                    Firebase.messaging.subscribeToTopic(getString(R.string.topic_subscribe))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_1))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_2))
                 }
             }
             // todo
