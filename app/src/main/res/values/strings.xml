@@ -99,4 +99,5 @@
     <string name="topic_subscribe">interv-en</string>
     <string name="topic_unsubscribe_1">interv-tr</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="interview_steps_not_added">interview steps not added</string>
 </resources>
