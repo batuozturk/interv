@@ -1,9 +1,11 @@
 package com.batuhan.interv.data.model
 
 import android.content.Context
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import com.batuhan.interv.util.getLocaleStringResource
 
+@Keep
 data class MixedString(
     @StringRes val intString: Int,
     val quantity: Int? = null,
