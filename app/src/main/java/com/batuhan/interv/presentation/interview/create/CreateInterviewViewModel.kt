@@ -213,6 +213,12 @@ class CreateInterviewViewModel @Inject constructor(
                     }
 
                     is InterviewField.Language -> {
+                        val prevLang = it.currentInterview.langCode
+                        if(prevLang != interviewField.langCode){
+                            viewModelScope.launch {
+                                deleteInterviewSteps.invoke(DeleteInterviewSteps.Params(it.currentInterview.interviewId!!))
+                            }
+                        }
                         it.currentInterview.copy(langCode = interviewField.langCode)
                     }
                 }
