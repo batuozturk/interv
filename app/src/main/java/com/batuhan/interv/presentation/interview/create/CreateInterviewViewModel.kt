@@ -8,6 +8,7 @@ import com.batuhan.interv.data.model.InterviewType
 import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.domain.interview.DeleteInterview
 import com.batuhan.interv.domain.interview.DeleteInterviewSteps
+import com.batuhan.interv.domain.interview.GetInterviewWithSteps
 import com.batuhan.interv.domain.interview.UpsertInterview
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
@@ -30,7 +31,8 @@ import javax.inject.Inject
 class CreateInterviewViewModel @Inject constructor(
     private val upsertInterview: UpsertInterview,
     private val deleteInterview: DeleteInterview,
-    private val deleteInterviewSteps: DeleteInterviewSteps
+    private val deleteInterviewSteps: DeleteInterviewSteps,
+    private val getInterviewWithSteps: GetInterviewWithSteps,
 ) : ViewModel(), CreateInterviewEventHandler, ViewModelEventHandler<CreateInterviewEvent,CreateInterviewError> {
 
     private val _event = Channel<CreateInterviewEvent> { Channel.BUFFERED }
@@ -171,7 +173,41 @@ class CreateInterviewViewModel @Inject constructor(
             )
             return
         }
+
+
+        // todo steps empty
         viewModelScope.launch {
+            val resultSteps = getInterviewWithSteps.invoke(GetInterviewWithSteps.Params(interviewId = interview.interviewId!!))
+            when(resultSteps){
+                is Result.Success -> {
+                    if((resultSteps.data.steps?.size ?: 0) == 0){
+                        showDialog(
+                            DialogData(
+                                title = R.string.interview_steps_not_added,
+                                type = DialogType.ERROR,
+                                actions =
+                                listOf(
+                                    DialogAction(R.string.dismiss, ::clearDialog) ,
+                                ),
+                            ),
+                        )
+                        return@launch
+                    }
+                }
+                else -> {
+                    showDialog(
+                        DialogData(
+                            title = R.string.error_unknown,
+                            type = DialogType.ERROR,
+                            actions =
+                            listOf(
+                                DialogAction(R.string.dismiss, ::clearDialog) ,
+                            ),
+                        ),
+                    )
+                    return@launch
+                }
+            }
             val result = upsertInterview.invoke(UpsertInterview.Params(interview))
             when (result) {
                 is Result.Success -> {
@@ -213,6 +249,12 @@ class CreateInterviewViewModel @Inject constructor(
                     }
 
                     is InterviewField.Language -> {
+                        val prevLang = it.currentInterview.langCode
+                        if(prevLang != interviewField.langCode){
+                            viewModelScope.launch {
+                                deleteInterviewSteps.invoke(DeleteInterviewSteps.Params(it.currentInterview.interviewId!!))
+                            }
+                        }
                         it.currentInterview.copy(langCode = interviewField.langCode)
                     }
                 }
