@@ -35,13 +35,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interv.R
+import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.presentation.settings.detail.SettingsDetailScreen
 import com.batuhan.interv.presentation.settings.exportquestions.ExportQuestionsScreen
 import com.batuhan.interv.presentation.settings.importquestions.ImportQuestionsScreen
 import com.batuhan.interv.util.BrowserEvent
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.LanguageData
 import com.batuhan.interv.util.SettingsDetailAction
+import com.batuhan.interv.util.StyleData
 import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.decideDialogType
 import com.batuhan.interv.util.isTablet
@@ -159,6 +162,13 @@ fun SettingsScreen(
                         },
                     ),
                     decideDialogType(darkTheme),
+                    languageData =
+                        LanguageData(
+                            selectedLanguageIndex =
+                                LanguageType.entries.indexOf(
+                                    LanguageType.entries.find { it.code == uiState.langCode },
+                                )!!,
+                        ),
                 ),
             )
         },
@@ -168,12 +178,12 @@ fun SettingsScreen(
                     R.string.settings_style_title,
                     actions =
                         listOf(
-                            DialogAction(R.string.dismiss, clearDialog),
+                            DialogAction(R.string.dismiss, viewModel::clearDialog),
                         ),
                     listOf(
                         DialogAction(R.string.settings_style_option_one) {
                             coroutineScope.launch {
-                                context.dataStore.writeData(SettingsType.Style(false)){
+                                context.dataStore.writeData(SettingsType.Style(false)) {
                                     viewModel.writeData(
                                         SettingsType.Style(false),
                                     )
@@ -182,7 +192,7 @@ fun SettingsScreen(
                         },
                         DialogAction(R.string.settings_style_option_two) {
                             coroutineScope.launch {
-                                context.dataStore.writeData(SettingsType.Style(true)){
+                                context.dataStore.writeData(SettingsType.Style(true)) {
                                     viewModel.writeData(
                                         SettingsType.Style(true),
                                     )
@@ -191,6 +201,10 @@ fun SettingsScreen(
                         },
                     ),
                     decideDialogType(darkTheme),
+                    styleData =
+                        StyleData(
+                            isDarkMode = uiState.isDarkMode,
+                        ),
                 ),
             )
         },
@@ -199,11 +213,11 @@ fun SettingsScreen(
         clearDialog = clearDialog,
         writeData = {
             coroutineScope.launch {
-                datastore.writeData(it){
+                datastore.writeData(it) {
                     viewModel.writeData(it)
                 }
             }
-        }
+        },
     )
 }
 
@@ -217,7 +231,7 @@ fun SettingsScreenContent(
     sendBrowserEvent: (BrowserEvent) -> Unit,
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
-    writeData: (SettingsType) -> Unit
+    writeData: (SettingsType) -> Unit,
 ) {
     var detailType: SettingsDetailAction? by remember {
         mutableStateOf(null)
@@ -250,12 +264,12 @@ fun SettingsScreenContent(
                                 listOf(
                                     DialogAction(R.string.settings_style_option_one) {
                                         writeData.invoke(
-                                            SettingsType.Style(false)
+                                            SettingsType.Style(false),
                                         )
                                     },
                                     DialogAction(R.string.settings_style_option_two) {
                                         writeData.invoke(
-                                            SettingsType.Style(true)
+                                            SettingsType.Style(true),
                                         )
                                     },
                                 ),
@@ -274,17 +288,17 @@ fun SettingsScreenContent(
                                 listOf(
                                     DialogAction(R.string.settings_lang_option_one) {
                                         writeData.invoke(
-                                            SettingsType.LangCode("en-US")
+                                            SettingsType.LangCode("en-US"),
                                         )
                                     },
                                     DialogAction(R.string.settings_lang_option_two) {
                                         writeData.invoke(
-                                            SettingsType.LangCode("tr-TR")
+                                            SettingsType.LangCode("tr-TR"),
                                         )
                                     },
                                     DialogAction(R.string.settings_lang_option_three) {
                                         writeData.invoke(
-                                            SettingsType.LangCode("fr-FR")
+                                            SettingsType.LangCode("fr-FR"),
                                         )
                                     },
                                 ),
@@ -354,12 +368,13 @@ fun SettingsScreenContent(
             } else if (weight > 2.25 && exportQuestionsOpened) {
                 ExportQuestionsScreen(onBackPressed = {
                     clearDialog.invoke()
-                    exportQuestionsOpened = false }, showDialog = showDialog, clearDialog = clearDialog)
-            }
-            else if (weight > 2.25 && importQuestionsOpened) {
+                    exportQuestionsOpened = false
+                }, showDialog = showDialog, clearDialog = clearDialog)
+            } else if (weight > 2.25 && importQuestionsOpened) {
                 ImportQuestionsScreen(onBackPressed = {
                     clearDialog.invoke()
-                    importQuestionsOpened = false }, showDialog = showDialog, clearDialog = clearDialog)
+                    importQuestionsOpened = false
+                }, showDialog = showDialog, clearDialog = clearDialog)
             }
         }
     }
