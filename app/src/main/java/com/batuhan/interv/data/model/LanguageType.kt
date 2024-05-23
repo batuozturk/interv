@@ -1,8 +1,10 @@
 package com.batuhan.interv.data.model
 
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import com.batuhan.interv.R
 
+@Keep
 enum class LanguageType(
     @StringRes val text: Int,
     val code: String,

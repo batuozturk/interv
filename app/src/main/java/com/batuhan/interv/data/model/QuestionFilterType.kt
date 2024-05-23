@@ -1,8 +1,10 @@
 package com.batuhan.interv.data.model
 
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import com.batuhan.interv.R
 
+@Keep
 enum class QuestionFilterType(
     @StringRes val title: Int,
 ) {

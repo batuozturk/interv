@@ -1,5 +1,6 @@
 package com.batuhan.interv.data.model
 
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -8,6 +9,7 @@ import com.batuhan.interv.R
 import com.squareup.moshi.JsonClass
 
 @Entity
+@Keep
 @JsonClass(generateAdapter = true)
 data class Interview(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("interviewId") val interviewId: Long? = null,
@@ -22,6 +24,7 @@ data class Interview(
 )
 
 @Entity
+@Keep
 @JsonClass(generateAdapter = true)
 data class InterviewStep(
     @PrimaryKey(autoGenerate = true) val interviewStepId: Long? = null,
@@ -32,6 +35,7 @@ data class InterviewStep(
     @ColumnInfo("answer") val answer: String? = null,
 )
 
+@Keep
 enum class InterviewType(
     @StringRes val text: Int,
 ) {
