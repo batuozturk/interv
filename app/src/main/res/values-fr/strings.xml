@@ -94,4 +94,11 @@
     <string name="topic_subscribe">interv-fr</string>
     <string name="topic_unsubscribe_1">interv-en</string>
     <string name="topic_unsubscribe_2">interv-tr</string>
+    <string name="error_export_questions">les questions ne peuvent pas être exportées</string>
+    <string name="save_and_share">enregistrer et partager</string>
+    <string name="success_questions_imported">questions importées</string>
+    <string name="success_questions_exported">questions exportées</string>
+    <string name="success_questions_shared">questions partagées</string>
+    <string name="speech_recognition_requires_internet">pas de connexion</string>
+    <string name="interview_steps_not_added">étapes de l\'entretien non ajoutées</string>
 </resources>

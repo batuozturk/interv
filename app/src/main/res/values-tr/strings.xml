@@ -95,4 +95,11 @@
     <string name="topic_subscribe">interv-tr</string>
     <string name="topic_unsubscribe_1">interv-en</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="error_export_questions">sorular dışa aktarılamıyor</string>
+    <string name="save_and_share">kaydet ve paylaş</string>
+    <string name="success_questions_imported">sorular içe aktarıldı</string>
+    <string name="success_questions_exported">sorular dışa aktarıldı</string>
+    <string name="success_questions_shared">sorular paylaşıldı</string>
+    <string name="speech_recognition_requires_internet">bağlantı yok</string>
+    <string name="interview_steps_not_added">görüşme adımları eklenmedi</string>
 </resources>

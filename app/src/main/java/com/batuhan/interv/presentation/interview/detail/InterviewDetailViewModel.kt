@@ -60,10 +60,10 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(InterviewDetailError.DeleteInterview(interview))
                                 }
                             )
@@ -126,10 +126,10 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(InterviewDetailError.RetryInterview(interview, isTablet))
                                 }
                             )
@@ -168,10 +168,10 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Error -> {
                     showDialog(
                         DialogData(
-                            title = R.string.app_name,
+                            title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions = listOf(
-                                DialogAction(R.string.app_name) {
+                                DialogAction(R.string.retry) {
                                     retryOperation(InterviewDetailError.UpsertInterviewSteps(interviewId, steps, isTablet))
                                 }
                             )
