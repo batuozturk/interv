@@ -2,13 +2,25 @@ package com.batuhan.interv.util
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.ui.theme.Gray
+import kotlin.enums.EnumEntries
 
 data class DialogData(
     @StringRes val title: Int,
     val actions: List<DialogAction>,
     val options: List<DialogAction>? = null,
     val type: DialogType = DialogType.ERROR,
+    val languageData: LanguageData? = null,
+    val styleData: StyleData? = null
+)
+
+data class LanguageData(
+    val selectedLanguageIndex: Int,
+)
+
+data class StyleData(
+    val isDarkMode: Boolean
 )
 
 data class DialogAction(
