@@ -334,11 +334,6 @@ fun SettingsScreenContent(
                 }
             }
             item {
-                SettingsListItem(title = R.string.settings_tos) {
-                    sendBrowserEvent(BrowserEvent.TermsOfService)
-                }
-            }
-            item {
                 SettingsListItem(title = R.string.settings_privacy_policy) {
                     sendBrowserEvent(BrowserEvent.PrivacyPolicy)
                 }
