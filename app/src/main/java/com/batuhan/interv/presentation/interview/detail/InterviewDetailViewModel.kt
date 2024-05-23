@@ -38,8 +38,6 @@ class InterviewDetailViewModel @Inject constructor(
     private val upsertInterviewSteps: UpsertInterviewSteps,
 ) : ViewModel(), InterviewDetailEventHandler, ViewModelEventHandler<InterviewDetailEvent, InterviewDetailError> {
 
-    // TODO upsert interview steps when copying
-
     private val _event = Channel<InterviewDetailEvent> { Channel.BUFFERED }
     val event = _event.receiveAsFlow()
 

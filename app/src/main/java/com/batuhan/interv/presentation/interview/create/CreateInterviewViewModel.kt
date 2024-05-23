@@ -175,7 +175,6 @@ class CreateInterviewViewModel @Inject constructor(
         }
 
 
-        // todo steps empty
         viewModelScope.launch {
             val resultSteps = getInterviewWithSteps.invoke(GetInterviewWithSteps.Params(interviewId = interview.interviewId!!))
             when(resultSteps){

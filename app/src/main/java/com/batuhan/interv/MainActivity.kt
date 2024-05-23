@@ -94,7 +94,6 @@ class MainActivity : ComponentActivity() {
         } else {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-        // todo topic subscribe
         setContent {
             var darkTheme: Boolean? by remember {
                 mutableStateOf(null)
@@ -195,7 +194,6 @@ fun InterviewSelfApp(
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
 ) {
-    // todo navigation keys and argument keys
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = Screen.Splash.route) {
