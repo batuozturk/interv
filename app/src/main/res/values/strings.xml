@@ -1,3 +1,103 @@
 <resources>
-    <string name="app_name">Interviewself</string>
+    <string name="app_name">interv</string>
+    <string name="retry">retry</string>
+    <string name="dismiss">dismiss</string>
+    <string name="ok">ok</string>
+    <string name="undo">undo</string>
+    <string name="error_unknown">unknown error occurred</string>
+
+    <string name="error_question_not_saved">question cannot be saved</string>
+    <string name="error_question_empty">question is empty</string>
+    <string name="error_question_lang_code_empty">lang code empty</string>
+    <string name="success_question_saved">question saved</string>
+    <string name="delete_question">question deleted</string>
+    <string name="update_question">question updated</string>
+
+    <string name="error_interview_not_saved">interview cannot be saved</string>
+    <string name="error_interview_empty">interview is empty</string>
+    <string name="error_interview_lang_code_empty">lang code empty</string>
+    <string name="error_interview_duration_invalid">duration is invalid</string>
+    <string name="error_interview_type_not_selected">type was not selected</string>
+    <string name="success_interview_saved">interview saved</string>
+    <string name="delete_interview">interview deleted</string>
+    <string name="update_interview">interview updated</string>
+
+    <string name="type_video">video</string>
+    <string name="type_phone_call">phone call</string>
+    <string name="add_step">step added</string>
+    <string name="delete_step">step deleted</string>
+
+    <string name="navitem_one">interviews</string>
+    <string name="navitem_two">questions</string>
+    <string name="navitem_three">settings</string>
+
+    <string name="create_interview_title">create interview</string>
+
+
+    <string name="create_question_name_placeholder">question</string>
+    <string name="create_interview_name_placeholder">interview name</string>
+    <string name="create_interview_question_duration_placeholder">question duration</string>
+    <string name="lang_code_placeholder">lang code eg. en</string>
+    <string name="create_interview_add_step_title">add step</string>
+
+
+    <string name="settings_import_questions">import questions</string>
+    <string name="settings_export_questions">export questions</string>
+    <string name="settings_rate_us">rate us</string>
+    <string name="settings_contact_us">contact us</string>
+    <string name="settings_language">language</string>
+    <string name="settings_tos">terms of service</string>
+    <string name="settings_privacy_policy">privacy policy</string>
+    <string name="settings_download_konsol">download konsol, firebase project manager for android</string>
+    <string name="settings_style">style</string>
+    <string name="settings_style_option_one">light mode</string>
+    <string name="settings_style_option_two">dark mode</string>
+    <string name="settings_lang_option_one">english</string>
+    <string name="settings_lang_option_two">turkish</string>
+    <string name="settings_lang_option_three">french</string>
+    <string name="settings_language_title">set app language</string>
+    <string name="settings_style_title">set app style</string>
+
+    <string name="interview_detail_question_and_answers">questions and answers</string>
+    <string name="save">save</string>
+    <string name="microphone_title_enabled">mic enabled</string>
+    <string name="microphone_title_not_enabled">mic not enabled</string>
+    <string name="close_call">close call</string>
+    <string name="pause">pause</string>
+    <string name="start_interview">start</string>
+    <string name="language_type_en">english</string>
+    <string name="language_type_tr">turkish</string>
+    <string name="language_type_fr">french</string>
+    <string name="first_question_talk">Let\'s start with the first question ,</string>
+    <string name="interview_ended">The interview has ended, thanks for your answers. You can close the call</string>
+    <string name="interview_start">Welcome to the interview, I am HR Manager. Today I want to interview with you to check your knowledge.</string>
+    <string name="interview_question_talk">Let\'s continue with question %d, </string>
+    <string name="created_at">time</string>
+    <string name="created_at_reverse">time reversed</string>
+    <string name="only_english">only english</string>
+    <string name="filter_turkish">turkish</string>
+    <string name="filter_english">english</string>
+    <string name="filter_french">french</string>
+    <string name="filter_default">default</string>
+    <string name="filter_name">a-z</string>
+    <string name="filter_completed">completed</string>
+    <string name="filter_not_completed">not completed</string>
+    <string name="filter">filter</string>
+    <string name="filter_name_reversed">z-a</string>
+    <string name="search_interviews">search interviews</string>
+    <string name="search_questions">search questions</string>
+    <string name="hr_manager_calling_text">hr manager is calling you</string>
+    <string name="open_call">open call</string>
+    <string name="added_steps">added steps</string>
+    <string name="questions">questions</string>
+    <string name="error_export_questions">questions cannot be exported</string>
+    <string name="save_and_share">save and share</string>
+    <string name="success_questions_imported">questions imported</string>
+    <string name="success_questions_exported">questions exported</string>
+    <string name="success_questions_shared">questions shared</string>
+    <string name="speech_recognition_requires_internet">no connection</string>
+    <string name="topic_subscribe">interv-en</string>
+    <string name="topic_unsubscribe_1">interv-tr</string>
+    <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="interview_steps_not_added">interview steps not added</string>
 </resources>
