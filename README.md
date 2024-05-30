@@ -24,7 +24,7 @@ Features:
 
 - Customizable questions
 
-  Create interview questions in in English, Turkish and French.
+  Create interview questions in English, Turkish and French.
   Use your questions for creating interviews.
 
 - View and retry results
@@ -45,4 +45,4 @@ Features:
 
   Optimized for both smartphones and tablets.
 
-* Results are based on speech recognition and may not reflect actual responses.
+*Results are based on speech recognition and may not reflect actual responses.
