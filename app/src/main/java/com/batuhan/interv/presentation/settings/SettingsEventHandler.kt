@@ -4,5 +4,5 @@ interface SettingsEventHandler {
 
     fun writeData(settingsType: SettingsType)
 
-    fun readData(isDarkMode: Boolean, langCode: String)
+    fun readData(isDarkMode: Boolean, langCode: String, apiKey: String)
 }
