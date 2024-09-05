@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 fun ContainerScreen(
     createInterview: () -> Unit,
     navigateToDetail: (Long) -> Unit,
-    enterInterview: (Long, InterviewType, String) -> Unit,
+    enterInterview: (Long, InterviewType, String, String) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
@@ -54,7 +54,7 @@ fun ContainerScreen(
 fun ContainerScreenContent(
     createInterview: () -> Unit,
     navigateToDetail: (Long) -> Unit,
-    enterInterview: (Long, InterviewType, String) -> Unit,
+    enterInterview: (Long, InterviewType, String, String) -> Unit,
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
@@ -162,12 +162,12 @@ fun ContainerScreenContent(
                                 clearDialog = { dialogData = null },
                                 createInterview = createInterview,
                                 navigateToDetail = navigateToDetail,
-                                enterInterview = { id, type, langCode ->
+                                enterInterview = { id, type, langCode, apiKey ->
                                     enterInterviewDialogData =
                                         EnterInterviewDialogData(
                                             id,
                                             {
-                                                enterInterview.invoke(id, type, langCode)
+                                                enterInterview.invoke(id, type, langCode, apiKey)
                                             },
                                             {
                                                 enterInterviewDialogData = null
