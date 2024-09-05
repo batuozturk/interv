@@ -1,6 +1,7 @@
 package com.batuhan.interv.presentation.interview.enter
 
 import android.content.Intent
+import android.media.MediaRecorder
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -18,15 +19,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.batuhan.interv.R
 import com.batuhan.interv.data.model.InterviewType
 import com.batuhan.interv.data.model.makeString
 import com.batuhan.interv.presentation.interview.enter.phone.PhoneInterviewScreen
 import com.batuhan.interv.presentation.interview.enter.videocall.VideoCallInterviewScreen
 import com.batuhan.interv.presentation.interview.enter.videocall.VideoCallInterviewScreenForTablet
 import com.batuhan.interv.util.BaseView
+import com.batuhan.interv.util.DialogAction
+import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogType
+import com.batuhan.interv.util.decideDialogType
 import com.batuhan.interv.util.isTablet
+import java.io.IOException
 import java.util.Locale
-
 
 @Composable
 fun InterviewScreen(
@@ -40,25 +46,40 @@ fun InterviewScreen(
 
     val context = LocalContext.current
 
-    val speechToTextService =
-        remember {
-            SpeechRecognizer.createSpeechRecognizer(context).apply {
-                setRecognitionListener(viewModel)
-            }
-        }
+//    val speechToTextService =
+//        remember {
+//            SpeechRecognizer.createSpeechRecognizer(context).apply {
+//                setRecognitionListener(viewModel)
+//            }
+//        }
 
-    val speechIntent =
+//    val speechIntent =
+//        remember {
+//            Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+//                putExtra(
+//                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+//                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+//                )
+//                putExtra(RecognizerIntent.EXTRA_LANGUAGE, langCode)
+//                putExtra(
+//                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+//                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+//                )
+//            }
+//        }
+
+    val audioRecorder =
         remember {
-            Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(
-                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
-                )
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, langCode)
-                putExtra(
-                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
-                )
+            MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setOutputFile(context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3")
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                }
             }
         }
 
@@ -101,10 +122,21 @@ fun InterviewScreen(
     val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(isMyTurn) {
-        if (isMyTurn >= 0 && isMyTurn != size)
-            {
-                speechToTextService.startListening(speechIntent)
-            }
+        if (isMyTurn >= 0 && isMyTurn != size) {
+            audioRecorder.start()
+            viewModel.showDialog(
+                DialogData(
+                    R.string.recording_is_started,
+                    listOf(DialogAction(R.string.stop_recording) {
+                        audioRecorder.stop()
+                        viewModel.clearDialog()
+                        viewModel.retrieveAndUploadAudio(context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3", langCode)
+
+                    }),
+                    type = DialogType.SUCCESS_INFO
+                )
+            )
+        }
     }
     val params =
         remember(uiState.currentStepInt) {
@@ -127,6 +159,8 @@ fun InterviewScreen(
         }
     }
 
+    //
+
     DisposableEffect(key1 = lifecycleOwner) {
         val lifecycleEventObserver =
             LifecycleEventObserver { _, event ->
@@ -142,9 +176,10 @@ fun InterviewScreen(
             ttsService.speak("", TextToSpeech.QUEUE_FLUSH, Bundle.EMPTY, "")
             ttsService.stop()
             ttsService.shutdown()
-            speechToTextService.cancel()
-            speechToTextService.stopListening()
-            speechToTextService.destroy()
+//            speechToTextService.cancel()
+//            speechToTextService.stopListening()
+//            speechToTextService.destroy()
+            audioRecorder.release()
             lifecycleOwner.lifecycle.removeObserver(lifecycleEventObserver)
         }
     }
@@ -161,10 +196,10 @@ fun InterviewScreen(
                 is InterviewEvent.VideoState -> {
                     // enable or disable video
                 }
+
                 is InterviewEvent.ReinitializeSpeechRecognition -> {
-                    if (isMyTurn >= 0 && isMyTurn != size)
-                    {
-                        speechToTextService.startListening(speechIntent)
+                    if (isMyTurn >= 0 && isMyTurn != size) {
+//                        speechToTextService.startListening(speechIntent)
                     }
                 }
             }
