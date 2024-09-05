@@ -30,6 +30,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,15 +41,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.batuhan.interv.MainActivity
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.InterviewStep
 import com.batuhan.interv.data.model.InterviewType
 import com.batuhan.interv.ui.theme.fontFamily
 import com.batuhan.interv.util.BaseView
+import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.EnterInterviewDialogData
 import com.batuhan.interv.util.EnterInterviewView
+import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun InterviewDetailScreen(
@@ -56,15 +63,28 @@ fun InterviewDetailScreen(
     onBackPressed: () -> Unit,
     showDialog: (DialogData) -> Unit = {},
     clearDialog: () -> Unit = {},
-    enterInterview: (Long, InterviewType, String) -> Unit = { _, _, _ -> },
+    enterInterview: (Long, InterviewType, String, String) -> Unit = { _, _, _, _ -> },
 ) {
     val context = LocalContext.current
 
     val viewModel = hiltViewModel<InterviewDetailViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    var apiKey by remember {
+        mutableStateOf("")
+    }
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = interviewId) {
         viewModel.getInterviewWithSteps(interviewId)
+    }
+
+    LaunchedEffect(true) {
+        context.dataStore.data.collect {
+            apiKey = it[MainActivity.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                ""
+            }
+        }
     }
 
     val dialogData by remember(uiState.dialogData) {
@@ -88,16 +108,40 @@ fun InterviewDetailScreen(
                 is InterviewDetailEvent.RetryInterview -> viewModel.retryInterview(it.interview, it.isTablet)
                 is InterviewDetailEvent.ShareInterview -> viewModel.shareInterview(it.interview)
                 is InterviewDetailEvent.EnterInterview -> {
-                    enterInterviewDialogData =
-                        EnterInterviewDialogData(
-                            it.interviewId,
-                            {
-                                enterInterview(it.interviewId, it.interviewType, it.languageCode)
-                            },
-                            {
-                                enterInterviewDialogData = null
-                            },
-                        )
+                    if (apiKey.isEmpty()) {
+                        coroutineScope.launch {
+                            delay(500L)
+                            viewModel.showDialog(
+                                DialogData(
+                                    title = R.string.api_key_empty,
+                                    type = DialogType.ERROR,
+                                    actions =
+                                    listOf(
+                                        DialogAction(R.string.dismiss) {
+                                            viewModel.clearDialog()
+                                        },
+                                    ),
+                                ),
+                            )
+                        }
+
+                    } else {
+                        enterInterviewDialogData =
+                            EnterInterviewDialogData(
+                                it.interviewId,
+                                {
+                                    enterInterview(
+                                        it.interviewId,
+                                        it.interviewType,
+                                        it.languageCode,
+                                        apiKey,
+                                    )
+                                },
+                                {
+                                    enterInterviewDialogData = null
+                                },
+                            )
+                    }
                 }
             }
         }
@@ -167,7 +211,7 @@ fun ScreenContent(
                             interviewWithSteps!!.interview?.interviewName ?: "",
                             fontFamily = fontFamily,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                     },
                     colors =
@@ -196,7 +240,7 @@ fun ScreenContent(
                                     sendEvent.invoke(
                                         InterviewDetailEvent.RetryInterview(
                                             interviewWithSteps!!.interview!!,
-                                            isTablet
+                                            isTablet,
                                         ),
                                     )
                                 },
@@ -215,7 +259,7 @@ fun ScreenContent(
                             ) {
                                 Icon(Icons.Outlined.Share, contentDescription = null)
                             }
-                            */
+                             */
                         } else {
                             if (!isTablet) {
                                 IconButton(

@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interv.MainActivity
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.FilterType
 import com.batuhan.interv.data.model.Interview
@@ -50,8 +51,11 @@ import com.batuhan.interv.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interv.presentation.interview.create.addstep.AddStepScreen
 import com.batuhan.interv.presentation.interview.detail.InterviewDetailScreen
 import com.batuhan.interv.util.ActionView
+import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.FilterDialogView
+import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,7 +66,7 @@ fun InterviewListScreen(
     clearDialog: () -> Unit,
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
-    enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String) -> Unit,
+    enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String, apiKey: String) -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<InterviewListViewModel>()
@@ -70,6 +74,16 @@ fun InterviewListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dialogData by remember(uiState.dialogData) {
         derivedStateOf { uiState.dialogData }
+    }
+    var apiKey by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(true) {
+        context.dataStore.data.collect {
+            apiKey = it[MainActivity.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                ""
+            }
+        }
     }
     LaunchedEffect(dialogData) {
         dialogData?.let(showDialog)
@@ -81,12 +95,29 @@ fun InterviewListScreen(
                 InterviewListEvent.ClearDialog -> clearDialog.invoke()
                 is InterviewListEvent.Detail -> navigateToDetail.invoke(it.interviewId)
                 is InterviewListEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
-                is InterviewListEvent.EnterInterview ->
-                    enterInterview.invoke(
-                        it.interviewId,
-                        it.interviewType,
-                        it.langCode,
-                    )
+                is InterviewListEvent.EnterInterview -> {
+                    if (apiKey.isEmpty()) {
+                        viewModel.showDialog(
+                            DialogData(
+                                title = R.string.api_key_empty,
+                                type = DialogType.ERROR,
+                                actions =
+                                    listOf(
+                                        DialogAction(R.string.dismiss) {
+                                            viewModel.clearDialog()
+                                        },
+                                    ),
+                            ),
+                        )
+                    } else {
+                        enterInterview.invoke(
+                            it.interviewId,
+                            it.interviewType,
+                            it.langCode,
+                            apiKey,
+                        )
+                    }
+                }
 
                 is InterviewListEvent.OpenFilter -> {
                     viewModel.setFilterType()
