@@ -46,6 +46,8 @@ fun InterviewScreen(
 
     val context = LocalContext.current
 
+    // TODO speech to text service remove
+
 //    val speechToTextService =
 //        remember {
 //            SpeechRecognizer.createSpeechRecognizer(context).apply {
@@ -185,6 +187,7 @@ fun InterviewScreen(
     }
     LaunchedEffect(true) {
         viewModel.event.collect {
+            // TODO reorganize this part
             when (it) {
                 InterviewEvent.Back -> {
                     onBackPressed.invoke()

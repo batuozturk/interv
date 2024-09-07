@@ -52,7 +52,7 @@ class InterviewViewModel
     ) : ViewModel(),
         InterviewEventHandler,
         ViewModelEventHandler<InterviewEvent, InterviewError>,
-        TextToSpeech.OnInitListener, RecognitionListener {
+        TextToSpeech.OnInitListener {
     companion object {
         private const val KEY_INTERVIEW_ID = "interviewId"
         private const val KEY_OPENAI_KEY = "openaiKey"
@@ -231,57 +231,59 @@ class InterviewViewModel
         }
     }
 
-    override fun onReadyForSpeech(p0: Bundle?) {
-        Log.d("ready for speech", "true")
-    }
-
-    override fun onBeginningOfSpeech() {
-        Log.d("speech start", "true")
-    }
-
-    override fun onRmsChanged(p0: Float) {
-        // no-op for now
-    }
-
-    override fun onBufferReceived(p0: ByteArray?) {
-        // no-op for now
-    }
-
-    override fun onEndOfSpeech() {
-        // no-op
-    }
-
-    override fun onError(p0: Int) {
-        if(p0 == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE){
-            showDialog(
-                DialogData(
-                    title = R.string.speech_recognition_requires_internet,
-                    type = DialogType.ERROR,
-                    actions =
-                    listOf(
-                        DialogAction(R.string.retry) {
-                            clearDialog()
-                            sendEvent(InterviewEvent.ReinitializeSpeechRecognition)
-                        },
-                    ),
-                ),
-            )
-        }
-    }
-
-    override fun onResults(p0: Bundle?) {
-        val matches = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-        val answer = matches?.get(0) ?: return
-        upsertInterviewStep(answer)
-    }
-
-    override fun onPartialResults(p0: Bundle?) {
-        // no-op
-    }
-
-    override fun onEvent(p0: Int, p1: Bundle?) {
-        // no-op
-    }
+    // TODO speech to text remove?
+//
+//    override fun onReadyForSpeech(p0: Bundle?) {
+//        Log.d("ready for speech", "true")
+//    }
+//
+//    override fun onBeginningOfSpeech() {
+//        Log.d("speech start", "true")
+//    }
+//
+//    override fun onRmsChanged(p0: Float) {
+//        // no-op for now
+//    }
+//
+//    override fun onBufferReceived(p0: ByteArray?) {
+//        // no-op for now
+//    }
+//
+//    override fun onEndOfSpeech() {
+//        // no-op
+//    }
+//
+//    override fun onError(p0: Int) {
+//        if(p0 == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE){
+//            showDialog(
+//                DialogData(
+//                    title = R.string.speech_recognition_requires_internet,
+//                    type = DialogType.ERROR,
+//                    actions =
+//                    listOf(
+//                        DialogAction(R.string.retry) {
+//                            clearDialog()
+//                            sendEvent(InterviewEvent.ReinitializeSpeechRecognition)
+//                        },
+//                    ),
+//                ),
+//            )
+//        }
+//    }
+//
+//    override fun onResults(p0: Bundle?) {
+//        val matches = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+//        val answer = matches?.get(0) ?: return
+//        upsertInterviewStep(answer)
+//    }
+//
+//    override fun onPartialResults(p0: Bundle?) {
+//        // no-op
+//    }
+//
+//    override fun onEvent(p0: Int, p1: Bundle?) {
+//        // no-op
+//    }
 
     fun retrieveAndUploadAudio(path: String, language: String) {
         val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
