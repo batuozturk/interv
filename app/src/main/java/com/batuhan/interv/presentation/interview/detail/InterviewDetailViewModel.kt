@@ -2,6 +2,14 @@ package com.batuhan.interv.presentation.interview.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aallam.openai.api.chat.ChatCompletion
+import com.aallam.openai.api.chat.ChatCompletionRequest
+import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.logging.LogLevel
+import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.LoggingConfig
+import com.aallam.openai.client.OpenAI
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewStep
@@ -11,6 +19,7 @@ import com.batuhan.interv.domain.interview.DeleteInterview
 import com.batuhan.interv.domain.interview.DeleteInterviewSteps
 import com.batuhan.interv.domain.interview.GetInterviewWithSteps
 import com.batuhan.interv.domain.interview.UpsertInterview
+import com.batuhan.interv.domain.interview.UpsertInterviewStep
 import com.batuhan.interv.domain.interview.UpsertInterviewSteps
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
@@ -36,6 +45,7 @@ class InterviewDetailViewModel @Inject constructor(
     private val getInterviewWithSteps: GetInterviewWithSteps,
     private val deleteInterviewSteps: DeleteInterviewSteps,
     private val upsertInterviewSteps: UpsertInterviewSteps,
+    private val upsertInterviewStep: UpsertInterviewStep,
 ) : ViewModel(), InterviewDetailEventHandler, ViewModelEventHandler<InterviewDetailEvent, InterviewDetailError> {
 
     private val _event = Channel<InterviewDetailEvent> { Channel.BUFFERED }
@@ -116,7 +126,7 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Success -> {
                     val newInterviewId = result.data
                     val steps = uiState.value.interviewWithSteps?.steps?.map {
-                        it.copy(interviewStepId = null, interviewId = newInterviewId)
+                        it.copy(interviewStepId = null, interviewId = newInterviewId, suggestedAnswer = null)
                     }
                     upsertInterviewSteps(newInterviewId, steps!!, isTablet)
                 }
@@ -253,6 +263,51 @@ class InterviewDetailViewModel @Inject constructor(
         }
     }
 
+    override fun generateSuggestedAnswer(interviewStep: InterviewStep, apiKey: String) {
+
+        val interviewWithSteps = uiState.value.interviewWithSteps
+        val interviewStepList = interviewWithSteps?.steps?.toMutableList() ?: return
+        val openAI = OpenAI(token = apiKey, logging = LoggingConfig(LogLevel.All))
+        // openai operation
+        viewModelScope.launch {
+            val chatCompletionRequest = ChatCompletionRequest(
+                model = ModelId("gpt-4o-mini"),
+                messages = listOf(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = interviewStep.question?.question // stepi yaz
+                    )
+                )
+            )
+            val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
+
+            val newList = interviewStepList.map {
+                if(it.interviewStepId == interviewStep.interviewStepId)
+                    it.copy(suggestedAnswer = completion.choices[0].message.content ?: "")
+                else it
+            }
+            val updatedStep = interviewStep.copy(suggestedAnswer = completion.choices[0].message.content)
+            val result = upsertInterviewStep.invoke(UpsertInterviewStep.Params(updatedStep))
+
+            when(result){
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            interviewWithSteps = interviewWithSteps.copy(steps = newList)
+                        )
+                    }
+                }
+                is Result.Error -> {
+
+                }
+            }
+
+
+        }
+
+
+    }
+
 }
 
 data class InterviewDetailUiState(
@@ -276,6 +331,7 @@ sealed class InterviewDetailEvent {
     data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val languageCode: String) : InterviewDetailEvent()
     data class ShareInterview(val interview: Interview) : InterviewDetailEvent()
     data class RetryInterview(val interview: Interview, val isTablet: Boolean): InterviewDetailEvent()
+    data class GenerateSuggestedAnswer(val interviewStep: InterviewStep) : InterviewDetailEvent()
 
     object ClearDialog: InterviewDetailEvent()
 }

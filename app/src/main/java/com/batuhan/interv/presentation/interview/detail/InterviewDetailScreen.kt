@@ -16,12 +16,17 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -37,14 +42,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interv.MainActivity
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.InterviewStep
 import com.batuhan.interv.data.model.InterviewType
+import com.batuhan.interv.data.model.Question
+import com.batuhan.interv.ui.theme.InterviewselfTheme
 import com.batuhan.interv.ui.theme.fontFamily
 import com.batuhan.interv.util.BaseView
 import com.batuhan.interv.util.DialogAction
@@ -105,7 +116,12 @@ fun InterviewDetailScreen(
 
                 is InterviewDetailEvent.ClearDialog -> clearDialog.invoke()
                 is InterviewDetailEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
-                is InterviewDetailEvent.RetryInterview -> viewModel.retryInterview(it.interview, it.isTablet)
+                is InterviewDetailEvent.RetryInterview ->
+                    viewModel.retryInterview(
+                        it.interview,
+                        it.isTablet,
+                    )
+
                 is InterviewDetailEvent.ShareInterview -> viewModel.shareInterview(it.interview)
                 is InterviewDetailEvent.EnterInterview -> {
                     if (apiKey.isEmpty()) {
@@ -116,15 +132,14 @@ fun InterviewDetailScreen(
                                     title = R.string.api_key_empty,
                                     type = DialogType.ERROR,
                                     actions =
-                                    listOf(
-                                        DialogAction(R.string.dismiss) {
-                                            viewModel.clearDialog()
-                                        },
-                                    ),
+                                        listOf(
+                                            DialogAction(R.string.dismiss) {
+                                                viewModel.clearDialog()
+                                            },
+                                        ),
                                 ),
                             )
                         }
-
                     } else {
                         enterInterviewDialogData =
                             EnterInterviewDialogData(
@@ -142,6 +157,26 @@ fun InterviewDetailScreen(
                                 },
                             )
                     }
+                }
+                is InterviewDetailEvent.GenerateSuggestedAnswer -> {
+                    if (apiKey.isEmpty()) {
+                        coroutineScope.launch {
+                            delay(500L)
+                            viewModel.showDialog(
+                                DialogData(
+                                    title = R.string.api_key_empty,
+                                    type = DialogType.ERROR,
+                                    actions =
+                                    listOf(
+                                        DialogAction(R.string.dismiss) {
+                                            viewModel.clearDialog()
+                                        },
+                                    ),
+                                ),
+                            )
+                        }
+                    }
+                    else viewModel.generateSuggestedAnswer(it.interviewStep, apiKey)
                 }
             }
         }
@@ -295,11 +330,17 @@ fun ScreenContent(
                 )
             },
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(it)) {
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it),
+            ) {
                 item {
                     Column(
                         Modifier
-                            .fillMaxWidth().height(80.dp)
+                            .fillMaxWidth()
+                            .height(80.dp)
                             .padding(8.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -309,7 +350,7 @@ fun ScreenContent(
                 }
                 items(interviewWithSteps?.steps?.size ?: 0) {
                     interviewWithSteps?.steps?.get(it)?.let {
-                        InterviewDetailListItem(interview = it)
+                        InterviewDetailListItem(interview = it, sendEvent)
                     }
                 }
             }
@@ -318,18 +359,83 @@ fun ScreenContent(
 }
 
 @Composable
-fun InterviewDetailListItem(interview: InterviewStep) {
+fun InterviewDetailListItem(
+    interview: InterviewStep,
+    sendEvent: (InterviewDetailEvent) -> Unit
+) {
     if (interview.interviewStepId != null) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
-                .padding(10.dp),
+                .padding(vertical = 10.dp),
         ) {
-            Text(interview.question?.question?.lowercase() ?: "")
+            Text(
+                interview.question?.question?.lowercase() ?: "",
+                modifier = Modifier.padding(horizontal = 10.dp),
+            )
             Spacer(modifier = Modifier.height(40.dp))
-            Text(interview.answer?.lowercase() ?: "not answered yet")
+            Text(
+                interview.answer?.lowercase() ?: "not answered yet",
+                modifier = Modifier.padding(horizontal = 10.dp),
+            )
+            if(interview.answer != null){
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface, thickness = 1.dp)
+
+                if (interview.suggestedAnswer == null) {
+
+                    Button(
+                        contentPadding = ButtonDefaults.TextButtonContentPadding,
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                        onClick = { sendEvent(InterviewDetailEvent.GenerateSuggestedAnswer(interview)) },
+                        colors = ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                    ) {
+                        Text(
+                            "generate suggested answer", // TODO string resource
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+                else{
+                    Text(
+                        modifier =Modifier.fillMaxWidth().padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                        text = interview.suggestedAnswer.lowercase(),
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun InterviewDetailListItemPreview() {
+    InterviewselfTheme {
+        InterviewDetailListItem(
+            interview =
+                InterviewStep(
+                    interviewStepId = 1,
+                    question =
+                        Question(
+                            null,
+                            "what is sdk",
+                            null,
+                        ),
+                    answer = "sdk is software development kit",
+                ),
+        ) {
+//
         }
     }
 }
