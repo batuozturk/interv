@@ -162,9 +162,9 @@ fun InterviewListScreenContent(
     Column(Modifier.fillMaxSize()) {
         ActionView(
             searchString = updateFilterText,
-            Icons.AutoMirrored.Default.List,
-            Icons.Default.Add,
-            stringResource(R.string.search_interviews),
+            icon1 = Icons.AutoMirrored.Default.List,
+            icon2 = Icons.Default.Add,
+            placeholderString = stringResource(R.string.search_interviews),
             action1 = { sendEvent(InterviewListEvent.OpenFilter) },
             action2 = { sendEvent(InterviewListEvent.CreateInterview) },
         )
@@ -223,9 +223,9 @@ fun InterviewListScreenContentForTablets(
         Column(Modifier.weight(9f - weight - weight2 - weight3)) {
             ActionView(
                 searchString = updateFilterText,
-                Icons.AutoMirrored.Default.List,
-                Icons.Default.Add,
-                stringResource(R.string.search_interviews),
+                icon1 = Icons.AutoMirrored.Default.List,
+                icon2 = Icons.Default.Add,
+                placeholderString = stringResource(R.string.search_interviews),
                 action1 = { sendEvent.invoke(InterviewListEvent.OpenFilter) }, // filtering
                 action2 = {
                     interviewDetailId = null
