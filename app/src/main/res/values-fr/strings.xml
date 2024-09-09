@@ -101,11 +101,15 @@
     <string name="success_questions_shared">questions partagées</string>
     <string name="speech_recognition_requires_internet">pas de connexion</string>
     <string name="interview_steps_not_added">étapes de l\'entretien non ajoutées</string>
-    <string name="api_key_placeholder">clé API</string>
-    <string name="set_api_key">définir la clé API</string>
+    <string name="api_key_placeholder">clé api</string>
+    <string name="set_api_key">définir la clé api</string>
     <string name="recording_is_started">l\'enregistrement a commencé</string>
     <string name="stop_recording">arrêter l\'enregistrement</string>
-    <string name="api_key_empty">la clé API doit être entrée dans les paramètres</string>
-    <string name="api_key_info">La clé API est utilisée pour générer des questions basées sur l\'IA, utilisation de la fonctionnalité de reconnaissance vocale dans l\'application et évaluer les résultats des entretiens. Vous pouvez obtenir la clé API à partir de la page des clés API d\'OpenAI, il vous suffit de copier ou de taper la clé.</string>
-
+    <string name="api_key_empty">la clé api doit être entrée dans les paramètres</string>
+    <string name="api_key_info">la clé api est utilisée pour générer des questions basées sur l\'IA, utilisation de la fonctionnalité de reconnaissance vocale dans l\'application et évaluer les résultats des entretiens. vous pouvez obtenir la clé API à partir de la page des clés api d\'openai, il vous suffit de copier ou de taper la clé.</string>
+    <string name="not_answered_yet">pas encore répondu</string>
+    <string name="import_questions_info">vous pouvez importer vos questions au format json.\n\naprès avoir sélectionné le fichier, les questions seront importées dans interv.</string>
+    <string name="export_questions_info">vous pouvez exporter vos questions au format json, en fonction de la langue que vous sélectionnez.\n\nvous pouvez également partager les questions avec vos amis, ils peuvent importer ces fichiers json dans la section importer des questions.</string>
+    <string name="generate_suggested_answer">générer une réponse suggérée</string>
+    <string name="success_questions_saved">questions enregistrées</string>
 </resources>

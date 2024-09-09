@@ -96,28 +96,28 @@ fun ExportQuestionsScreen(
             }
         }
 
-
     LaunchedEffect(true) {
         viewModel.event.collect {
             when (it) {
                 ExportQuestionsEvent.Back -> onBackPressed.invoke()
                 ExportQuestionsEvent.ClearDialog -> clearDialog.invoke()
                 is ExportQuestionsEvent.ShareQuestions -> {
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/json"
-                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        putExtra(
-                            Intent.EXTRA_SUBJECT,
-                            "sharing file from interviewself"
-                        )
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            "sharing file which is exported as json"
-                        )
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
-                    }
+                    val intent =
+                        Intent(Intent.ACTION_SEND).apply {
+                            type = "application/json"
+                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            putExtra(
+                                Intent.EXTRA_SUBJECT,
+                                "sharing file from interviewself",
+                            )
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "sharing file which is exported as json",
+                            )
+                            putExtra(Intent.EXTRA_STREAM, it.uri)
+                        }
                     startActivityForResultSharing.launch(
-                        intent
+                        intent,
                     )
                 }
 
@@ -185,7 +185,7 @@ fun ExportQuestionsScreenContent(
                 modifier =
                     Modifier.fillMaxWidth()
                         .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 16.dp),
-                text = "you can export your questions as json file, based on the language that you select.\n\nalso you can share questions with your friends, they can import these json files in import questions section.",
+                text = stringResource(R.string.export_questions_info),
             )
             TabRow(
                 modifier =
@@ -279,12 +279,12 @@ fun ExportQuestionsScreenContent(
                         sendEvent.invoke(ExportQuestionsEvent.ExportQuestions(true))
                     },
                     colors =
-                    ButtonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        disabledContainerColor = Color.Transparent,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
+                        ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
                 ) {
                     Text(
                         stringResource(id = R.string.save_and_share),

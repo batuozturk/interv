@@ -106,4 +106,9 @@
     <string name="stop_recording">stop recording</string>
     <string name="api_key_empty">api key must be entered to settings</string>
     <string name="api_key_info">api key is used for generating AI based questions, using speech to text feature inside the application &amp; evaluating interview results. you can obtain api key from openai api key page, just copy or type the key. </string>
+    <string name="not_answered_yet">not answered yet</string>
+    <string name="import_questions_info">you can import your questions as json file.\n\nafter you select the file, questions will be imported to interv.</string>
+    <string name="export_questions_info">you can export your questions as json file, based on the language that you select.\n\nalso you can share questions with your friends, they can import these json files in import questions section.</string>
+    <string name="generate_suggested_answer">generate suggested answer</string>
+    <string name="success_questions_saved">questions saved</string>
 </resources>
