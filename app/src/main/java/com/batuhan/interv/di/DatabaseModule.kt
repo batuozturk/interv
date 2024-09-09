@@ -23,10 +23,16 @@ object DatabaseModule {
         }
     }
 
+    private val migration_2_3 = object : Migration(2,3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE interview DROP COLUMN questionDuration")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): InterviewselfDatabase {
         return Room.databaseBuilder(context, InterviewselfDatabase::class.java, "interviewself").addTypeConverter(QuestionConverter()).addMigrations(
-            migration_1_2).build()
+            migration_1_2, migration_2_3).build()
     }
 }

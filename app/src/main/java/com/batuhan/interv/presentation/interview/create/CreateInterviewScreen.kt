@@ -200,9 +200,6 @@ fun ScreenContent(
     val interviewName by remember(uiState.currentInterview.interviewName) {
         derivedStateOf { uiState.currentInterview.interviewName }
     }
-    val questionDuration by remember(uiState.currentInterview.questionDuration) {
-        derivedStateOf { uiState.currentInterview.questionDuration }
-    }
     val langCode by remember(uiState.currentInterview.langCode) {
         derivedStateOf { uiState.currentInterview.langCode }
     }
@@ -245,24 +242,6 @@ fun ScreenContent(
             value = interviewName ?: "",
             onValueChange = {
                 updateConfiguration.invoke(InterviewField.Name(it))
-            },
-            singleLine = true,
-        )
-        OutlinedTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp),
-            placeholder = {
-                Text(stringResource(R.string.create_interview_question_duration_placeholder))
-            },
-            leadingIcon = {
-                Icon(painterResource(id = R.drawable.ic_access_time_24), contentDescription = null)
-            },
-            colors = OutlinedTextFieldDefaults.colors(),
-            value = questionDuration?.toString() ?: "0",
-            onValueChange = {
-                updateConfiguration.invoke(InterviewField.Duration(it))
             },
             singleLine = true,
         )
