@@ -9,4 +9,6 @@ interface AddStepEventHandler {
 
     fun deleteStep(interviewStep: InterviewStep)
 
+    fun search(searchText: String)
+
 }

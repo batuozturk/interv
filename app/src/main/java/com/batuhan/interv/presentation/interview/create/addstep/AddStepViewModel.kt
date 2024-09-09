@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.InterviewStep
 import com.batuhan.interv.data.model.Question
+import com.batuhan.interv.data.model.QuestionFilterType
 import com.batuhan.interv.data.model.findLanguageFilterType
 import com.batuhan.interv.domain.interview.DeleteInterviewStep
 import com.batuhan.interv.domain.interview.GetInterviewSteps
@@ -23,10 +24,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,13 +57,13 @@ class AddStepViewModel @Inject constructor(
 
     val language = MutableStateFlow(savedStateHandle.get<String>(KEY_LANG_CODE))
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val questions = language.flatMapLatest {
-        if(it != null){
-            getAllQuestions.invoke(GetAllQuestions.Params("", findLanguageFilterType(it))).cachedIn(viewModelScope)
-        }
-        else emptyFlow()
+    val searchText = MutableStateFlow("")
 
+    val filterPair = MutableStateFlow(Pair(searchText.value, language.value))
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val questions = filterPair.flatMapLatest {
+        getAllQuestions.invoke(GetAllQuestions.Params(it.first, findLanguageFilterType(it.second))).cachedIn(viewModelScope)
     }.cachedIn(viewModelScope)
 
 
@@ -77,6 +80,7 @@ class AddStepViewModel @Inject constructor(
 
     fun initLanguage(language: String){
         this.language.value = language
+        filterPair.value = Pair("", language)
     }
 
 
@@ -180,11 +184,21 @@ class AddStepViewModel @Inject constructor(
         }
     }
 
+    override fun search(searchText: String) {
+        this.searchText.value = searchText
+        val pair = this.filterPair.value
+        filterPair.value = Pair(searchText, pair.second)
+        _uiState.update {
+            it.copy(searchText = searchText)
+        }
+    }
+
 }
 
 data class AddStepUiState(
     internal val dialogData: DialogData? = null,
-    private val interviewSteps: List<InterviewStep>? = null
+    private val interviewSteps: List<InterviewStep>? = null,
+    internal val searchText: String = ""
 )
 
 sealed class AddStepError {
@@ -196,6 +210,8 @@ sealed class AddStepEvent {
     object Back : AddStepEvent()
     data class AddStep(val question: Question) : AddStepEvent()
     data class DeleteStep(val interviewStep: InterviewStep) : AddStepEvent()
+
+    data class Search(val searchText: String): AddStepEvent()
 
     object ClearDialog: AddStepEvent()
 

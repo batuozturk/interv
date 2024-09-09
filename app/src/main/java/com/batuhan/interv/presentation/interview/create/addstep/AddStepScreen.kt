@@ -17,11 +17,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -32,12 +35,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +58,7 @@ import com.batuhan.interv.ui.theme.fontFamily
 import com.batuhan.interv.util.BaseView
 import com.batuhan.interv.util.DialogData
 import com.batuhan.interv.util.isTablet
+import com.batuhan.interv.util.keyboardAsState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -72,6 +80,10 @@ fun AddStepScreen(
         derivedStateOf { uiState.dialogData }
     }
 
+    val searchText by remember(uiState.searchText) {
+        derivedStateOf { uiState.searchText }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collect {
             when (it) {
@@ -79,6 +91,7 @@ fun AddStepScreen(
                 is AddStepEvent.AddStep -> viewModel.addStep(it.question)
                 is AddStepEvent.DeleteStep -> viewModel.deleteStep(it.interviewStep)
                 is AddStepEvent.ClearDialog -> clearDialog.invoke()
+                is AddStepEvent.Search -> viewModel.search(it.searchText)
             }
         }
     }
@@ -97,10 +110,8 @@ fun AddStepScreen(
         LaunchedEffect(dialogData) {
             dialogData?.let(showDialog)
         }
-
     }
-    AddStepScreenContent(dialogData, questions, steps, viewModel::sendEvent)
-
+    AddStepScreenContent(dialogData, questions, steps, searchText, viewModel::sendEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -109,6 +120,7 @@ fun AddStepScreenContent(
     dialogData: DialogData?,
     questions: LazyPagingItems<Question>,
     steps: LazyPagingItems<InterviewStep>,
+    searchText: String,
     sendEvent: (AddStepEvent) -> Unit,
 ) {
     val pagerState =
@@ -199,7 +211,7 @@ fun AddStepScreenContent(
                 }
                 HorizontalPager(state = pagerState, userScrollEnabled = false) {
                     when (it) {
-                        0 -> SelectQuestion(questions = questions, sendEvent)
+                        0 -> SelectQuestion(questions = questions, searchText = searchText, sendEvent)
                         1 -> AddedStepList(steps = steps, sendEvent)
                     }
                 }
@@ -211,18 +223,22 @@ fun AddStepScreenContent(
 @Composable
 fun SelectQuestion(
     questions: LazyPagingItems<Question>,
-    sendEvent: (AddStepEvent) -> Unit,
+    searchText: String,
+    sendEvent: (AddStepEvent) -> Unit
 ) {
-    LazyColumn(
-        Modifier
-            .fillMaxSize(),
-    ) {
-        items(questions.itemCount) {
-            questions[it]?.let { question ->
-                QuestionSelectItem(question = question, sendEvent)
+    Column(Modifier.fillMaxSize()) {
+        QuestionSearchView(searchText) {
+            sendEvent(AddStepEvent.Search(it))
+        }
+        LazyColumn {
+            items(questions.itemCount) {
+                questions[it]?.let { question ->
+                    QuestionSelectItem(question = question, sendEvent)
+                }
             }
         }
     }
+
 }
 
 @Composable
@@ -284,4 +300,34 @@ fun QuestionSelectItem(
     ) {
         Text(question.question ?: "undefined")
     }
+}
+
+@Composable
+fun QuestionSearchView(
+    searchText: String?,
+    onSearch: (String) -> Unit
+)  {
+    val focusManager = LocalFocusManager.current
+    val isKeyboardOpen by keyboardAsState()
+    LaunchedEffect(isKeyboardOpen) {
+        if (!isKeyboardOpen){
+            focusManager.clearFocus()
+        }
+    }
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        placeholder = {
+            Text(stringResource(id = R.string.search_questions))
+        },
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = null,
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(),
+        value = searchText ?: "",
+        onValueChange = onSearch,
+        singleLine = true,
+    )
 }
