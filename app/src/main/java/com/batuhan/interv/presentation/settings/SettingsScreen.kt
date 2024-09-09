@@ -39,9 +39,11 @@ import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.presentation.settings.detail.SettingsDetailScreen
 import com.batuhan.interv.presentation.settings.exportquestions.ExportQuestionsScreen
 import com.batuhan.interv.presentation.settings.importquestions.ImportQuestionsScreen
+import com.batuhan.interv.util.ApiKeyData
 import com.batuhan.interv.util.BrowserEvent
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogInputAction
 import com.batuhan.interv.util.LanguageData
 import com.batuhan.interv.util.SettingsDetailAction
 import com.batuhan.interv.util.StyleData
@@ -103,7 +105,15 @@ fun SettingsScreen(
                     )
                     Locale.US.language + "-" + Locale.US.country
                 }
-            viewModel.readData(isDarkMode, langCode)
+            val apiKey =
+                data[SettingsViewModel.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                    datastore.writeData(
+                        SettingsType.ApiKey(""),
+                        viewModel::writeData,
+                    )
+                    ""
+                }
+            viewModel.readData(isDarkMode, langCode, apiKey)
         }
     }
 
@@ -218,6 +228,31 @@ fun SettingsScreen(
                 }
             }
         },
+        setApiKey = {
+            viewModel.showDialog(
+                DialogData(
+                    R.string.set_api_key,
+                    actions =
+                        listOf(
+                            DialogAction(R.string.dismiss, viewModel::clearDialog),
+                        ),
+                    type = decideDialogType(darkTheme),
+                    inputActions =
+                        listOf(
+                            DialogInputAction(R.string.save) { key ->
+                                coroutineScope.launch {
+                                    context.dataStore.writeData(SettingsType.ApiKey(key)) {
+                                        viewModel.writeData(
+                                            SettingsType.ApiKey(key),
+                                        )
+                                    }
+                                }
+                            },
+                        ),
+                    apiKeyData = ApiKeyData(uiState.apiKey)
+                ),
+            )
+        },
     )
 }
 
@@ -232,6 +267,7 @@ fun SettingsScreenContent(
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
     writeData: (SettingsType) -> Unit,
+    setApiKey: () -> Unit,
 ) {
     var detailType: SettingsDetailAction? by remember {
         mutableStateOf(null)
@@ -305,6 +341,23 @@ fun SettingsScreenContent(
                             )
                     } else {
                         language.invoke()
+                    }
+                }
+            }
+            item {
+                SettingsListItem(title = R.string.set_api_key) {
+                    if (isTablet) {
+                        exportQuestionsOpened = false
+                        detailType =
+                            SettingsDetailAction.ApiKey(
+                                listOf(
+                                    DialogInputAction(R.string.set_api_key) {
+                                        writeData.invoke(SettingsType.ApiKey(it))
+                                    },
+                                ),
+                            )
+                    } else {
+                        setApiKey.invoke()
                     }
                 }
             }
@@ -406,6 +459,10 @@ suspend fun DataStore<Preferences>.writeData(
             is SettingsType.LangCode ->
                 prefs[SettingsViewModel.KEY_PREFERENCES_LANGUAGE] =
                     settingsType.langCode
+
+            is SettingsType.ApiKey ->
+                prefs[SettingsViewModel.KEY_PREFERENCES_OPENAI_CLIENT_KEY] =
+                    settingsType.apiKey
         }
     }
     afterCompletion.invoke(settingsType)

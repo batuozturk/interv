@@ -12,7 +12,9 @@ data class DialogData(
     val options: List<DialogAction>? = null,
     val type: DialogType = DialogType.ERROR,
     val languageData: LanguageData? = null,
-    val styleData: StyleData? = null
+    val styleData: StyleData? = null,
+    val apiKeyData: ApiKeyData? = null,
+    val inputActions: List<DialogInputAction>? = null
 )
 
 data class LanguageData(
@@ -23,9 +25,18 @@ data class StyleData(
     val isDarkMode: Boolean
 )
 
+data class ApiKeyData(
+    val apiKey: String
+)
+
 data class DialogAction(
     @StringRes val text: Int,
     val action: () -> Unit
+)
+
+data class DialogInputAction(
+    @StringRes val title: Int,
+    val action: (String) -> Unit
 )
 
 enum class DialogType(val containerColor: Color, val textColor: Color = Color.White) {

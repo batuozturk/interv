@@ -7,7 +7,7 @@ import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewStep
 import com.batuhan.interv.data.model.Question
 
-private const val DB_VERSION = 1
+private const val DB_VERSION = 2
 @TypeConverters(QuestionConverter::class)
 @Database(
     version = DB_VERSION,

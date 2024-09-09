@@ -102,4 +102,10 @@
     <string name="success_questions_shared">sorular paylaşıldı</string>
     <string name="speech_recognition_requires_internet">bağlantı yok</string>
     <string name="interview_steps_not_added">görüşme adımları eklenmedi</string>
+    <string name="api_key_placeholder">api anahtarı</string>
+    <string name="set_api_key">api anahtarı gir</string>
+    <string name="recording_is_started">kayıt başladı</string>
+    <string name="stop_recording">durdur</string>
+    <string name="api_key_empty">api anahtarı ayarlar kısmına girilmelidir</string>
+    <string name="api_key_info">API anahtarı, AI tabanlı sorular oluşturmak, uygulama içindeki konuşmadan metne özelliğini kullanma ve mülakat sonuçlarını değerlendirmek için kullanılır. API anahtarını OpenAI API anahtar sayfasından alabilirsiniz, sadece anahtarı kopyalayın veya yazın.</string>
 </resources>

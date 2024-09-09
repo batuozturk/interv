@@ -24,4 +24,10 @@ interface QuestionListEventHandler {
     fun filterByText(filterText: String)
 
     fun filter(filterType: QuestionFilterType)
+
+    fun generateQuestions(apiKey: String)
+
+    fun updateGenerateQuestionText(text: String)
+
+    fun setGenerating(isGenerating: Boolean)
 }

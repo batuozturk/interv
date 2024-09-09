@@ -106,6 +106,12 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
+    // OpenAI Client
+    implementation("com.aallam.openai:openai-client:3.8.2")
+
+    // OkHttp Engine for OpenAI Client
+    implementation("io.ktor:ktor-client-android:2.3.12")
+
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")

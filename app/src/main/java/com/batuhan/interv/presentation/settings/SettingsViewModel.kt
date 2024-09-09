@@ -21,6 +21,7 @@ class SettingsViewModel
     @Inject
     constructor() : ViewModel(), SettingsEventHandler, ViewModelEventHandler<SettingsEvent, SettingsError> {
         companion object {
+            internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY = stringPreferencesKey("preferences_openai_key")
             internal val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
             internal val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
         }
@@ -36,11 +37,13 @@ class SettingsViewModel
                 when (settingsType) {
                     is SettingsType.Style -> it.copy(isDarkMode = settingsType.isDarkMode)
                     is SettingsType.LangCode -> it.copy(langCode = settingsType.langCode)
+                    else -> it
                 }
             }
             when (settingsType) {
                 is SettingsType.Style -> sendEvent(SettingsEvent.ChangeStyle(settingsType.isDarkMode))
                 is SettingsType.LangCode -> sendEvent(SettingsEvent.RestartApplication)
+                else -> {}
             }
             clearDialog()
         }
@@ -48,9 +51,10 @@ class SettingsViewModel
         override fun readData(
             isDarkMode: Boolean,
             langCode: String,
+            apiKey: String,
         ) {
             _uiState.update {
-                it.copy(isDarkMode = isDarkMode, langCode = langCode)
+                it.copy(isDarkMode = isDarkMode, langCode = langCode, apiKey = apiKey)
             }
         }
 
@@ -89,12 +93,15 @@ data class SettingsUiState(
     internal val dialogData: DialogData? = null,
     internal val isDarkMode: Boolean = false,
     internal val langCode: String = "",
+    internal val apiKey: String = ""
 )
 
 sealed class SettingsType {
     data class Style(val isDarkMode: Boolean) : SettingsType()
 
     data class LangCode(val langCode: String) : SettingsType()
+
+    data class ApiKey(val apiKey: String): SettingsType()
 }
 
 sealed class SettingsError {

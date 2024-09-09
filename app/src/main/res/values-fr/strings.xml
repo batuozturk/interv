@@ -101,4 +101,11 @@
     <string name="success_questions_shared">questions partagées</string>
     <string name="speech_recognition_requires_internet">pas de connexion</string>
     <string name="interview_steps_not_added">étapes de l\'entretien non ajoutées</string>
+    <string name="api_key_placeholder">clé API</string>
+    <string name="set_api_key">définir la clé API</string>
+    <string name="recording_is_started">l\'enregistrement a commencé</string>
+    <string name="stop_recording">arrêter l\'enregistrement</string>
+    <string name="api_key_empty">la clé API doit être entrée dans les paramètres</string>
+    <string name="api_key_info">La clé API est utilisée pour générer des questions basées sur l\'IA, utilisation de la fonctionnalité de reconnaissance vocale dans l\'application et évaluer les résultats des entretiens. Vous pouvez obtenir la clé API à partir de la page des clés API d\'OpenAI, il vous suffit de copier ou de taper la clé.</string>
+
 </resources>

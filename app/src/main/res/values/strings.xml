@@ -100,4 +100,10 @@
     <string name="topic_unsubscribe_1">interv-tr</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
     <string name="interview_steps_not_added">interview steps not added</string>
+    <string name="api_key_placeholder">api key</string>
+    <string name="set_api_key">set api key</string>
+    <string name="recording_is_started">recording is started</string>
+    <string name="stop_recording">stop recording</string>
+    <string name="api_key_empty">api key must be entered to settings</string>
+    <string name="api_key_info">api key is used for generating AI based questions, using speech to text feature inside the application &amp; evaluating interview results. you can obtain api key from openai api key page, just copy or type the key. </string>
 </resources>

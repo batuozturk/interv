@@ -33,6 +33,7 @@ data class InterviewStep(
     @ColumnInfo("sentenceToTalk") val sentenceToTalk: String? = null,
     @ColumnInfo("question") val question: Question? = null,
     @ColumnInfo("answer") val answer: String? = null,
+    @ColumnInfo("suggestedAnswer") val suggestedAnswer: String? = null
 )
 
 @Keep

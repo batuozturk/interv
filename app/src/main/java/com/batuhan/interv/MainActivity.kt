@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
             ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
+        internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY = stringPreferencesKey("preferences_openai_key")
     }
 
     private lateinit var customTabsIntent: CustomTabsIntent
@@ -98,11 +99,18 @@ class MainActivity : ComponentActivity() {
             var darkTheme: Boolean? by remember {
                 mutableStateOf(null)
             }
+            var apiToken: String? by remember {
+                mutableStateOf(null)
+            }
             LaunchedEffect(true) {
                 dataStore.data.first().let {
                     darkTheme = it[KEY_PREFERENCES_STYLE] ?: run {
                         writeData(SettingsType.Style(true))
                         true
+                    }
+                    apiToken = it[KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                        writeData(SettingsType.ApiKey(""))
+                        ""
                     }
                     if (it[KEY_PREFERENCES_LANGUAGE] == null) {
                         writeData(SettingsType.LangCode("en-US"))
@@ -181,6 +189,7 @@ class MainActivity : ComponentActivity() {
                     is SettingsType.LangCode ->
                         prefs[KEY_PREFERENCES_LANGUAGE] =
                             settingsType.langCode
+                    else -> {}
                 }
             }
         }
@@ -220,8 +229,8 @@ fun InterviewSelfApp(
                 navigateToDetail = {
                     navController.navigate(Screen.InterviewDetail.createRoute(it))
                 },
-                enterInterview = { id, type, langCode ->
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
+                enterInterview = { id, type, langCode, apiKey ->
+                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode, apiKey))
                 },
                 sendBrowserEvent = sendBrowserEvent,
                 restartApplication = restartApplication,
@@ -255,9 +264,9 @@ fun InterviewSelfApp(
             InterviewDetailScreen(
                 interviewId = it.arguments?.getString(KEY_INTERVIEW_ID)?.toLong() ?: -1,
                 onBackPressed = { navController.popBackStack() },
-                enterInterview = { id, type, langCode ->
+                enterInterview = { id, type, langCode, apiKey ->
                     navController.popBackStack()
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
+                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode, apiKey))
                 },
             )
         }

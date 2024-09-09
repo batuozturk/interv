@@ -8,6 +8,12 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aallam.openai.api.audio.TranscriptionRequest
+import com.aallam.openai.api.file.FileSource
+import com.aallam.openai.api.logging.LogLevel
+import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.LoggingConfig
+import com.aallam.openai.client.OpenAI
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewStep
@@ -31,6 +37,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,9 +52,10 @@ class InterviewViewModel
     ) : ViewModel(),
         InterviewEventHandler,
         ViewModelEventHandler<InterviewEvent, InterviewError>,
-        TextToSpeech.OnInitListener, RecognitionListener {
+        TextToSpeech.OnInitListener {
     companion object {
         private const val KEY_INTERVIEW_ID = "interviewId"
+        private const val KEY_OPENAI_KEY = "openaiKey"
     }
 
     private val _event = Channel<InterviewEvent> { Channel.BUFFERED }
@@ -56,6 +65,8 @@ class InterviewViewModel
     val uiState = _uiState.asStateFlow()
 
     val interviewId = savedStateHandle.get<String>(KEY_INTERVIEW_ID)?.toLong()
+
+    private val apiKey = savedStateHandle.get<String>(KEY_OPENAI_KEY)
 
     val currentStepFlow = MutableStateFlow(-2)
 
@@ -220,56 +231,72 @@ class InterviewViewModel
         }
     }
 
-    override fun onReadyForSpeech(p0: Bundle?) {
-        Log.d("ready for speech", "true")
-    }
+    // TODO speech to text remove?
+//
+//    override fun onReadyForSpeech(p0: Bundle?) {
+//        Log.d("ready for speech", "true")
+//    }
+//
+//    override fun onBeginningOfSpeech() {
+//        Log.d("speech start", "true")
+//    }
+//
+//    override fun onRmsChanged(p0: Float) {
+//        // no-op for now
+//    }
+//
+//    override fun onBufferReceived(p0: ByteArray?) {
+//        // no-op for now
+//    }
+//
+//    override fun onEndOfSpeech() {
+//        // no-op
+//    }
+//
+//    override fun onError(p0: Int) {
+//        if(p0 == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE){
+//            showDialog(
+//                DialogData(
+//                    title = R.string.speech_recognition_requires_internet,
+//                    type = DialogType.ERROR,
+//                    actions =
+//                    listOf(
+//                        DialogAction(R.string.retry) {
+//                            clearDialog()
+//                            sendEvent(InterviewEvent.ReinitializeSpeechRecognition)
+//                        },
+//                    ),
+//                ),
+//            )
+//        }
+//    }
+//
+//    override fun onResults(p0: Bundle?) {
+//        val matches = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+//        val answer = matches?.get(0) ?: return
+//        upsertInterviewStep(answer)
+//    }
+//
+//    override fun onPartialResults(p0: Bundle?) {
+//        // no-op
+//    }
+//
+//    override fun onEvent(p0: Int, p1: Bundle?) {
+//        // no-op
+//    }
 
-    override fun onBeginningOfSpeech() {
-        Log.d("speech start", "true")
-    }
-
-    override fun onRmsChanged(p0: Float) {
-        // no-op for now
-    }
-
-    override fun onBufferReceived(p0: ByteArray?) {
-        // no-op for now
-    }
-
-    override fun onEndOfSpeech() {
-        // no-op
-    }
-
-    override fun onError(p0: Int) {
-        if(p0 == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE){
-            showDialog(
-                DialogData(
-                    title = R.string.speech_recognition_requires_internet,
-                    type = DialogType.ERROR,
-                    actions =
-                    listOf(
-                        DialogAction(R.string.retry) {
-                            clearDialog()
-                            sendEvent(InterviewEvent.ReinitializeSpeechRecognition)
-                        },
-                    ),
-                ),
-            )
+    fun retrieveAndUploadAudio(path: String, language: String) {
+        val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
+        val transcriptionRequest = TranscriptionRequest(
+            audio = FileSource(path = path.toPath(), fileSystem = FileSystem.SYSTEM),
+            model = ModelId("whisper-1"),
+            language = language.split("-")[0]
+        )
+        viewModelScope.launch {
+            val transcription = openAI.transcription(transcriptionRequest)
+            upsertInterviewStep(transcription.text)
         }
-    }
 
-    override fun onResults(p0: Bundle?) {
-        val matches = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-        val answer = matches?.get(0) ?: return
-        upsertInterviewStep(answer)
-    }
-
-    override fun onPartialResults(p0: Bundle?) {
-        // no-op
-    }
-
-    override fun onEvent(p0: Int, p1: Bundle?) {
-        // no-op
     }
 }
 
