@@ -273,8 +273,8 @@ fun InterviewStepItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(step.question?.question ?: "undefined")
-        IconButton(onClick = { sendEvent(AddStepEvent.DeleteStep(step)) }) {
+        Text(step.question?.question ?: "undefined", modifier = Modifier.weight(7f))
+        IconButton(onClick = { sendEvent(AddStepEvent.DeleteStep(step)) },modifier = Modifier.weight(1f)) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
         }
     }
