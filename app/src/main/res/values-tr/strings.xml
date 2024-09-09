@@ -107,5 +107,10 @@
     <string name="recording_is_started">kayıt başladı</string>
     <string name="stop_recording">durdur</string>
     <string name="api_key_empty">api anahtarı ayarlar kısmına girilmelidir</string>
-    <string name="api_key_info">API anahtarı, AI tabanlı sorular oluşturmak, uygulama içindeki konuşmadan metne özelliğini kullanma ve mülakat sonuçlarını değerlendirmek için kullanılır. API anahtarını OpenAI API anahtar sayfasından alabilirsiniz, sadece anahtarı kopyalayın veya yazın.</string>
+    <string name="api_key_info">api anahtarı, yapay zeka tabanlı sorular oluşturmak, uygulama içindeki konuşmadan metne özelliğini kullanma ve mülakat sonuçlarını değerlendirmek için kullanılır. api anahtarını openai api anahtar sayfasından alabilirsiniz, sadece anahtarı kopyalayın veya yazın.</string>
+    <string name="not_answered_yet">henüz cevaplanmadı</string>
+    <string name="import_questions_info">sorularınızı json dosyası olarak içe aktarabilirsiniz.\n\ndosyayı seçtikten sonra sorular interv\'e aktarılacaktır.</string>
+    <string name="export_questions_info">sorularınızı seçtiğiniz dile göre json dosyası olarak dışa aktarabilirsiniz.\n\nayrıca soruları arkadaşlarınızla paylaşabilirsiniz, onlar bu json dosyalarını soruları içe aktarma bölümünde içe aktarabilirler.</string>
+    <string name="generate_suggested_answer">önerilen cevabı oluştur</string>
+    <string name="success_questions_saved">sorular kaydedildi</string>
 </resources>

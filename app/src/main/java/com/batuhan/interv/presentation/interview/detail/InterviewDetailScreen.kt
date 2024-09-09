@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -43,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -167,16 +165,17 @@ fun InterviewDetailScreen(
                                     title = R.string.api_key_empty,
                                     type = DialogType.ERROR,
                                     actions =
-                                    listOf(
-                                        DialogAction(R.string.dismiss) {
-                                            viewModel.clearDialog()
-                                        },
-                                    ),
+                                        listOf(
+                                            DialogAction(R.string.dismiss) {
+                                                viewModel.clearDialog()
+                                            },
+                                        ),
                                 ),
                             )
                         }
+                    } else {
+                        viewModel.generateSuggestedAnswer(it.interviewStep, apiKey)
                     }
-                    else viewModel.generateSuggestedAnswer(it.interviewStep, apiKey)
                 }
             }
         }
@@ -361,7 +360,7 @@ fun ScreenContent(
 @Composable
 fun InterviewDetailListItem(
     interview: InterviewStep,
-    sendEvent: (InterviewDetailEvent) -> Unit
+    sendEvent: (InterviewDetailEvent) -> Unit,
 ) {
     if (interview.interviewStepId != null) {
         Column(
@@ -377,37 +376,36 @@ fun InterviewDetailListItem(
             )
             Spacer(modifier = Modifier.height(40.dp))
             Text(
-                interview.answer?.lowercase() ?: "not answered yet",
+                interview.answer?.lowercase() ?: stringResource(R.string.not_answered_yet),
                 modifier = Modifier.padding(horizontal = 10.dp),
             )
-            if(interview.answer != null){
+            if (interview.answer != null) {
                 Spacer(modifier = Modifier.height(10.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.onSurface, thickness = 1.dp)
 
                 if (interview.suggestedAnswer == null) {
-
                     Button(
                         contentPadding = ButtonDefaults.TextButtonContentPadding,
                         modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
                         onClick = { sendEvent(InterviewDetailEvent.GenerateSuggestedAnswer(interview)) },
-                        colors = ButtonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                            disabledContainerColor = Color.Transparent,
-                            disabledContentColor = MaterialTheme.colorScheme.onSurface,
-                        ),
+                        colors =
+                            ButtonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                                disabledContainerColor = Color.Transparent,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                            ),
                     ) {
                         Text(
-                            "generate suggested answer", // TODO string resource
+                            stringResource(R.string.generate_suggested_answer), // TODO string resource
                             fontFamily = fontFamily,
                             fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
                         )
                     }
-                }
-                else{
+                } else {
                     Text(
-                        modifier =Modifier.fillMaxWidth().padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp, start = 10.dp, end = 10.dp),
                         text = interview.suggestedAnswer.lowercase(),
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Normal,

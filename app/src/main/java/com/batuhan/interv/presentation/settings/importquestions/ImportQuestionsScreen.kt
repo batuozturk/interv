@@ -102,68 +102,66 @@ fun ImportQuestionsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ImportQuestionsScreenContent(
-    sendEvent: (ImportQuestionsEvent) -> Unit,
-) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.settings_import_questions),
-                            fontFamily = fontFamily,
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { sendEvent.invoke(ImportQuestionsEvent.Back) }) {
-                            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-                        }
-                    },
-                )
-            },
-        ) {
-            Column(
-                modifier =
+fun ImportQuestionsScreenContent(sendEvent: (ImportQuestionsEvent) -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.settings_import_questions),
+                        fontFamily = fontFamily,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { sendEvent.invoke(ImportQuestionsEvent.Back) }) {
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+                    }
+                },
+            )
+        },
+    ) {
+        Column(
+            modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(it),
-            ) {
-                Text(
-                    modifier =
+        ) {
+            Text(
+                modifier =
                     Modifier.fillMaxWidth()
                         .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 16.dp),
-                    text = "you can import your questions as json file.\n\nafter you select file, questions will be imported to interviewself.",
-                )
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp, bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Button(
-                        modifier = Modifier.weight(0.6f),
-                        contentPadding = ButtonDefaults.TextButtonContentPadding,
-                        onClick = {
-                            sendEvent.invoke(ImportQuestionsEvent.ImportQuestions)
-                        },
-                        colors =
+                text = stringResource(R.string.import_questions_info),
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Button(
+                    modifier = Modifier.weight(0.6f),
+                    contentPadding = ButtonDefaults.TextButtonContentPadding,
+                    onClick = {
+                        sendEvent.invoke(ImportQuestionsEvent.ImportQuestions)
+                    },
+                    colors =
                         ButtonColors(
                             containerColor = Color.Transparent,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                             disabledContainerColor = Color.Transparent,
                             disabledContentColor = MaterialTheme.colorScheme.onSurface,
                         ),
-                    ) {
-                        Text(
-                            stringResource(id = R.string.settings_import_questions),
-                            fontFamily = fontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                        )
-                    }
+                ) {
+                    Text(
+                        stringResource(id = R.string.settings_import_questions),
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                    )
                 }
             }
         }
+    }
 }
 
 @Preview

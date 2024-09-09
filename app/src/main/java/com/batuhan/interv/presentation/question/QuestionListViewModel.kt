@@ -380,7 +380,7 @@ class QuestionListViewModel @Inject constructor(
                 is Result.Success -> {
                     showDialog(
                         DialogData(
-                            title = R.string.success_question_saved, // TODO string
+                            title = R.string.success_questions_saved, // TODO string
                             type = DialogType.SUCCESS_INFO,
                             actions = listOf(
                                 DialogAction(R.string.dismiss,::clearDialog),
