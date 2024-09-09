@@ -126,7 +126,7 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Success -> {
                     val newInterviewId = result.data
                     val steps = uiState.value.interviewWithSteps?.steps?.map {
-                        it.copy(interviewStepId = null, interviewId = newInterviewId, suggestedAnswer = null)
+                        it.copy(interviewStepId = null, interviewId = newInterviewId, suggestedAnswer = null, answer = null)
                     }
                     upsertInterviewSteps(newInterviewId, steps!!, isTablet)
                 }
