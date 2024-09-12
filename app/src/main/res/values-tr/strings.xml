@@ -113,4 +113,6 @@
     <string name="export_questions_info">sorularınızı seçtiğiniz dile göre json dosyası olarak dışa aktarabilirsiniz.\n\nayrıca soruları arkadaşlarınızla paylaşabilirsiniz, onlar bu json dosyalarını soruları içe aktarma bölümünde içe aktarabilirler.</string>
     <string name="generate_suggested_answer">önerilen cevabı oluştur</string>
     <string name="success_questions_saved">sorular kaydedildi</string>
+    <string name="empty_interview_info">Henüz hiçbir mülakat eklenmedi. Mülakat oluşturmak için artı düğmesine tıklayabilirsiniz (ve bir mülakat oluşturmadan önce en az 1 soru eklediğinizden emin olun)</string>
+    <string name="empty_question_info">Henüz hiçbir soru eklenmedi. Soru oluşturmak için artı veya oluştur düğmesine tıklayabilirsiniz</string>
 </resources>
