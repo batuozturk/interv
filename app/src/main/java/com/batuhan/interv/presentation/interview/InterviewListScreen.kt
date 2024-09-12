@@ -37,9 +37,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.batuhan.interv.MainActivity
@@ -159,6 +161,7 @@ fun InterviewListScreenContent(
     sendEvent: (InterviewListEvent) -> Unit,
     updateFilterText: (String) -> Unit,
 ) {
+    val loadState = interviews.loadState
     Column(Modifier.fillMaxSize()) {
         ActionView(
             searchString = updateFilterText,
@@ -176,6 +179,12 @@ fun InterviewListScreenContent(
                     }
                 }
             }
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount == 0)
+                {
+                    item {
+                        EmptyInterviewView()
+                    }
+                }
         }
     }
 }
@@ -219,6 +228,8 @@ fun InterviewListScreenContentForTablets(
         targetValue = if (interviewDetailId != null) 3f else 0.001f,
         animationSpec = tween(durationMillis = 1000),
     )
+    val loadState = interviews.loadState
+
     Row(Modifier.fillMaxSize()) {
         Column(Modifier.weight(9f - weight - weight2 - weight3)) {
             ActionView(
@@ -246,6 +257,12 @@ fun InterviewListScreenContentForTablets(
                         }
                     }
                 }
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount == 0)
+                    {
+                        item {
+                            EmptyInterviewView()
+                        }
+                    }
             }
         }
         Column(modifier = Modifier.weight(weight)) {
@@ -346,4 +363,13 @@ fun InterviewListItem(
             }
         }
     }
+}
+
+@Composable
+fun EmptyInterviewView()  {
+    Text(
+        stringResource(R.string.empty_interview_info),
+        modifier = Modifier.fillMaxSize().padding(32.dp),
+        textAlign = TextAlign.Center,
+    )
 }

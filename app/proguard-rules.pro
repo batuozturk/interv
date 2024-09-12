@@ -51,3 +51,5 @@
 -keep class androidx.room.Room { *; }
 
 -keep class androidx.datastore.*.** {*;}
+
+-dontwarn org.slf4j.impl.StaticLoggerBinder

@@ -111,4 +111,6 @@
     <string name="export_questions_info">you can export your questions as json file, based on the language that you select.\n\nalso you can share questions with your friends, they can import these json files in import questions section.</string>
     <string name="generate_suggested_answer">generate suggested answer</string>
     <string name="success_questions_saved">questions saved</string>
+    <string name="empty_interview_info">no interviews have been added yet, you can create interviews by clicking plus button (and make sure that you added at least 1 question before creating an interview)</string>
+    <string name="empty_question_info">no questions have been added yet, you can create questions by clicking plus or generate button</string>
 </resources>

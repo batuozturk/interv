@@ -112,4 +112,6 @@
     <string name="export_questions_info">vous pouvez exporter vos questions au format json, en fonction de la langue que vous sélectionnez.\n\nvous pouvez également partager les questions avec vos amis, ils peuvent importer ces fichiers json dans la section importer des questions.</string>
     <string name="generate_suggested_answer">générer une réponse suggérée</string>
     <string name="success_questions_saved">questions enregistrées</string>
+    <string name="empty_interview_info">Aucun entretien n\'a encore été ajouté. Vous pouvez créer des entretiens en cliquant sur le bouton plus (et assurez-vous d\'avoir ajouté au moins 1 question avant de créer un entretien)</string>
+    <string name="empty_question_info">Aucune question n\'a encore été ajoutée. Vous pouvez créer des questions en cliquant sur le bouton plus ou générer</string>
 </resources>

@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.LanguageType
+import com.batuhan.interv.presentation.settings.apikey.ApiKeyScreen
 import com.batuhan.interv.presentation.settings.detail.SettingsDetailScreen
 import com.batuhan.interv.presentation.settings.exportquestions.ExportQuestionsScreen
 import com.batuhan.interv.presentation.settings.importquestions.ImportQuestionsScreen
@@ -119,6 +120,10 @@ fun SettingsScreen(
 
     val darkTheme by remember(uiState.isDarkMode) {
         derivedStateOf { uiState.isDarkMode }
+    }
+
+    val apiKey by remember(uiState.apiKey) {
+        derivedStateOf { uiState.apiKey }
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -249,16 +254,18 @@ fun SettingsScreen(
                                 }
                             },
                         ),
-                    apiKeyData = ApiKeyData(uiState.apiKey)
+                    apiKeyData = ApiKeyData(apiKey)
                 ),
             )
         },
+        apiKey = apiKey
     )
 }
 
 @Composable
 fun SettingsScreenContent(
     isTablet: Boolean,
+    apiKey: String,
     exportQuestions: () -> Unit,
     importQuestions: () -> Unit,
     language: () -> Unit,
@@ -295,6 +302,7 @@ fun SettingsScreenContent(
                 SettingsListItem(title = R.string.settings_style) {
                     if (isTablet) {
                         exportQuestionsOpened = false
+                        importQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Style(
                                 listOf(
@@ -319,6 +327,7 @@ fun SettingsScreenContent(
                 SettingsListItem(title = R.string.settings_language) {
                     if (isTablet) {
                         exportQuestionsOpened = false
+                        importQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Language(
                                 listOf(
@@ -348,6 +357,7 @@ fun SettingsScreenContent(
                 SettingsListItem(title = R.string.set_api_key) {
                     if (isTablet) {
                         exportQuestionsOpened = false
+                        importQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.ApiKey(
                                 listOf(
@@ -408,11 +418,23 @@ fun SettingsScreenContent(
         }
         Column(Modifier.weight(weight).fillMaxSize()) {
             if (weight > 2.25 && detailType != null) {
-                SettingsDetailScreen(
-                    onBackPressed = { detailType = null },
-                    title = detailType!!.title,
-                    actions = detailType!!.actions,
-                )
+                exportQuestionsOpened = false
+                importQuestionsOpened = false
+                if(detailType!!.inputActions != null){
+                    ApiKeyScreen(
+                        apiKeyData = ApiKeyData(apiKey),
+                        inputAction = detailType!!.inputActions!!,
+                        onBackPressed = {
+                            detailType = null
+                        }
+                    )
+                }else {
+                    SettingsDetailScreen(
+                        onBackPressed = { detailType = null },
+                        title = detailType!!.title,
+                        actions = detailType!!.actions,
+                    )
+                }
             } else if (weight > 2.25 && exportQuestionsOpened) {
                 ExportQuestionsScreen(onBackPressed = {
                     clearDialog.invoke()
