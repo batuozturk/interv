@@ -70,8 +70,10 @@ fun InterviewScreen(
 //            }
 //        }
 
+    val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
+
     val audioRecorder =
-        remember {
+        remember(isMyTurn) {
             MediaRecorder().apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -120,8 +122,6 @@ fun InterviewScreen(
     val isTablet by remember(context.isTablet()) {
         derivedStateOf { context.isTablet() }
     }
-
-    val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(isMyTurn) {
         if (isMyTurn >= 0 && isMyTurn != size) {
