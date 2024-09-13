@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -64,50 +63,45 @@ fun DialogView(dialogData: DialogData?) {
             }
         } ?: run {
             // TODO remove column or row and set weights
-            Column(
+            Row(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .background(dialogData.type.containerColor)
+                        .fillMaxWidth().background(dialogData.type.containerColor)
                         .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                Text(
+                    stringResource(id = dialogData.title),
+                    color = dialogData.type.textColor,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    modifier = Modifier.weight(15f - (dialogData.actions.size) * 3f),
+                )
                 Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
+                    modifier = Modifier.weight(dialogData.actions.size * 3f),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.End,
                 ) {
-                    Text(
-                        stringResource(id = dialogData.title),
-                        color = dialogData.type.textColor,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp,
-                    )
-                    Row(
-                        modifier = Modifier.wrapContentWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        dialogData.actions.map {
-                            Button(
-                                contentPadding = ButtonDefaults.TextButtonContentPadding,
-                                onClick = it.action,
-                                colors =
-                                    ButtonColors(
-                                        containerColor = Color.Transparent,
-                                        contentColor = dialogData.type.textColor,
-                                        disabledContainerColor = Color.Transparent,
-                                        disabledContentColor = dialogData.type.textColor,
-                                    ),
-                            ) {
-                                Text(
-                                    stringResource(id = it.text),
-                                    fontFamily = fontFamily,
-                                    fontWeight = FontWeight.Normal,
-                                    color = dialogData.type.textColor,
-                                    fontSize = 12.sp,
-                                )
-                            }
+                    dialogData.actions.map {
+                        Button(
+                            contentPadding = ButtonDefaults.TextButtonContentPadding,
+                            onClick = it.action,
+                            colors =
+                                ButtonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = dialogData.type.textColor,
+                                    disabledContainerColor = Color.Transparent,
+                                    disabledContentColor = dialogData.type.textColor,
+                                ),
+                        ) {
+                            Text(
+                                stringResource(id = it.text),
+                                fontFamily = fontFamily,
+                                fontWeight = FontWeight.Normal,
+                                color = dialogData.type.textColor,
+                                fontSize = 12.sp,
+                            )
                         }
                     }
                 }
