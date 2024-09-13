@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -156,6 +155,7 @@ fun InterviewDetailScreen(
                             )
                     }
                 }
+
                 is InterviewDetailEvent.GenerateSuggestedAnswer -> {
                     if (apiKey.isEmpty()) {
                         coroutineScope.launch {
@@ -294,25 +294,6 @@ fun ScreenContent(
                                 Icon(Icons.Outlined.Share, contentDescription = null)
                             }
                              */
-                        } else {
-                            if (!isTablet) {
-                                IconButton(
-                                    onClick = {
-                                        sendEvent.invoke(
-                                            InterviewDetailEvent.EnterInterview(
-                                                interviewWithSteps!!.interview!!.interviewId
-                                                    ?: return@IconButton,
-                                                interviewWithSteps!!.interview!!.interviewType
-                                                    ?: return@IconButton,
-                                                interviewWithSteps!!.interview!!.langCode
-                                                    ?: return@IconButton,
-                                            ),
-                                        )
-                                    },
-                                ) {
-                                    Icon(Icons.Outlined.PlayArrow, contentDescription = null)
-                                }
-                            }
                         }
                         IconButton(
                             onClick = {
@@ -405,7 +386,9 @@ fun InterviewDetailListItem(
                     }
                 } else {
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                         text = interview.suggestedAnswer.lowercase(),
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Normal,

@@ -159,16 +159,7 @@ class InterviewDetailViewModel @Inject constructor(
                         DialogData(
                             title = R.string.success_interview_saved,
                             type = DialogType.SUCCESS_INFO,
-                            actions = if(!isTablet){
-                                listOf(
-                                    DialogAction(R.string.start_interview){
-                                        clearDialog()
-                                        sendEvent(InterviewDetailEvent.EnterInterview(interviewId, interviewType, langCode))
-                                    },
-                                    DialogAction(R.string.dismiss, ::clearDialog)
-                                )
-                            }
-                            else listOf(DialogAction(R.string.dismiss, ::clearDialog))
+                            actions = listOf(DialogAction(R.string.dismiss, ::clearDialog))
                         )
                     )
                 }
