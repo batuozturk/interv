@@ -83,19 +83,23 @@ fun VideoCallInterviewScreenForTablet(
     ) {
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .weight(3f),
+                Modifier
+                    .fillMaxWidth()
+                    .weight(3f),
             contentAlignment = Alignment.Center,
         ) {
-            Image(painter = painterResource(id = R.drawable.ic_person_2_24), contentDescription = null, modifier = Modifier.fillMaxSize())
+            Image(
+                painter = painterResource(id = R.drawable.ic_person_2_24),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
             Text("HR Manager", fontSize = 18.sp, modifier = Modifier.align(Alignment.BottomStart))
         }
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .weight(3f),
+                Modifier
+                    .fillMaxWidth()
+                    .weight(3f),
             contentAlignment = Alignment.Center,
         ) {
             AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
@@ -104,6 +108,7 @@ fun VideoCallInterviewScreenForTablet(
                     layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                     scaleType = PreviewView.ScaleType.FILL_CENTER
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    clipToOutline = true
                     post {
                         cameraProvider.addListener(
                             Runnable {
@@ -120,7 +125,9 @@ fun VideoCallInterviewScreenForTablet(
                 }
             })
             Column(
-                modifier = Modifier.fillMaxWidth().height(80.dp).align(Alignment.BottomCenter).background(Color.Black.copy(0.2f)),
+                modifier =
+                    Modifier.fillMaxWidth().height(80.dp).align(Alignment.BottomCenter)
+                        .background(Color.Black.copy(0.2f)),
                 verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 InterviewButton(
