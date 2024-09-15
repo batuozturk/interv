@@ -21,12 +21,14 @@ import com.batuhan.interv.data.model.MixedString
 import com.batuhan.interv.domain.interview.GetInterviewWithSteps
 import com.batuhan.interv.domain.interview.UpsertInterview
 import com.batuhan.interv.domain.interview.UpsertInterviewStep
+import com.batuhan.interv.presentation.interview.detail.InterviewDetailError
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
 import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.Result
 import com.batuhan.interv.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -115,6 +117,7 @@ class InterviewViewModel
         when (error) {
             InterviewError.Initialization -> initalizeSteps()
             is InterviewError.UpsertInterviewStep -> upsertInterviewStep(error.answer)
+            is InterviewError.UploadAudio -> retrieveAndUploadAudio(error.path, error.language)
         }
     }
 
@@ -287,12 +290,28 @@ class InterviewViewModel
 
     fun retrieveAndUploadAudio(path: String, language: String) {
         val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            showDialog(
+                DialogData(
+                    title = R.string.error_unknown,
+                    type = DialogType.ERROR,
+                    actions = listOf(
+                        DialogAction(R.string.dismiss) {
+                            clearDialog()
+                        },
+                        DialogAction(R.string.retry) {
+                            retryOperation(InterviewError.UploadAudio(path, language))
+                        }
+                    )
+                )
+            )
+        }
         val transcriptionRequest = TranscriptionRequest(
             audio = FileSource(path = path.toPath(), fileSystem = FileSystem.SYSTEM),
             model = ModelId("whisper-1"),
             language = language.split("-")[0]
         )
-        viewModelScope.launch {
+        viewModelScope.launch(handler) {
             val transcription = openAI.transcription(transcriptionRequest)
             upsertInterviewStep(transcription.text)
         }
@@ -313,6 +332,7 @@ data class InterviewUiState(
 
 sealed class InterviewError {
     data class UpsertInterviewStep(val answer: String) : InterviewError()
+    data class UploadAudio(val path: String, val language: String) : InterviewError()
 
     object Initialization : InterviewError()
 }

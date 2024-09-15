@@ -22,6 +22,7 @@ import com.batuhan.interv.domain.question.GetAllQuestions
 import com.batuhan.interv.domain.question.GetAllQuestionsAsList
 import com.batuhan.interv.domain.question.UpsertQuestion
 import com.batuhan.interv.domain.question.UpsertQuestions
+import com.batuhan.interv.presentation.interview.detail.InterviewDetailError
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
 import com.batuhan.interv.util.DialogType
@@ -31,6 +32,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -326,7 +328,23 @@ class QuestionListViewModel @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     override fun generateQuestions(apiKey: String) {
         val openAI = OpenAI(token = apiKey, logging = LoggingConfig(LogLevel.All))
-        viewModelScope.launch {
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            showDialog(
+                DialogData(
+                    title = R.string.error_unknown,
+                    type = DialogType.ERROR,
+                    actions = listOf(
+                        DialogAction(R.string.dismiss) {
+                            clearDialog()
+                        },
+                        DialogAction(R.string.retry) {
+                            retryOperation(QuestionListError.GenerateQuestions(apiKey))
+                        }
+                    )
+                )
+            )
+        }
+        viewModelScope.launch(handler) {
             val locale = uiState.value.langCode ?: "en-US"
             val result =
                 getAllQuestionsAsList.invoke(GetAllQuestionsAsList.Params(locale))

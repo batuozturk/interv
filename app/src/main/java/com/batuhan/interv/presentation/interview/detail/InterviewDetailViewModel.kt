@@ -27,6 +27,7 @@ import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.Result
 import com.batuhan.interv.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -245,6 +246,7 @@ class InterviewDetailViewModel @Inject constructor(
             is InterviewDetailError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
             is InterviewDetailError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
             is InterviewDetailError.UpsertInterviewSteps -> upsertInterviewSteps(error.interviewId, error.steps, error.isTablet)
+            is InterviewDetailError.GenerateSuggestedAnswer -> generateSuggestedAnswer(error.interviewStep, error.apiKey)
         }
     }
 
@@ -259,8 +261,25 @@ class InterviewDetailViewModel @Inject constructor(
         val interviewWithSteps = uiState.value.interviewWithSteps
         val interviewStepList = interviewWithSteps?.steps?.toMutableList() ?: return
         val openAI = OpenAI(token = apiKey, logging = LoggingConfig(LogLevel.All))
+
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            showDialog(
+                DialogData(
+                    title = R.string.error_unknown,
+                    type = DialogType.ERROR,
+                    actions = listOf(
+                        DialogAction(R.string.dismiss) {
+                            clearDialog()
+                        },
+                        DialogAction(R.string.retry) {
+                            retryOperation(InterviewDetailError.GenerateSuggestedAnswer(interviewStep, apiKey))
+                        }
+                    )
+                )
+            )
+        }
         // openai operation
-        viewModelScope.launch {
+        viewModelScope.launch(handler) {
             val chatCompletionRequest = ChatCompletionRequest(
                 model = ModelId("gpt-4o-mini"),
                 messages = listOf(
@@ -314,6 +333,8 @@ sealed class InterviewDetailError {
 
     data class DeleteInterviewSteps(val interviewId: Long): InterviewDetailError()
     data class UpsertInterviewSteps(val interviewId: Long, val steps: List<InterviewStep>, val isTablet: Boolean) : InterviewDetailError()
+
+    data class GenerateSuggestedAnswer(val interviewStep: InterviewStep, val apiKey: String) : InterviewDetailError()
 }
 
 sealed class InterviewDetailEvent {
