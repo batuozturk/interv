@@ -274,7 +274,7 @@ fun InterviewStepItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(step.question?.question ?: "undefined", modifier = Modifier.weight(7f))
+        Text(step.question?.question?.lowercase() ?: "undefined", modifier = Modifier.weight(7f))
         IconButton(onClick = { sendEvent(AddStepEvent.DeleteStep(step)) },modifier = Modifier.weight(1f)) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
         }
@@ -299,7 +299,7 @@ fun QuestionSelectItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(question.question ?: "undefined")
+        Text(question.question?.lowercase() ?: "undefined")
     }
 }
 
