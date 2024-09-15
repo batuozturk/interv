@@ -331,6 +331,13 @@ fun ScreenContent(
             ) {
                 Text(stringResource(id = LanguageType.FR.text))
             }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 3,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.DE.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.DE.text))
+            }
         }
         Button(
             modifier = Modifier.fillMaxWidth(),

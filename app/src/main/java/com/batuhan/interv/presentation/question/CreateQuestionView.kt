@@ -145,6 +145,13 @@ fun CreateQuestionView(
             ) {
                 Text(stringResource(id = LanguageType.FR.text))
             }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 3,
+                onClick = { updateLangCode(LanguageType.DE.code) },
+            ) {
+                Text(stringResource(id = LanguageType.DE.text))
+            }
         }
         Row(
             Modifier

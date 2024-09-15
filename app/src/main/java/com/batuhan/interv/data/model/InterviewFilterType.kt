@@ -16,6 +16,7 @@ enum class InterviewFilterType(
         R.string.filter_turkish,
     ),
     LANG_FR(R.string.filter_french),
+    LANG_DE(R.string.filter_german),
     COMPLETED(
         R.string.filter_completed,
     ),
@@ -33,6 +34,7 @@ fun InterviewFilterType.createQuery(searchText: String): String{
         InterviewFilterType.LANG_EN -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'en-US'"
         InterviewFilterType.LANG_TR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'tr-TR'"
         InterviewFilterType.LANG_FR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'fr-FR'"
+        InterviewFilterType.LANG_DE -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'de-DE'"
         InterviewFilterType.DEFAULT -> ""
         InterviewFilterType.COMPLETED -> (if(stringIsValid) "AND " else "WHERE ") + "completed = true"
         InterviewFilterType.NOT_COMPLETED -> (if(stringIsValid) "AND " else "WHERE ") + "completed = false"
