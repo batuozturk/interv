@@ -24,7 +24,7 @@
     <string name="update_interview">entrevista actualizada</string>
 
     <string name="type_video">video</string>
-    <string name="type_phone_call">llamada telefónica</string>
+    <string name="type_phone_call">telefónica</string>
     <string name="add_step">paso agregado</string>
     <string name="delete_step">paso eliminado</string>
 
