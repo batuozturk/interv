@@ -103,7 +103,7 @@
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
     <string name="recording_is_started">recording is started</string>
-    <string name="stop_recording">stop recording</string>
+    <string name="stop_recording">stop</string>
     <string name="api_key_empty">api key must be entered to settings</string>
     <string name="api_key_info">api key is used for generating AI based questions, using speech to text feature inside the application &amp; evaluating interview results. you can obtain api key from openai api key page, just copy or type the key. </string>
     <string name="not_answered_yet">not answered yet</string>
@@ -112,5 +112,7 @@
     <string name="generate_suggested_answer">generate suggested answer</string>
     <string name="success_questions_saved">questions saved</string>
     <string name="empty_interview_info">no interviews have been added yet, you can create interviews by clicking plus button (and make sure that you added at least 1 question before creating an interview)</string>
-    <string name="empty_question_info">no questions have been added yet, you can create questions by clicking plus or generate button</string>
+    <string name="empty_interview_info_cont">to enter interviews, you must set openai api key. you can enter api key on settings</string>
+    <string name="empty_interview_free_info">You can try the first interview for free; for subsequent interviews, you will need to purchase an interview (after starting an interview) or lifetime package (available for purchase from settings).</string>
+    <string name="empty_question_info">no questions have been added yet, you can create questions by clicking plus or generate (openai api key is required, it needs to be added in the settings section.) button</string>
 </resources>

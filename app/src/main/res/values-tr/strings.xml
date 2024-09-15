@@ -113,6 +113,8 @@
     <string name="export_questions_info">sorularınızı seçtiğiniz dile göre json dosyası olarak dışa aktarabilirsiniz.\n\nayrıca soruları arkadaşlarınızla paylaşabilirsiniz, onlar bu json dosyalarını soruları içe aktarma bölümünde içe aktarabilirler.</string>
     <string name="generate_suggested_answer">önerilen cevabı oluştur</string>
     <string name="success_questions_saved">sorular kaydedildi</string>
-    <string name="empty_interview_info">Henüz hiçbir mülakat eklenmedi. Mülakat oluşturmak için artı düğmesine tıklayabilirsiniz (ve bir mülakat oluşturmadan önce en az 1 soru eklediğinizden emin olun)</string>
-    <string name="empty_question_info">Henüz hiçbir soru eklenmedi. Soru oluşturmak için artı veya oluştur düğmesine tıklayabilirsiniz</string>
+    <string name="empty_interview_info">henüz hiçbir mülakat eklenmedi. mülakat oluşturmak için artı düğmesine tıklayabilirsiniz (ve bir mülakat oluşturmadan önce en az 1 soru eklediğinizden emin olun)</string>
+    <string name="empty_interview_info_cont">mülakata girmek için openai api anahtarını ayarlamanız gerekir. api anahtarını ayarlar bölümüne girebilirsiniz.</string>
+    <string name="empty_interview_free_info">ilk mülakatı ücretsiz bir şekilde deneyebilirsiniz, sonraki mülakatlar için mülakat (mülakatı başlattıktan sonra alabilirsiniz) ya da interv lifetime paketi (ayarlardan alınabilmektedir) satın almanız gerekir.</string>
+    <string name="empty_question_info">henüz hiçbir soru eklenmedi. soru oluşturmak için artı veya oluştur (openai api anahtarı gerekir, ayarlar kısmından eklenmesi gerekir) düğmesine tıklayabilirsiniz</string>
 </resources>
