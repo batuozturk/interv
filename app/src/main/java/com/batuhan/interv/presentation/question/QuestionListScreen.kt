@@ -350,7 +350,7 @@ fun QuestionListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(question.question ?: "undefined", modifier = Modifier.weight(7f))
+        Text(question.question?.lowercase() ?: "undefined", modifier = Modifier.weight(7f))
         IconButton(
             modifier = Modifier.weight(1f),
             onClick = { sendEvent(QuestionListEvent.DeleteQuestion(question)) },

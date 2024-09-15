@@ -336,7 +336,7 @@ fun InterviewListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                interview.interviewName,
+                interview.interviewName.lowercase(),
                 modifier = Modifier.weight(if (interview.completed != true) 6f else 7f),
             )
             if (interview.completed != true) {
