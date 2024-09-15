@@ -94,6 +94,8 @@
     <string name="topic_subscribe">interv-fr</string>
     <string name="topic_unsubscribe_1">interv-en</string>
     <string name="topic_unsubscribe_2">interv-tr</string>
+    <string name="topic_unsubscribe_3">interv-de</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
     <string name="error_export_questions">les questions ne peuvent pas être exportées</string>
     <string name="save_and_share">enregistrer et partager</string>
     <string name="success_questions_imported">questions importées</string>
@@ -116,4 +118,10 @@
     <string name="empty_interview_info_cont">pour accéder aux entretiens, vous devez configurer la clé api openai. vous pouvez entrer la clé api dans les paramètres.</string>
     <string name="empty_interview_free_info">vous pouvez essayer le premier entretien gratuitement ; pour les entretiens suivants, vous devrez acheter un entretien (après avoir commencé un entretien) ou un pack à vie (disponible à l\'achat dans les paramètres).</string>
     <string name="empty_question_info">aucune question n\'a encore été ajoutée. vous pouvez créer des questions en cliquant sur le bouton plus ou générer</string>
+    <string name="settings_lang_option_four">allemand</string>
+    <string name="filter_german">allemand</string>
+    <string name="language_type_es">espagnol</string>
+    <string name="filter_spanish">espagnol</string>
+    <string name="settings_lang_option_five">espagnol</string>
+    <string name="language_type_de">allemand</string>
 </resources>

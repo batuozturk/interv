@@ -15,4 +15,6 @@ enum class LanguageType(
         "tr-TR",
     ),
     FR(R.string.language_type_fr, "fr-FR"),
+    DE(R.string.language_type_de, "de-DE"),
+    ES(R.string.language_type_es, "es-ES")
 }

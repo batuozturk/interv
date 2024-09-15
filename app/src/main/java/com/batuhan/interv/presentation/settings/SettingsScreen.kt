@@ -175,6 +175,26 @@ fun SettingsScreen(
                                 )
                             }
                         },
+                        DialogAction(
+                            R.string.settings_lang_option_four,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("de-DE"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_five,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("es-ES"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
                     ),
                     decideDialogType(darkTheme),
                     languageData =
@@ -344,6 +364,16 @@ fun SettingsScreenContent(
                                     DialogAction(R.string.settings_lang_option_three) {
                                         writeData.invoke(
                                             SettingsType.LangCode("fr-FR"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_four) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("de-DE"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_five) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("es-ES"),
                                         )
                                     },
                                 ),

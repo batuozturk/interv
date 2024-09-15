@@ -243,6 +243,24 @@ fun ExportQuestionsScreenContent(
                 ) {
                     Text(stringResource(R.string.filter_french))
                 }
+                Tab(
+                    modifier = Modifier.height(60.dp),
+                    selected = currentLanguageIndex == 3,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.DE.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_german))
+                }
+                Tab(
+                    modifier = Modifier.height(60.dp),
+                    selected = currentLanguageIndex == 4,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.ES.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_spanish))
+                }
             }
 
             Row(

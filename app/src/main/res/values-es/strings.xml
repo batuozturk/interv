@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">interv</string>
+    <string name="retry">reintentar</string>
+    <string name="dismiss">descartar</string>
+    <string name="ok">ok</string>
+    <string name="undo">deshacer</string>
+    <string name="error_unknown">ocurrió un error desconocido</string>
+
+    <string name="error_question_not_saved">la pregunta no puede ser guardada</string>
+    <string name="error_question_empty">la pregunta está vacía</string>
+    <string name="error_question_lang_code_empty">el código de idioma está vacío</string>
+    <string name="success_question_saved">pregunta guardada</string>
+    <string name="delete_question">pregunta eliminada</string>
+    <string name="update_question">pregunta actualizada</string>
+
+    <string name="error_interview_not_saved">la entrevista no puede ser guardada</string>
+    <string name="error_interview_empty">la entrevista está vacía</string>
+    <string name="error_interview_lang_code_empty">el código de idioma está vacío</string>
+    <string name="error_interview_duration_invalid">la duración es inválida</string>
+    <string name="error_interview_type_not_selected">el tipo no fue seleccionado</string>
+    <string name="success_interview_saved">entrevista guardada</string>
+    <string name="delete_interview">entrevista eliminada</string>
+    <string name="update_interview">entrevista actualizada</string>
+
+    <string name="type_video">video</string>
+    <string name="type_phone_call">llamada telefónica</string>
+    <string name="add_step">paso agregado</string>
+    <string name="delete_step">paso eliminado</string>
+
+    <string name="navitem_one">entrevistas</string>
+    <string name="navitem_two">preguntas</string>
+    <string name="navitem_three">configuración</string>
+
+    <string name="create_interview_title">crear entrevista</string>
+
+    <string name="create_question_name_placeholder">pregunta</string>
+    <string name="create_interview_name_placeholder">nombre de la entrevista</string>
+    <string name="create_interview_question_duration_placeholder">duración de la pregunta</string>
+    <string name="lang_code_placeholder">código de idioma ej. es</string>
+    <string name="create_interview_add_step_title">agregar paso</string>
+
+    <string name="settings_import_questions">importar preguntas</string>
+    <string name="settings_export_questions">exportar preguntas</string>
+    <string name="settings_rate_us">califícanos</string>
+    <string name="settings_contact_us">contáctanos</string>
+    <string name="settings_language">idioma</string>
+    <string name="settings_tos">términos del servicio</string>
+    <string name="settings_privacy_policy">política de privacidad</string>
+    <string name="settings_download_konsol">descargar konsol, gestor de proyectos de firebase para android</string>
+    <string name="settings_style">estilo</string>
+    <string name="settings_style_option_one">modo claro</string>
+    <string name="settings_style_option_two">modo oscuro</string>
+    <string name="settings_lang_option_one">inglés</string>
+    <string name="settings_lang_option_two">turco</string>
+    <string name="settings_lang_option_three">francés</string>
+    <string name="settings_language_title">establecer idioma de la aplicación</string>
+    <string name="settings_style_title">establecer estilo de la aplicación</string>
+
+    <string name="interview_detail_question_and_answers">preguntas y respuestas</string>
+    <string name="save">guardar</string>
+    <string name="microphone_title_enabled">micrófono activado</string>
+    <string name="microphone_title_not_enabled">micrófono desactivado</string>
+    <string name="close_call">cerrar llamada</string>
+    <string name="pause">pausar</string>
+    <string name="start_interview">iniciar</string>
+    <string name="language_type_en">inglés</string>
+    <string name="language_type_tr">turco</string>
+    <string name="language_type_fr">francés</string>
+    <string name="first_question_talk">comencemos con la primera pregunta,</string>
+    <string name="interview_ended">la entrevista ha terminado, gracias por tus respuestas. puedes cerrar la llamada</string>
+    <string name="interview_start">bienvenido a la entrevista, soy el gerente de rrhh. hoy quiero entrevistarte para evaluar tu conocimiento.</string>
+    <string name="interview_question_talk">continuemos con la pregunta %d, </string>
+    <string name="created_at">hora</string>
+    <string name="created_at_reverse">hora invertida</string>
+    <string name="only_english">solo inglés</string>
+    <string name="filter_turkish">turco</string>
+    <string name="filter_english">inglés</string>
+    <string name="filter_french">francés</string>
+    <string name="filter_default">predeterminado</string>
+    <string name="filter_name">a-z</string>
+    <string name="filter_completed">completado</string>
+    <string name="filter_not_completed">no completado</string>
+    <string name="filter">filtro</string>
+    <string name="filter_name_reversed">z-a</string>
+    <string name="search_interviews">buscar entrevistas</string>
+    <string name="search_questions">buscar preguntas</string>
+    <string name="hr_manager_calling_text">el gerente de rrhh te está llamando</string>
+    <string name="open_call">abrir llamada</string>
+    <string name="added_steps">pasos añadidos</string>
+    <string name="questions">preguntas</string>
+    <string name="error_export_questions">las preguntas no pueden ser exportadas</string>
+    <string name="save_and_share">guardar y compartir</string>
+    <string name="success_questions_imported">preguntas importadas</string>
+    <string name="success_questions_exported">preguntas exportadas</string>
+    <string name="success_questions_shared">preguntas compartidas</string>
+    <string name="speech_recognition_requires_internet">sin conexión</string>
+    <string name="topic_subscribe">interv-es</string>
+    <string name="topic_unsubscribe_1">interv-tr</string>
+    <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="topic_unsubscribe_3">interv-en</string>
+    <string name="topic_unsubscribe_4">interv-de</string>
+    <string name="interview_steps_not_added">pasos de la entrevista no añadidos</string>
+    <string name="api_key_placeholder">clave api</string>
+    <string name="set_api_key">establecer clave api</string>
+    <string name="recording_is_started">la grabación ha comenzado</string>
+    <string name="stop_recording">detener</string>
+    <string name="api_key_empty">se debe ingresar la clave api en la configuración</string>
+    <string name="api_key_info">la clave api se utiliza para generar preguntas basadas en ia, usar la función de conversión de voz a texto dentro de la aplicación y evaluar los resultados de la entrevista. puedes obtener la clave api desde la página de claves api de openai, solo copia o escribe la clave.</string>
+    <string name="not_answered_yet">no respondida aún</string>
+    <string name="import_questions_info">puedes importar tus preguntas como un archivo json.\n\ndespués de seleccionar el archivo, las preguntas serán importadas a interv.</string>
+    <string name="export_questions_info">puedes exportar tus preguntas como un archivo json, basado en el idioma que selecciones.\n\ntambién puedes compartir preguntas con tus amigos, ellos pueden importar estos archivos json en la sección de importación de preguntas.</string>
+    <string name="generate_suggested_answer">generar respuesta sugerida</string>
+    <string name="success_questions_saved">preguntas guardadas</string>
+    <string name="empty_interview_info">aún no se han agregado entrevistas, puedes crear entrevistas haciendo clic en el botón de más (y asegúrate de haber agregado al menos 1 pregunta antes de crear una entrevista)</string>
+    <string name="empty_interview_info_cont">para ingresar a las entrevistas, debes establecer la clave api de openai. puedes ingresar la clave api en la configuración</string>
+    <string name="empty_interview_free_info">puedes probar la primera entrevista de forma gratuita; para entrevistas posteriores, necesitarás comprar una entrevista (después de comenzar una entrevista) o un paquete vitalicio (disponible para su compra en la configuración).</string>
+    <string name="empty_question_info">aún no se han agregado preguntas, puedes crear preguntas haciendo clic en el botón de más o generar (se requiere clave api de openai, debe ser agregada en la sección de configuración).</string>
+    <string name="settings_lang_option_four">alemán</string>
+    <string name="filter_german">alemán</string>
+    <string name="language_type_es">español</string>
+    <string name="filter_spanish">español</string>
+    <string name="settings_lang_option_five">español</string>
+    <string name="language_type_de">alemán</string>
+</resources>
