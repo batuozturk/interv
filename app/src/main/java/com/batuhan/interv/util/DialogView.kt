@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -161,7 +162,7 @@ fun SettingsDialog(
                 )
             }
         }
-        TabRow(
+        ScrollableTabRow(
             modifier =
                 Modifier
                     .fillMaxWidth()
@@ -170,6 +171,7 @@ fun SettingsDialog(
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndex,
             divider = {},
+            edgePadding = 0.dp,
             indicator = {
                 if (selectedIndex < options.size) {
                     Column(

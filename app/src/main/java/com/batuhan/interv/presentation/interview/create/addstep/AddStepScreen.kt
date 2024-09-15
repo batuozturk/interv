@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -164,7 +165,6 @@ fun AddStepScreenContent(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(76.dp)
                         .padding(top = 12.dp, bottom = 16.dp),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -177,20 +177,18 @@ fun AddStepScreenContent(
                                 Modifier
                                     .tabIndicatorOffset(it[currentPage])
                                     .fillMaxSize()
-                                    .padding(8.dp)
                                     .border(
                                         1.dp,
                                         MaterialTheme.colorScheme.onSurface,
                                         RoundedCornerShape(10.dp),
-                                    )
-                                    .padding(10.dp),
+                                    ),
                         ) {
                         }
                     }
                 },
             ) {
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentPage == 0,
                     onClick = {
                         coroutineScope.launch {
@@ -198,10 +196,10 @@ fun AddStepScreenContent(
                         }
                     },
                 ) {
-                    Text(stringResource(R.string.questions))
+                    Text(stringResource(R.string.questions), textAlign = TextAlign.Center)
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentPage == 1,
                     onClick = {
                         coroutineScope.launch {
@@ -209,7 +207,7 @@ fun AddStepScreenContent(
                         }
                     },
                 ) {
-                    Text(stringResource(R.string.added_steps))
+                    Text(stringResource(R.string.added_steps), textAlign = TextAlign.Center)
                 }
             }
             HorizontalPager(state = pagerState, userScrollEnabled = false) {
