@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -187,16 +188,16 @@ fun ExportQuestionsScreenContent(
                         .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 16.dp),
                 text = stringResource(R.string.export_questions_info),
             )
-            TabRow(
+            ScrollableTabRow(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(76.dp)
                         .padding(top = 12.dp, bottom = 16.dp),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 selectedTabIndex = currentLanguageIndex,
                 divider = {},
+                edgePadding = 0.dp,
                 indicator = {
                     if (currentLanguageIndex < it.size) {
                         Column(
@@ -204,20 +205,18 @@ fun ExportQuestionsScreenContent(
                                 Modifier
                                     .tabIndicatorOffset(it[currentLanguageIndex])
                                     .fillMaxSize()
-                                    .padding(8.dp)
                                     .border(
                                         1.dp,
                                         MaterialTheme.colorScheme.onSurface,
                                         RoundedCornerShape(10.dp),
-                                    )
-                                    .padding(10.dp),
+                                    ),
                         ) {
                         }
                     }
                 },
             ) {
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 0,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.EN.code)
@@ -226,7 +225,7 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_english))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 1,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.TR.code)
@@ -235,7 +234,7 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_turkish))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 2,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.FR.code)
@@ -244,7 +243,7 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_french))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 3,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.DE.code)
@@ -253,7 +252,7 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_german))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 4,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.ES.code)

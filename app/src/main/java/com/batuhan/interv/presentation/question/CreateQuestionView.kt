@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -100,46 +101,47 @@ fun CreateQuestionView(
                 singleLine = true,
             )
         }
-        TabRow(
+        ScrollableTabRow(
             modifier =
             Modifier
-                .fillMaxWidth().height(76.dp)
+                .fillMaxWidth()
                 .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndexLang,
             divider = {},
+            edgePadding = 0.dp,
             indicator = {
                 if (selectedIndexLang < it.size) {
                     Column(
                         modifier =
-                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize().padding(8.dp)
+                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize()
                             .border(
                                 1.dp,
                                 MaterialTheme.colorScheme.onSurface,
                                 RoundedCornerShape(10.dp),
-                            ).padding(10.dp),
+                            ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 0,
                 onClick = { updateLangCode(LanguageType.EN.code) },
             ) {
                 Text(stringResource(id = LanguageType.EN.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 1,
                 onClick = { updateLangCode(LanguageType.TR.code) },
             ) {
                 Text(stringResource(id = LanguageType.TR.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 2,
                 onClick = { updateLangCode(LanguageType.FR.code) },
             ) {

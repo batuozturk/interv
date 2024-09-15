@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -40,6 +41,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -248,7 +250,7 @@ fun ScreenContent(
         TabRow(
             modifier =
                 Modifier
-                    .fillMaxWidth().height(76.dp)
+                    .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -259,73 +261,72 @@ fun ScreenContent(
                     Column(
                         modifier =
                             Modifier.tabIndicatorOffset(it[selectedIndexType]).fillMaxSize()
-                                .padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
                                     RoundedCornerShape(10.dp),
-                                ).padding(10.dp),
+                                ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexType == 0,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.VIDEO)) },
             ) {
-                Text(stringResource(id = InterviewType.VIDEO.text))
+                Text(stringResource(id = InterviewType.VIDEO.text), textAlign = TextAlign.Center)
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexType == 1,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.PHONE_CALL)) },
             ) {
-                Text(stringResource(id = InterviewType.PHONE_CALL.text))
+                Text(stringResource(id = InterviewType.PHONE_CALL.text), textAlign = TextAlign.Center)
             }
         }
-        TabRow(
+        ScrollableTabRow(
             modifier =
                 Modifier
-                    .fillMaxWidth().height(76.dp)
+                    .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndexLang,
             divider = {},
+            edgePadding = 0.dp,
             indicator = {
                 if (selectedIndexLang < it.size) {
                     Column(
                         modifier =
                             Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize()
-                                .padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
                                     RoundedCornerShape(10.dp),
-                                ).padding(10.dp),
+                                ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 0,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.EN.code)) },
             ) {
                 Text(stringResource(id = LanguageType.EN.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 1,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.TR.code)) },
             ) {
                 Text(stringResource(id = LanguageType.TR.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 2,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.FR.code)) },
             ) {
