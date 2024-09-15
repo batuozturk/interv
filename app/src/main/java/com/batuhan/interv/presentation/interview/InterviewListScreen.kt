@@ -367,9 +367,22 @@ fun InterviewListItem(
 
 @Composable
 fun EmptyInterviewView()  {
-    Text(
-        stringResource(R.string.empty_interview_info),
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        textAlign = TextAlign.Center,
-    )
+    Column(Modifier.fillMaxSize()){
+        Text(
+            stringResource(R.string.empty_interview_info),
+            modifier = Modifier.fillMaxSize().padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            stringResource(R.string.empty_interview_info_cont),
+            modifier = Modifier.fillMaxSize().padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            stringResource(R.string.empty_interview_free_info),
+            modifier = Modifier.fillMaxSize().padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 32.dp),
+            textAlign = TextAlign.Center,
+        )
+    }
+
 }

@@ -104,7 +104,7 @@
     <string name="api_key_placeholder">clé api</string>
     <string name="set_api_key">définir la clé api</string>
     <string name="recording_is_started">l\'enregistrement a commencé</string>
-    <string name="stop_recording">arrêter l\'enregistrement</string>
+    <string name="stop_recording">arrêter</string>
     <string name="api_key_empty">la clé api doit être entrée dans les paramètres</string>
     <string name="api_key_info">la clé api est utilisée pour générer des questions basées sur l\'IA, utilisation de la fonctionnalité de reconnaissance vocale dans l\'application et évaluer les résultats des entretiens. vous pouvez obtenir la clé API à partir de la page des clés api d\'openai, il vous suffit de copier ou de taper la clé.</string>
     <string name="not_answered_yet">pas encore répondu</string>
@@ -112,6 +112,8 @@
     <string name="export_questions_info">vous pouvez exporter vos questions au format json, en fonction de la langue que vous sélectionnez.\n\nvous pouvez également partager les questions avec vos amis, ils peuvent importer ces fichiers json dans la section importer des questions.</string>
     <string name="generate_suggested_answer">générer une réponse suggérée</string>
     <string name="success_questions_saved">questions enregistrées</string>
-    <string name="empty_interview_info">Aucun entretien n\'a encore été ajouté. Vous pouvez créer des entretiens en cliquant sur le bouton plus (et assurez-vous d\'avoir ajouté au moins 1 question avant de créer un entretien)</string>
-    <string name="empty_question_info">Aucune question n\'a encore été ajoutée. Vous pouvez créer des questions en cliquant sur le bouton plus ou générer</string>
+    <string name="empty_interview_info">aucun entretien n\'a encore été ajouté. vous pouvez créer des entretiens en cliquant sur le bouton plus (et assurez-vous d\'avoir ajouté au moins 1 question avant de créer un entretien)</string>
+    <string name="empty_interview_info_cont">pour accéder aux entretiens, vous devez configurer la clé api openai. vous pouvez entrer la clé api dans les paramètres.</string>
+    <string name="empty_interview_free_info">vous pouvez essayer le premier entretien gratuitement ; pour les entretiens suivants, vous devrez acheter un entretien (après avoir commencé un entretien) ou un pack à vie (disponible à l\'achat dans les paramètres).</string>
+    <string name="empty_question_info">aucune question n\'a encore été ajoutée. vous pouvez créer des questions en cliquant sur le bouton plus ou générer</string>
 </resources>
