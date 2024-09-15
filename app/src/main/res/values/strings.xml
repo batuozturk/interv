@@ -100,6 +100,7 @@
     <string name="topic_unsubscribe_1">interv-tr</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
     <string name="topic_unsubscribe_3">interv-de</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
     <string name="interview_steps_not_added">interview steps not added</string>
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
@@ -118,4 +119,7 @@
     <string name="empty_question_info">no questions have been added yet, you can create questions by clicking plus or generate (openai api key is required, it needs to be added in the settings section.) button</string>
     <string name="settings_lang_option_four">german</string>
     <string name="filter_german">german</string>
+    <string name="language_type_es">spanish</string>
+    <string name="filter_spanish">spanish</string>
+    <string name="settings_lang_option_five">spanish</string>
 </resources>

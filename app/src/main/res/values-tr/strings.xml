@@ -96,6 +96,7 @@
     <string name="topic_unsubscribe_1">interv-en</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
     <string name="topic_unsubscribe_3">interv-de</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
     <string name="error_export_questions">sorular dışa aktarılamıyor</string>
     <string name="save_and_share">kaydet ve paylaş</string>
     <string name="success_questions_imported">sorular içe aktarıldı</string>
@@ -120,4 +121,7 @@
     <string name="empty_question_info">henüz hiçbir soru eklenmedi. soru oluşturmak için artı veya oluştur (openai api anahtarı gerekir, ayarlar kısmından eklenmesi gerekir) düğmesine tıklayabilirsiniz</string>
     <string name="settings_lang_option_four">almanca</string>
     <string name="filter_german">almanca</string>
+    <string name="language_type_es">ispanyolca</string>
+    <string name="filter_spanish">ispanyolca</string>
+    <string name="settings_lang_option_five">ispanyolca</string>
 </resources>

@@ -177,6 +177,7 @@ class MainActivity : ComponentActivity() {
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_1))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_2))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_3))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_4))
                 }
             }
             // todo

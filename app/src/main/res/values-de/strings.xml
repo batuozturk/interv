@@ -99,6 +99,7 @@
     <string name="topic_unsubscribe_1">interv-tr</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
     <string name="topic_unsubscribe_3">interv-en</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
     <string name="interview_steps_not_added">interview-schritte nicht hinzugefügt</string>
     <string name="api_key_placeholder">api-schlüssel</string>
     <string name="set_api_key">api-schlüssel festlegen</string>
@@ -117,4 +118,7 @@
     <string name="empty_question_info">es wurden noch keine fragen hinzugefügt. du kannst fragen erstellen, indem du auf die plus- oder generieren-schaltfläche klickst (openai-api-schlüssel erforderlich, muss im einstellungsbereich hinzugefügt werden).</string>
     <string name="settings_lang_option_four">deutsch</string>
     <string name="filter_german">deutsch</string>
+    <string name="language_type_es">spanisch</string>
+    <string name="filter_spanish">spanisch</string>
+    <string name="settings_lang_option_five">spanisch</string>
 </resources>
