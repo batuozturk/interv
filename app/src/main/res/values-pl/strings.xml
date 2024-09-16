@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">interv</string>
+    <string name="retry">spróbuj ponownie</string>
+    <string name="dismiss">odrzuć</string>
+    <string name="ok">ok</string>
+    <string name="undo">cofnij</string>
+    <string name="error_unknown">wystąpił nieznany błąd</string>
+
+    <string name="error_question_not_saved">pytanie nie może zostać zapisane</string>
+    <string name="error_question_empty">pytanie jest puste</string>
+    <string name="error_question_lang_code_empty">kod języka jest pusty</string>
+    <string name="success_question_saved">pytanie zapisane</string>
+    <string name="delete_question">pytanie usunięte</string>
+    <string name="update_question">pytanie zaktualizowane</string>
+
+    <string name="error_interview_not_saved">rozmowa kwalifikacyjna nie może zostać zapisana</string>
+    <string name="error_interview_empty">rozmowa kwalifikacyjna jest pusta</string>
+    <string name="error_interview_lang_code_empty">kod języka jest pusty</string>
+    <string name="error_interview_duration_invalid">czas trwania jest nieprawidłowy</string>
+    <string name="error_interview_type_not_selected">typ nie został wybrany</string>
+    <string name="success_interview_saved">rozmowa kwalifikacyjna zapisana</string>
+    <string name="delete_interview">rozmowa kwalifikacyjna usunięta</string>
+    <string name="update_interview">rozmowa kwalifikacyjna zaktualizowana</string>
+
+    <string name="type_video">wideo</string>
+    <string name="type_phone_call">rozmowa telefoniczna</string>
+    <string name="add_step">krok dodany</string>
+    <string name="delete_step">krok usunięty</string>
+
+    <string name="navitem_one">rozm. kwalif.</string>
+    <string name="navitem_two">pytania</string>
+    <string name="navitem_three">ustawienia</string>
+
+    <string name="create_interview_title">stwórz rozmowę kwalifikacyjną</string>
+
+    <string name="create_question_name_placeholder">pytanie</string>
+    <string name="create_interview_name_placeholder">nazwa rozmowy kwalifikacyjnej</string>
+    <string name="create_interview_question_duration_placeholder">czas trwania pytania</string>
+    <string name="lang_code_placeholder">kod języka np. pl</string>
+    <string name="create_interview_add_step_title">dodaj krok</string>
+
+    <string name="settings_import_questions">importuj pytania</string>
+    <string name="settings_export_questions">eksportuj pytania</string>
+    <string name="settings_rate_us">ocen nas</string>
+    <string name="settings_contact_us">skontaktuj się z nami</string>
+    <string name="settings_language">język</string>
+    <string name="settings_tos">regulamin</string>
+    <string name="settings_privacy_policy">polityka prywatności</string>
+    <string name="settings_download_konsol">pobierz konsolę, menedżer projektu firebase dla androida</string>
+    <string name="settings_style">styl</string>
+    <string name="settings_style_option_one">tryb jasny</string>
+    <string name="settings_style_option_two">tryb ciemny</string>
+    <string name="settings_lang_option_one">angielski</string>
+    <string name="settings_lang_option_two">turecki</string>
+    <string name="settings_lang_option_three">francuski</string>
+    <string name="settings_language_title">ustaw język aplikacji</string>
+    <string name="settings_style_title">ustaw styl aplikacji</string>
+
+    <string name="interview_detail_question_and_answers">pytania i odpowiedzi</string>
+    <string name="save">zapisz</string>
+    <string name="microphone_title_enabled">mikrofon włączony</string>
+    <string name="microphone_title_not_enabled">mikrofon wyłączony</string>
+    <string name="close_call">zakończ rozmowę</string>
+    <string name="pause">pauza</string>
+    <string name="start_interview">rozpocznij</string>
+    <string name="language_type_en">angielski</string>
+    <string name="language_type_tr">turecki</string>
+    <string name="language_type_fr">francuski</string>
+    <string name="first_question_talk">zaczynajmy od pierwszego pytania,</string>
+    <string name="interview_ended">rozmowa kwalifikacyjna zakończona, dziękujemy za odpowiedzi. możesz zakończyć rozmowę</string>
+    <string name="interview_start">witamy w rozmowie kwalifikacyjnej, jestem menedżerem hr. dziś chcę przeprowadzić rozmowę, aby sprawdzić twoją wiedzę.</string>
+    <string name="interview_question_talk">kontynuujmy pytanie %d,</string>
+    <string name="created_at">czas</string>
+    <string name="created_at_reverse">czas odwrotny</string>
+    <string name="only_english">tylko angielski</string>
+    <string name="filter_turkish">turecki</string>
+    <string name="filter_english">angielski</string>
+    <string name="filter_french">francuski</string>
+    <string name="filter_default">domyślnie</string>
+    <string name="filter_name">a-z</string>
+    <string name="filter_completed">ukończone</string>
+    <string name="filter_not_completed">nieukończone</string>
+    <string name="filter">filtr</string>
+    <string name="filter_name_reversed">z-a</string>
+    <string name="search_interviews">wyszukaj rozmowy kwalifikacyjne</string>
+    <string name="search_questions">wyszukaj pytania</string>
+    <string name="hr_manager_calling_text">menedżer hr dzwoni do ciebie</string>
+    <string name="open_call">otwórz rozmowę</string>
+    <string name="added_steps">dodane kroki</string>
+    <string name="questions">pytania</string>
+    <string name="error_export_questions">pytania nie mogą zostać wyeksportowane</string>
+    <string name="save_and_share">zapisz i udostępnij</string>
+    <string name="success_questions_imported">pytania zaimportowane</string>
+    <string name="success_questions_exported">pytania wyeksportowane</string>
+    <string name="success_questions_shared">pytania udostępnione</string>
+    <string name="speech_recognition_requires_internet">brak połączenia</string>
+    <string name="topic_subscribe">interv-pl</string>
+    <string name="topic_unsubscribe_1">interv-tr</string>
+    <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="topic_unsubscribe_3">interv-de</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
+    <string name="topic_unsubscribe_5">interv-en</string>
+    <string name="interview_steps_not_added">kroki rozmowy kwalifikacyjnej nie zostały dodane</string>
+    <string name="api_key_placeholder">klucz api</string>
+    <string name="set_api_key">ustaw klucz api</string>
+    <string name="recording_is_started">nagrywanie rozpoczęte</string>
+    <string name="stop_recording">zatrzymaj</string>
+    <string name="api_key_empty">klucz api musi być wprowadzony w ustawieniach</string>
+    <string name="api_key_info">klucz api jest używany do generowania pytań opartych na ai, korzystania z funkcji rozpoznawania mowy w aplikacji i oceniania wyników rozmów kwalifikacyjnych. możesz uzyskać klucz api na stronie kluczy api openai, po prostu skopiuj lub wpisz klucz.</string>
+    <string name="not_answered_yet">jeszcze nie odpowiedziano</string>
+    <string name="import_questions_info">możesz zaimportować swoje pytania jako plik json.\n\npo wybraniu pliku pytania zostaną zaimportowane do interv.</string>
+    <string name="export_questions_info">możesz wyeksportować swoje pytania jako plik json, na podstawie wybranego języka.\n\nmożesz również udostępnić pytania swoim znajomym, mogą oni zaimportować te pliki json w sekcji importu pytań.</string>
+    <string name="generate_suggested_answer">generuj sugerowaną odpowiedź</string>
+    <string name="success_questions_saved">pytania zapisane</string>
+    <string name="empty_interview_info">nie dodano jeszcze żadnych rozmów kwalifikacyjnych, możesz stworzyć rozmowy kwalifikacyjne, klikając przycisk plus (i upewnij się, że dodałeś przynajmniej 1 pytanie przed utworzeniem rozmowy kwalifikacyjnej)</string>
+    <string name="empty_interview_info_cont">aby dodać rozmowy kwalifikacyjne, musisz ustawić klucz api openai. klucz api możesz wprowadzić w ustawieniach</string>
+    <string name="empty_interview_free_info">możesz wypróbować pierwszą rozmowę kwalifikacyjną za darmo; w przypadku kolejnych rozmów kwalifikacyjnych będziesz musiał zakupić rozmowę (po rozpoczęciu rozmowy) lub pakiet dożywotni (dostępny do zakupu w ustawieniach).</string>
+    <string name="empty_question_info">nie dodano jeszcze żadnych pytań, możesz stworzyć pytania klikając przycisk plus lub generować (wymagany jest klucz api openai, który należy dodać w sekcji ustawień)</string>
+    <string name="settings_lang_option_four">niemiecki</string>
+    <string name="filter_german">niemiecki</string>
+    <string name="language_type_es">hiszpański</string>
+    <string name="filter_spanish">hiszpański</string>
+    <string name="settings_lang_option_six">polski</string>
+    <string name="filter_polish">polski</string>
+    <string name="language_type_pl">polski</string>
+</resources>
