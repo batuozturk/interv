@@ -1,10 +1,7 @@
 package com.batuhan.interv.presentation.interview.enter
 
-import android.content.Intent
 import android.media.MediaRecorder
 import android.os.Bundle
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.compose.runtime.Composable
@@ -29,7 +26,6 @@ import com.batuhan.interv.util.BaseView
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
 import com.batuhan.interv.util.DialogType
-import com.batuhan.interv.util.decideDialogType
 import com.batuhan.interv.util.isTablet
 import java.io.IOException
 import java.util.Locale
@@ -72,8 +68,8 @@ fun InterviewScreen(
 
     val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
 
-    val audioRecorder =
-        remember(isMyTurn) {
+    var audioRecorder =
+        remember {
             MediaRecorder().apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -123,20 +119,44 @@ fun InterviewScreen(
         derivedStateOf { context.isTablet() }
     }
 
+    var isRecording =
+        remember {
+            false
+        }
+
     LaunchedEffect(isMyTurn) {
         if (isMyTurn >= 0 && isMyTurn != size) {
+            isRecording = true
             audioRecorder.start()
             viewModel.showDialog(
                 DialogData(
                     R.string.recording_is_started,
-                    listOf(DialogAction(R.string.stop_recording) {
-                        audioRecorder.stop()
-                        viewModel.clearDialog()
-                        viewModel.retrieveAndUploadAudio(context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3", langCode)
+                    listOf(
+                        DialogAction(R.string.stop_recording) {
+                            isRecording = false
+                            audioRecorder.stop()
+                            viewModel.clearDialog()
+                            viewModel.retrieveAndUploadAudio(
+                                context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3",
+                                langCode,
+                            ) {
+                                audioRecorder =
+                                    MediaRecorder().apply {
+                                        setAudioSource(MediaRecorder.AudioSource.MIC)
+                                        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                                        setOutputFile(context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3")
+                                        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
 
-                    }),
-                    type = DialogType.SUCCESS_INFO
-                )
+                                        try {
+                                            prepare()
+                                        } catch (e: IOException) {
+                                        }
+                                    }
+                            }
+                        },
+                    ),
+                    type = DialogType.SUCCESS_INFO,
+                ),
             )
         }
     }
@@ -181,6 +201,7 @@ fun InterviewScreen(
 //            speechToTextService.cancel()
 //            speechToTextService.stopListening()
 //            speechToTextService.destroy()
+            if (isRecording) audioRecorder.stop()
             audioRecorder.release()
             lifecycleOwner.lifecycle.removeObserver(lifecycleEventObserver)
         }
