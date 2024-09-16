@@ -77,7 +77,7 @@ fun DialogView(dialogData: DialogData?) {
                     color = dialogData.type.textColor,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
-                    modifier = Modifier.weight(15f - (dialogData.actions.size) * 3f),
+                    modifier = Modifier.weight(12f - (dialogData.actions.size) * 3f),
                 )
                 Row(
                     modifier = Modifier.weight(dialogData.actions.size * 3f),
@@ -142,9 +142,9 @@ fun SettingsDialog(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(stringResource(id = title), modifier = Modifier.weight(6f))
+            Text(stringResource(id = title), modifier = Modifier.weight(5f))
             Button(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(3f),
                 contentPadding = ButtonDefaults.TextButtonContentPadding,
                 onClick = actions[0].action,
                 colors =
@@ -227,7 +227,7 @@ fun InputDialog(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(stringResource(id = title), modifier = Modifier.weight(4f))
+            Text(stringResource(id = title), modifier = Modifier.weight(3f))
             Button(
                 modifier = Modifier.weight(2f),
                 contentPadding = ButtonDefaults.TextButtonContentPadding,
