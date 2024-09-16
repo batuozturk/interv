@@ -117,7 +117,7 @@ class InterviewViewModel
         when (error) {
             InterviewError.Initialization -> initalizeSteps()
             is InterviewError.UpsertInterviewStep -> upsertInterviewStep(error.answer)
-            is InterviewError.UploadAudio -> retrieveAndUploadAudio(error.path, error.language)
+            is InterviewError.UploadAudio -> retrieveAndUploadAudio(error.path, error.language, error.actionSuccess)
         }
     }
 
@@ -288,7 +288,7 @@ class InterviewViewModel
 //        // no-op
 //    }
 
-    fun retrieveAndUploadAudio(path: String, language: String) {
+    fun retrieveAndUploadAudio(path: String, language: String, actionSuccess: () -> Unit) {
         val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
         val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
             showDialog(
@@ -300,7 +300,7 @@ class InterviewViewModel
                             clearDialog()
                         },
                         DialogAction(R.string.retry) {
-                            retryOperation(InterviewError.UploadAudio(path, language))
+                            retryOperation(InterviewError.UploadAudio(path, language, actionSuccess))
                         }
                     )
                 )
@@ -314,6 +314,7 @@ class InterviewViewModel
         viewModelScope.launch(handler) {
             val transcription = openAI.transcription(transcriptionRequest)
             upsertInterviewStep(transcription.text)
+            actionSuccess.invoke()
         }
 
     }
@@ -332,7 +333,7 @@ data class InterviewUiState(
 
 sealed class InterviewError {
     data class UpsertInterviewStep(val answer: String) : InterviewError()
-    data class UploadAudio(val path: String, val language: String) : InterviewError()
+    data class UploadAudio(val path: String, val language: String, val actionSuccess: () -> Unit) : InterviewError()
 
     object Initialization : InterviewError()
 }
