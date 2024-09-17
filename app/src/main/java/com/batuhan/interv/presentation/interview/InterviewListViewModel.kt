@@ -64,6 +64,7 @@ class InterviewListViewModel @Inject constructor(
                         InterviewFilterType.LANG_ES -> it.langCode == "es-ES"
                         InterviewFilterType.LANG_PL -> it.langCode == "pl-PL"
                         InterviewFilterType.LANG_AR -> it.langCode == "ar-AR"
+                        InterviewFilterType.LANG_IT -> it.langCode == "it-IT"
                         InterviewFilterType.COMPLETED -> it.completed == true
                         InterviewFilterType.NOT_COMPLETED -> it.completed == false
                         else -> true

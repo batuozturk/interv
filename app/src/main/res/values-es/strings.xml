@@ -102,6 +102,7 @@
     <string name="topic_unsubscribe_4">interv-de</string>
     <string name="topic_unsubscribe_5">interv-pl</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
+    <string name="topic_unsubscribe_7">interv-it</string>
     <string name="interview_steps_not_added">pasos de la entrevista no añadidos</string>
     <string name="api_key_placeholder">clave api</string>
     <string name="set_api_key">establecer clave api</string>
@@ -130,4 +131,8 @@
     <string name="settings_lang_option_seven">árabe</string>
     <string name="filter_arabic">árabe</string>
     <string name="language_type_ar">árabe</string>
+    <string name="settings_lang_option_eight">italiano</string>
+    <string name="filter_italian">italiano</string>
+    <string name="language_type_it">italiano</string>
+
 </resources>
