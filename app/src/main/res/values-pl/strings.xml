@@ -86,7 +86,7 @@
     <string name="search_interviews">wyszukaj rozmowy kwalifikacyjne</string>
     <string name="search_questions">wyszukaj pytania</string>
     <string name="hr_manager_calling_text">menedżer hr dzwoni do ciebie</string>
-    <string name="open_call">otwórz rozmowę</string>
+    <string name="open_call">otwarty nabór</string>
     <string name="added_steps">dodane kroki</string>
     <string name="questions">pytania</string>
     <string name="error_export_questions">pytania nie mogą zostać wyeksportowane</string>
@@ -120,6 +120,8 @@
     <string name="empty_question_info">nie dodano jeszcze żadnych pytań, możesz stworzyć pytania klikając przycisk plus lub generować (wymagany jest klucz api openai, który należy dodać w sekcji ustawień)</string>
     <string name="settings_lang_option_four">niemiecki</string>
     <string name="filter_german">niemiecki</string>
+    <string name="settings_lang_option_five">hiszpański</string>
+    <string name="language_type_de">niemiecki</string>
     <string name="language_type_es">hiszpański</string>
     <string name="filter_spanish">hiszpański</string>
     <string name="settings_lang_option_six">polski</string>
