@@ -102,6 +102,7 @@
     <string name="topic_unsubscribe_4">interv-es</string>
     <string name="topic_unsubscribe_5">interv-en</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
+    <string name="topic_unsubscribe_7">interv-it</string>
     <string name="interview_steps_not_added">kroki rozmowy kwalifikacyjnej nie zostały dodane</string>
     <string name="api_key_placeholder">klucz api</string>
     <string name="set_api_key">ustaw klucz api</string>
@@ -130,4 +131,8 @@
     <string name="settings_lang_option_seven">arabski</string>
     <string name="filter_arabic">arabski</string>
     <string name="language_type_ar">arabski</string>
+    <string name="settings_lang_option_eight">włoski</string>
+    <string name="filter_italian">włoski</string>
+    <string name="language_type_it">włoski</string>
+
 </resources>

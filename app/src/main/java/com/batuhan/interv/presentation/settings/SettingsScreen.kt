@@ -215,6 +215,16 @@ fun SettingsScreen(
                                 )
                             }
                         },
+                        DialogAction(
+                            R.string.settings_lang_option_eight,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("it-IT"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
                     ),
                     decideDialogType(darkTheme),
                     languageData =
@@ -404,6 +414,11 @@ fun SettingsScreenContent(
                                     DialogAction(R.string.settings_lang_option_seven) {
                                         writeData.invoke(
                                             SettingsType.LangCode("ar-AR"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_eight) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("it-IT"),
                                         )
                                     },
                                 ),
