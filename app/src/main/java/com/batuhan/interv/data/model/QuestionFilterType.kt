@@ -19,6 +19,7 @@ enum class QuestionFilterType(
     LANG_DE(R.string.filter_german),
     LANG_ES(R.string.filter_spanish),
     LANG_PL(R.string.filter_polish),
+    LANG_AR(R.string.filter_arabic),
 }
 
 fun QuestionFilterType.createQuery(searchText: String): String{
@@ -35,6 +36,7 @@ fun QuestionFilterType.createQuery(searchText: String): String{
             QuestionFilterType.LANG_DE -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'de-DE'"
             QuestionFilterType.LANG_ES -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'es-ES'"
             QuestionFilterType.LANG_PL -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'pl-PL'"
+            QuestionFilterType.LANG_AR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'ar-AR'"
             QuestionFilterType.DEFAULT -> ""
         }
 
@@ -49,6 +51,7 @@ fun findLanguageFilterType(language: String?): QuestionFilterType{
         LanguageType.DE.code -> QuestionFilterType.LANG_DE
         LanguageType.ES.code -> QuestionFilterType.LANG_ES
         LanguageType.PL.code -> QuestionFilterType.LANG_PL
+        LanguageType.AR.code -> QuestionFilterType.LANG_AR
         else -> QuestionFilterType.DEFAULT
     }
 }

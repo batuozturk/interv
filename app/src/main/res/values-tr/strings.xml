@@ -98,6 +98,7 @@
     <string name="topic_unsubscribe_3">interv-de</string>
     <string name="topic_unsubscribe_4">interv-es</string>
     <string name="topic_unsubscribe_5">interv-pl</string>
+    <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="error_export_questions">sorular dışa aktarılamıyor</string>
     <string name="save_and_share">kaydet ve paylaş</string>
     <string name="success_questions_imported">sorular içe aktarıldı</string>
@@ -129,4 +130,7 @@
     <string name="settings_lang_option_six">lehçe</string>
     <string name="filter_polish">lehçe</string>
     <string name="language_type_pl">lehçe</string>
+    <string name="settings_lang_option_seven">arapça</string>
+    <string name="filter_arabic">arapça</string>
+    <string name="language_type_ar">arapça</string>
 </resources>

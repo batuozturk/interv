@@ -102,6 +102,7 @@
     <string name="topic_unsubscribe_3">interv-de</string>
     <string name="topic_unsubscribe_4">interv-es</string>
     <string name="topic_unsubscribe_5">interv-pl</string>
+    <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="interview_steps_not_added">interview steps not added</string>
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
@@ -127,4 +128,7 @@
     <string name="settings_lang_option_six">polish</string>
     <string name="filter_polish">polish</string>
     <string name="language_type_pl">polish</string>
+    <string name="settings_lang_option_seven">arabic</string>
+    <string name="filter_arabic">arabic</string>
+    <string name="language_type_ar">arabic</string>
 </resources>

@@ -97,6 +97,7 @@
     <string name="topic_unsubscribe_3">interv-de</string>
     <string name="topic_unsubscribe_4">interv-es</string>
     <string name="topic_unsubscribe_5">interv-pl</string>
+    <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="error_export_questions">les questions ne peuvent pas être exportées</string>
     <string name="save_and_share">enregistrer et partager</string>
     <string name="success_questions_imported">questions importées</string>
@@ -128,4 +129,7 @@
     <string name="settings_lang_option_six">polonais</string>
     <string name="filter_polish">polonais</string>
     <string name="language_type_pl">polonais</string>
+    <string name="settings_lang_option_seven">arabe</string>
+    <string name="filter_arabic">arabe</string>
+    <string name="language_type_ar">arabe</string>
 </resources>

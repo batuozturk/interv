@@ -269,6 +269,15 @@ fun ExportQuestionsScreenContent(
                 ) {
                     Text(stringResource(R.string.filter_polish))
                 }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 6,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.AR.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_arabic))
+                }
             }
 
             Row(
