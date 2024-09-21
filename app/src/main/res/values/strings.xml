@@ -135,4 +135,6 @@
     <string name="settings_lang_option_eight">italian</string>
     <string name="filter_italian">italian</string>
     <string name="language_type_it">italian</string>
+    <string name="test_question_1">how was your day?</string>
+    <string name="test_question_2">name your favorite singer?</string>
 </resources>

@@ -134,5 +134,7 @@
     <string name="settings_lang_option_eight">italienisch</string>
     <string name="filter_italian">italienisch</string>
     <string name="language_type_it">italienisch</string>
+    <string name="test_question_1">wie war dein tag?</string>
+    <string name="test_question_2">nenne deinen lieblingssänger?</string>
 
 </resources>

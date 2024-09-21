@@ -268,20 +268,21 @@ fun ScreenContent(
                         }
                     },
                     actions = {
-                        if (interviewWithSteps?.interview?.completed == true) {
-                            IconButton(
-                                onClick = {
-                                    sendEvent.invoke(
-                                        InterviewDetailEvent.RetryInterview(
-                                            interviewWithSteps!!.interview!!,
-                                            isTablet,
-                                        ),
-                                    )
-                                },
-                            ) {
-                                Icon(Icons.Outlined.Refresh, contentDescription = null)
-                            }
-                            /*
+                        if(interviewWithSteps?.interview?.interviewId!! >= 2) {
+                            if (interviewWithSteps?.interview?.completed == true) {
+                                IconButton(
+                                    onClick = {
+                                        sendEvent.invoke(
+                                            InterviewDetailEvent.RetryInterview(
+                                                interviewWithSteps!!.interview!!,
+                                                isTablet,
+                                            ),
+                                        )
+                                    },
+                                ) {
+                                    Icon(Icons.Outlined.Refresh, contentDescription = null)
+                                }
+                                /*
                             IconButton(
                                 onClick = {
                                     sendEvent.invoke(
@@ -294,17 +295,18 @@ fun ScreenContent(
                                 Icon(Icons.Outlined.Share, contentDescription = null)
                             }
                              */
-                        }
-                        IconButton(
-                            onClick = {
-                                sendEvent.invoke(
-                                    InterviewDetailEvent.DeleteInterview(
-                                        interviewWithSteps!!.interview!!,
-                                    ),
-                                )
-                            },
-                        ) {
-                            Icon(Icons.Outlined.Delete, contentDescription = null)
+                            }
+                            IconButton(
+                                onClick = {
+                                    sendEvent.invoke(
+                                        InterviewDetailEvent.DeleteInterview(
+                                            interviewWithSteps!!.interview!!,
+                                        ),
+                                    )
+                                },
+                            ) {
+                                Icon(Icons.Outlined.Delete, contentDescription = null)
+                            }
                         }
                     },
                 )

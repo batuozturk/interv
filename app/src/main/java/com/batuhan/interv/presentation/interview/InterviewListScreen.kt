@@ -80,12 +80,21 @@ fun InterviewListScreen(
     var apiKey by remember {
         mutableStateOf("")
     }
+    var langCode by remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(true) {
         context.dataStore.data.collect {
             apiKey = it[MainActivity.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
                 ""
             }
+            langCode = it[InterviewListViewModel.KEY_PREFERENCES_LANGUAGE] ?: run {
+                "en-US"
+            }
         }
+    }
+    LaunchedEffect(langCode){
+        viewModel.initializeTestInterviews(langCode)
     }
     LaunchedEffect(dialogData) {
         dialogData?.let(showDialog)
@@ -98,7 +107,7 @@ fun InterviewListScreen(
                 is InterviewListEvent.Detail -> navigateToDetail.invoke(it.interviewId)
                 is InterviewListEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
                 is InterviewListEvent.EnterInterview -> {
-                    if (apiKey.isEmpty()) {
+                    if (apiKey.isEmpty() && !it.isTest) {
                         viewModel.showDialog(
                             DialogData(
                                 title = R.string.api_key_empty,
@@ -116,7 +125,7 @@ fun InterviewListScreen(
                             it.interviewId,
                             it.interviewType,
                             it.langCode,
-                            apiKey,
+                            if(it.isTest) "test" else apiKey,
                         )
                     }
                 }
@@ -348,6 +357,7 @@ fun InterviewListItem(
                                 interview.interviewId ?: return@IconButton,
                                 interview.interviewType ?: return@IconButton,
                                 interview.langCode ?: return@IconButton,
+                                interview.interviewId < 2
                             ),
                         )
                     },
@@ -355,11 +365,13 @@ fun InterviewListItem(
                     Icon(Icons.Outlined.PlayArrow, contentDescription = null)
                 }
             }
-            IconButton(
-                modifier = Modifier.weight(1f),
-                onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
-            ) {
-                Icon(Icons.Outlined.Delete, contentDescription = null)
+            if(interview.interviewId!! >= 2) {
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
+                ) {
+                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                }
             }
         }
     }

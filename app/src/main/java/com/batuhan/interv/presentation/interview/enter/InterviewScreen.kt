@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.InterviewType
 import com.batuhan.interv.data.model.makeString
+import com.batuhan.interv.data.model.makeTestString
 import com.batuhan.interv.presentation.interview.enter.phone.PhoneInterviewScreen
 import com.batuhan.interv.presentation.interview.enter.videocall.VideoCallInterviewScreen
 import com.batuhan.interv.presentation.interview.enter.videocall.VideoCallInterviewScreenForTablet
@@ -119,6 +120,10 @@ fun InterviewScreen(
         derivedStateOf { context.isTablet() }
     }
 
+    val isTest by remember(uiState.isTest) {
+        derivedStateOf { uiState.isTest }
+    }
+
     var isRecording =
         remember {
             false
@@ -172,7 +177,7 @@ fun InterviewScreen(
                 ttsService.setLanguage(Locale.forLanguageTag(langCode))
             }
             ttsService.speak(
-                it.makeString(context, langCode),
+                if (isTest == true) it.makeTestString(context, langCode) else it.makeString(context, langCode),
                 TextToSpeech.QUEUE_ADD,
                 params,
                 "InterviewselfTTS",
