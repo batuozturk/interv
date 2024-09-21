@@ -17,11 +17,15 @@ class IntervNotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         if (message.data.isNotEmpty()) {
+            val intent = Intent(this, MainActivity::class.java)
+            if (message.data.containsKey("app-update")){
+                intent.putExtra("app-update", true)
+            }
             val pendingIntent =
                 PendingIntent.getActivity(
                     this,
                     100,
-                    Intent(this, MainActivity::class.java),
+                    intent,
                     PendingIntent.FLAG_UPDATE_CURRENT,
                 )
             val notificationBuilder =
@@ -34,7 +38,7 @@ class IntervNotificationService : FirebaseMessagingService() {
                 .setContentTitle(message.notification?.title).setSmallIcon(R.drawable.ic_logo)
                 .setContentIntent(pendingIntent)
 
-            val notificationManager= getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(1, notificationBuilder.build())
 
         }

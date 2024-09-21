@@ -31,13 +31,21 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
+    appUpdate: Boolean,
     onBackPressed: () -> Unit,
     navigateMainScreen: () -> Unit,
+    updateApp: () -> Unit
 ) {
     BackHandler {
         onBackPressed.invoke()
     }
-    SplashScreenContent(navigateMainScreen)
+    SplashScreenContent{
+        if(appUpdate){
+            updateApp.invoke()
+            onBackPressed.invoke()
+        }
+        else navigateMainScreen.invoke()
+    }
 }
 
 @Composable

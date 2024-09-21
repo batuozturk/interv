@@ -56,7 +56,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.lang.RuntimeException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -74,7 +73,8 @@ class MainActivity : ComponentActivity() {
             ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
-        internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY = stringPreferencesKey("preferences_openai_key")
+        internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY =
+            stringPreferencesKey("preferences_openai_key")
     }
 
     private lateinit var customTabsIntent: CustomTabsIntent
@@ -95,6 +95,7 @@ class MainActivity : ComponentActivity() {
         } else {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+        val appUpdate = intent.extras?.getString("app-update").toBoolean()
         setContent {
             var darkTheme: Boolean? by remember {
                 mutableStateOf(null)
@@ -143,6 +144,7 @@ class MainActivity : ComponentActivity() {
                             setStyle = {
                                 darkTheme = it
                             },
+                            appUpdate = appUpdate,
                         )
                     }
                 }
@@ -171,8 +173,7 @@ class MainActivity : ComponentActivity() {
             permissions.entries.forEach {
                 if (it.value == false) {
                     permissionGranted = false
-                }
-                else if(it.value && it.key == Manifest.permission.POST_NOTIFICATIONS){
+                } else if (it.value && it.key == Manifest.permission.POST_NOTIFICATIONS) {
                     Firebase.messaging.subscribeToTopic(getString(R.string.topic_subscribe))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_1))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_2))
@@ -194,6 +195,7 @@ class MainActivity : ComponentActivity() {
                     is SettingsType.LangCode ->
                         prefs[KEY_PREFERENCES_LANGUAGE] =
                             settingsType.langCode
+
                     else -> {}
                 }
             }
@@ -207,22 +209,30 @@ fun InterviewSelfApp(
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
+    appUpdate: Boolean,
 ) {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
-            SplashScreen(onBackPressed = finishApplication) {
-                navController.navigate(
-                    Screen.Home.route,
-                    navOptions =
-                        navOptions {
-                            popUpTo(Screen.Splash.route) {
-                                inclusive = true
-                            }
-                        },
-                )
-            }
+            SplashScreen(
+                appUpdate,
+                onBackPressed = finishApplication,
+                navigateMainScreen = {
+                    navController.navigate(
+                        Screen.Home.route,
+                        navOptions =
+                            navOptions {
+                                popUpTo(Screen.Splash.route) {
+                                    inclusive = true
+                                }
+                            },
+                    )
+                },
+                updateApp = {
+                    sendBrowserEvent.invoke(BrowserEvent.UpdateApp)
+                },
+            )
         }
         composable(Screen.Home.route) { // todo on back pressed test edilecek
             ContainerScreen(
@@ -235,7 +245,14 @@ fun InterviewSelfApp(
                     navController.navigate(Screen.InterviewDetail.createRoute(it))
                 },
                 enterInterview = { id, type, langCode, apiKey ->
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode, apiKey))
+                    navController.navigate(
+                        Screen.EnterInterview.createRoute(
+                            id,
+                            type,
+                            langCode,
+                            apiKey,
+                        ),
+                    )
                 },
                 sendBrowserEvent = sendBrowserEvent,
                 restartApplication = restartApplication,
@@ -271,7 +288,14 @@ fun InterviewSelfApp(
                 onBackPressed = { navController.popBackStack() },
                 enterInterview = { id, type, langCode, apiKey ->
                     navController.popBackStack()
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode, apiKey))
+                    navController.navigate(
+                        Screen.EnterInterview.createRoute(
+                            id,
+                            type,
+                            langCode,
+                            apiKey,
+                        ),
+                    )
                 },
             )
         }
