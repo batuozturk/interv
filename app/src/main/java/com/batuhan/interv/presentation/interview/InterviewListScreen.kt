@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -93,7 +94,7 @@ fun InterviewListScreen(
             }
         }
     }
-    LaunchedEffect(langCode){
+    LaunchedEffect(langCode) {
         viewModel.initializeTestInterviews(langCode)
     }
     LaunchedEffect(dialogData) {
@@ -125,7 +126,7 @@ fun InterviewListScreen(
                             it.interviewId,
                             it.interviewType,
                             it.langCode,
-                            if(it.isTest) "test" else apiKey,
+                            if (it.isTest) "test" else apiKey,
                         )
                     }
                 }
@@ -188,12 +189,11 @@ fun InterviewListScreenContent(
                     }
                 }
             }
-            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount == 0)
-                {
-                    item {
-                        EmptyInterviewView()
-                    }
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount < 3) {
+                item {
+                    EmptyInterviewView()
                 }
+            }
         }
     }
 }
@@ -266,12 +266,11 @@ fun InterviewListScreenContentForTablets(
                         }
                     }
                 }
-                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount == 0)
-                    {
-                        item {
-                            EmptyInterviewView()
-                        }
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount < 3) {
+                    item(span = { GridItemSpan(2) }) {
+                        EmptyInterviewView()
                     }
+                }
             }
         }
         Column(modifier = Modifier.weight(weight)) {
@@ -357,7 +356,7 @@ fun InterviewListItem(
                                 interview.interviewId ?: return@IconButton,
                                 interview.interviewType ?: return@IconButton,
                                 interview.langCode ?: return@IconButton,
-                                interview.interviewId < 2
+                                interview.interviewId < 2,
                             ),
                         )
                     },
@@ -365,7 +364,7 @@ fun InterviewListItem(
                     Icon(Icons.Outlined.PlayArrow, contentDescription = null)
                 }
             }
-            if(interview.interviewId!! >= 2) {
+            if (interview.interviewId!! >= 2) {
                 IconButton(
                     modifier = Modifier.weight(1f),
                     onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
@@ -378,8 +377,8 @@ fun InterviewListItem(
 }
 
 @Composable
-fun EmptyInterviewView()  {
-    Column(Modifier.fillMaxSize()){
+fun EmptyInterviewView() {
+    Column(Modifier.fillMaxSize()) {
         Text(
             stringResource(R.string.empty_interview_info),
             modifier = Modifier.fillMaxSize().padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
@@ -396,5 +395,4 @@ fun EmptyInterviewView()  {
             textAlign = TextAlign.Center,
         )
     }
-
 }

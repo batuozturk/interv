@@ -115,7 +115,7 @@
     <string name="export_questions_info">możesz wyeksportować swoje pytania jako plik json, na podstawie wybranego języka.\n\nmożesz również udostępnić pytania swoim znajomym, mogą oni zaimportować te pliki json w sekcji importu pytań.</string>
     <string name="generate_suggested_answer">generuj sugerowaną odpowiedź</string>
     <string name="success_questions_saved">pytania zapisane</string>
-    <string name="empty_interview_info">nie dodano jeszcze żadnych rozmów kwalifikacyjnych, możesz stworzyć rozmowy kwalifikacyjne, klikając przycisk plus (i upewnij się, że dodałeś przynajmniej 1 pytanie przed utworzeniem rozmowy kwalifikacyjnej)</string>
+    <string name="empty_interview_info">nie utworzyłeś jeszcze wywiadu, możesz utworzyć wywiady, klikając przycisk plus (upewnij się, że dodałeś co najmniej 1 pytanie przed utworzeniem wywiadu) lub możesz wejść do wywiadów testowych za darmo bez wprowadzania klucza api.</string>
     <string name="empty_interview_info_cont">aby dodać rozmowy kwalifikacyjne, musisz ustawić klucz api openai. klucz api możesz wprowadzić w ustawieniach</string>
     <string name="empty_interview_free_info">możesz wypróbować pierwszą rozmowę kwalifikacyjną za darmo; w przypadku kolejnych rozmów kwalifikacyjnych będziesz musiał zakupić rozmowę (po rozpoczęciu rozmowy) lub pakiet dożywotni (dostępny do zakupu w ustawieniach).</string>
     <string name="empty_question_info">nie dodano jeszcze żadnych pytań, możesz stworzyć pytania klikając przycisk plus lub generować (wymagany jest klucz api openai, który należy dodać w sekcji ustawień)</string>
