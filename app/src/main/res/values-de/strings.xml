@@ -115,7 +115,7 @@
     <string name="export_questions_info">du kannst deine fragen als json-datei exportieren, basierend auf der von dir ausgewählten sprache.\n\naußerdem kannst du fragen mit deinen freunden teilen, die diese json-dateien im abschnitt fragen importieren importieren können.</string>
     <string name="generate_suggested_answer">vorgeschlagene antwort generieren</string>
     <string name="success_questions_saved">fragen gespeichert</string>
-    <string name="empty_interview_info">es wurden noch keine interviews hinzugefügt. du kannst interviews erstellen, indem du auf die plus-schaltfläche klickst (und stelle sicher, dass du mindestens 1 frage hinzugefügt hast, bevor du ein interview erstellst)</string>
+    <string name="empty_interview_info">du hast noch kein interview erstellt, du kannst interviews erstellen, indem du auf die plus-taste klickst (und stelle sicher, dass du vor der erstellung eines interviews mindestens 1 frage hinzugefügt hast) oder du kannst testinterviews kostenlos betreten, ohne einen api-schlüssel einzugeben.</string>
     <string name="empty_interview_info_cont">um auf interviews zuzugreifen, musst du den openai-api-schlüssel festlegen. du kannst den api-schlüssel in den einstellungen eingeben</string>
     <string name="empty_interview_free_info">du kannst das erste interview kostenlos ausprobieren; für nachfolgende interviews musst du ein interview (nach beginn eines interviews) oder ein lebenszeitpaket (erhältlich zum kauf in den einstellungen) erwerben.</string>
     <string name="empty_question_info">es wurden noch keine fragen hinzugefügt. du kannst fragen erstellen, indem du auf die plus- oder generieren-schaltfläche klickst (openai-api-schlüssel erforderlich, muss im einstellungsbereich hinzugefügt werden).</string>

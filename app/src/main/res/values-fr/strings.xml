@@ -117,7 +117,7 @@
     <string name="export_questions_info">vous pouvez exporter vos questions au format json, en fonction de la langue que vous sélectionnez.\n\nvous pouvez également partager les questions avec vos amis, ils peuvent importer ces fichiers json dans la section importer des questions.</string>
     <string name="generate_suggested_answer">générer une réponse suggérée</string>
     <string name="success_questions_saved">questions enregistrées</string>
-    <string name="empty_interview_info">aucun entretien n\'a encore été ajouté. vous pouvez créer des entretiens en cliquant sur le bouton plus (et assurez-vous d\'avoir ajouté au moins 1 question avant de créer un entretien)</string>
+    <string name="empty_interview_info">vous n\'avez pas encore créé d\'entretien, vous pouvez créer des entretiens en cliquant sur le bouton plus (et assurez-vous d\'avoir ajouté au moins 1 question avant de créer un entretien) ou vous pouvez entrer gratuitement dans des entretiens de test sans saisir de clé api.</string>
     <string name="empty_interview_info_cont">pour accéder aux entretiens, vous devez configurer la clé api openai. vous pouvez entrer la clé api dans les paramètres.</string>
     <string name="empty_interview_free_info">vous pouvez essayer le premier entretien gratuitement ; pour les entretiens suivants, vous devrez acheter un entretien (après avoir commencé un entretien) ou un pack à vie (disponible à l\'achat dans les paramètres).</string>
     <string name="empty_question_info">aucune question n\'a encore été ajoutée. vous pouvez créer des questions en cliquant sur le bouton plus ou générer</string>

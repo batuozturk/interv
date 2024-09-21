@@ -115,7 +115,7 @@
     <string name="export_questions_info">puedes exportar tus preguntas como un archivo json, basado en el idioma que selecciones.\n\ntambién puedes compartir preguntas con tus amigos, ellos pueden importar estos archivos json en la sección de importación de preguntas.</string>
     <string name="generate_suggested_answer">generar respuesta sugerida</string>
     <string name="success_questions_saved">preguntas guardadas</string>
-    <string name="empty_interview_info">aún no se han agregado entrevistas, puedes crear entrevistas haciendo clic en el botón de más (y asegúrate de haber agregado al menos 1 pregunta antes de crear una entrevista)</string>
+    <string name="empty_interview_info">aún no has creado una entrevista, puedes crear entrevistas haciendo clic en el botón más (y asegúrate de haber añadido al menos 1 pregunta antes de crear una entrevista) o puedes ingresar a entrevistas de prueba de forma gratuita sin introducir una clave api.</string>
     <string name="empty_interview_info_cont">para ingresar a las entrevistas, debes establecer la clave api de openai. puedes ingresar la clave api en la configuración</string>
     <string name="empty_interview_free_info">puedes probar la primera entrevista de forma gratuita; para entrevistas posteriores, necesitarás comprar una entrevista (después de comenzar una entrevista) o un paquete vitalicio (disponible para su compra en la configuración).</string>
     <string name="empty_question_info">aún no se han agregado preguntas, puedes crear preguntas haciendo clic en el botón de más o generar (se requiere clave api de openai, debe ser agregada en la sección de configuración).</string>

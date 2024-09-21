@@ -116,7 +116,7 @@
     <string name="export_questions_info">you can export your questions as json file, based on the language that you select.\n\nalso you can share questions with your friends, they can import these json files in import questions section.</string>
     <string name="generate_suggested_answer">generate suggested answer</string>
     <string name="success_questions_saved">questions saved</string>
-    <string name="empty_interview_info">no interviews have been added yet, you can create interviews by clicking plus button (and make sure that you added at least 1 question before creating an interview)</string>
+    <string name="empty_interview_info">you haven\'t created an interview yet, you can create interviews by clicking plus button (and make sure that you added at least 1 question before creating an interview) or you can enter test interviews for free without entering api key.</string>
     <string name="empty_interview_info_cont">to enter interviews, you must set openai api key. you can enter api key on settings</string>
     <string name="empty_interview_free_info">You can try the first interview for free; for subsequent interviews, you will need to purchase an interview (after starting an interview) or lifetime package (available for purchase from settings).</string>
     <string name="empty_question_info">no questions have been added yet, you can create questions by clicking plus or generate (openai api key is required, it needs to be added in the settings section.) button</string>
