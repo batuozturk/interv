@@ -1,5 +1,6 @@
 package com.batuhan.interv.presentation.interview
 
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -10,6 +11,7 @@ import com.batuhan.interv.data.model.FilterType
 import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewFilterType
 import com.batuhan.interv.data.model.InterviewType
+import com.batuhan.interv.data.model.Question
 import com.batuhan.interv.domain.interview.DeleteInterview
 import com.batuhan.interv.domain.interview.DeleteInterviewSteps
 import com.batuhan.interv.domain.interview.GetAllInterviews
@@ -39,6 +41,10 @@ class InterviewListViewModel @Inject constructor(
     getAllInterviews: GetAllInterviews,
     private val deleteInterviewSteps: DeleteInterviewSteps
 ) : ViewModel(), InterviewListEventHandler, ViewModelEventHandler<InterviewListEvent, InterviewListError> {
+
+    companion object {
+        internal val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
+    }
 
     val filterPair = MutableStateFlow(Pair("", InterviewFilterType.DEFAULT))
 
@@ -73,6 +79,20 @@ class InterviewListViewModel @Inject constructor(
         }
 
     }
+
+    private val testInterviewVideo = Interview(
+        interviewId = 0L,
+        interviewName = "test phone interview",
+        langCode = "en-US",
+        interviewType = InterviewType.PHONE_CALL,
+    )
+
+    private val testInterviewPhone = Interview(
+        interviewId = 1L,
+        interviewName = "test video interview",
+        langCode = "en-US",
+        interviewType = InterviewType.VIDEO,
+    )
 
     private fun deleteInterviewStepsJob(interviewId: Long) =
         viewModelScope.launch {
@@ -244,6 +264,11 @@ class InterviewListViewModel @Inject constructor(
         }
     }
 
+    suspend fun initializeTestInterviews(langCode: String){
+        upsertInterview.invoke(UpsertInterview.Params(testInterviewPhone.copy(langCode = langCode)))
+        upsertInterview.invoke(UpsertInterview.Params(testInterviewVideo.copy(langCode = langCode)))
+    }
+
 
 }
 
@@ -266,7 +291,7 @@ sealed class InterviewListEvent {
     data class DeleteInterview(val interview: Interview) : InterviewListEvent()
     data class Detail(val interviewId: Long):InterviewListEvent()
 
-    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val langCode: String): InterviewListEvent()
+    data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val langCode: String, val isTest: Boolean): InterviewListEvent()
 
     object OpenFilter: InterviewListEvent()
 
