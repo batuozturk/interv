@@ -140,18 +140,17 @@ fun InterviewScreen(
                                 context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3",
                                 langCode,
                             ) {
-                                audioRecorder =
-                                    MediaRecorder().apply {
+                                audioRecorder.reset()
+                                try {
+                                    audioRecorder.apply {
                                         setAudioSource(MediaRecorder.AudioSource.MIC)
                                         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                                         setOutputFile(context.getExternalFilesDir(null)!!.path + "/interviewaudio.mp3")
                                         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-
-                                        try {
-                                            prepare()
-                                        } catch (e: IOException) {
-                                        }
                                     }
+                                    audioRecorder.prepare()
+                                } catch (e: IOException) {
+                                }
                             }
                         },
                     ),
