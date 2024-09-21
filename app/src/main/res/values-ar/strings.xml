@@ -134,6 +134,8 @@
     <string name="settings_lang_option_eight">إيطالي</string>
     <string name="filter_italian">إيطالي</string>
     <string name="language_type_it">إيطالي</string>
+    <string name="test_question_1">كيف كان يومك؟</string>
+    <string name="test_question_2">من هو مغنيك المفضل؟</string>
 
 
 </resources>

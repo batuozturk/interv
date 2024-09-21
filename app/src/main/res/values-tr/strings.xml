@@ -137,5 +137,7 @@
     <string name="settings_lang_option_eight">italyanca</string>
     <string name="filter_italian">italyanca</string>
     <string name="language_type_it">italyanca</string>
+    <string name="test_question_1">günün nasıl geçti?</string>
+    <string name="test_question_2">en sevdiğin şarkıcı kim?</string>
 
 </resources>

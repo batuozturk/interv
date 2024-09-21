@@ -134,5 +134,6 @@
     <string name="settings_lang_option_eight">italiano</string>
     <string name="filter_italian">italiano</string>
     <string name="language_type_it">italiano</string>
-
+    <string name="test_question_1">com\'è andata la tua giornata?</string>
+    <string name="test_question_2">nomina il tuo cantante preferito?</string>
 </resources>
