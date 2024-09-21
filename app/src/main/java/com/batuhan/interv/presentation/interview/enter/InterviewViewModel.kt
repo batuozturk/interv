@@ -83,9 +83,9 @@ class InterviewViewModel
                 }else if(it == uiState.value.steps?.size){
                     MixedString(R.string.interview_ended)
                 } else if (it == 0) {
-                    MixedString(R.string.first_question_talk, null, uiState.value.currentStep?.question?.question)
+                    MixedString(R.string.first_question_talk, null, uiState.value.currentStep?.question?.question, R.string.test_question_1)
                 } else {
-                    MixedString(R.string.interview_question_talk, it + 1, uiState.value.currentStep?.question?.question)
+                    MixedString(R.string.interview_question_talk, it + 1, uiState.value.currentStep?.question?.question, R.string.test_question_2)
                 }
             flowOf(mixedString)
         }
@@ -135,7 +135,8 @@ class InterviewViewModel
 
     fun setCompleted(){
         viewModelScope.launch {
-            val interview = uiState.value.interview?.copy(completed = true) ?: return@launch
+            val completedOrTest = uiState.value.isTest != true
+            val interview = uiState.value.interview?.copy(completed = completedOrTest) ?: return@launch
             upsertInterview.invoke(UpsertInterview.Params(interview))
         }
     }
@@ -153,9 +154,14 @@ class InterviewViewModel
                     _uiState.update {
                         it.copy(
                             currentStepInt = 0, // caution, when user clicks to the next button, then increment by 1
-                            steps = result.data.steps,
+                            steps = result.data.steps.takeIf { it?.isNotEmpty() ?: false }?.run{
+                                this
+                            } ?: listOf(InterviewStep(), InterviewStep()),
                             interview = result.data.interview,
-                            currentStep = result.data.steps?.get(0)
+                            isTest = result.data.interview?.interviewId!! < 2,
+                            currentStep = result.data.steps.takeIf { it?.isNotEmpty() ?: false }?.run{
+                                get(0)
+                            } ?: InterviewStep()
                         )
                     }
                     currentStepFlow.value = 0
@@ -199,11 +205,11 @@ class InterviewViewModel
                             title = R.string.error_unknown,
                             type = DialogType.ERROR,
                             actions =
-                                listOf(
-                                    DialogAction(R.string.retry) {
-                                        retryOperation(InterviewError.UpsertInterviewStep(answer))
-                                    },
-                                ),
+                            listOf(
+                                DialogAction(R.string.retry) {
+                                    retryOperation(InterviewError.UpsertInterviewStep(answer))
+                                },
+                            ),
                         ),
                     )
                 }
@@ -289,32 +295,46 @@ class InterviewViewModel
 //    }
 
     fun retrieveAndUploadAudio(path: String, language: String, actionSuccess: () -> Unit) {
-        val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
-        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            showDialog(
-                DialogData(
-                    title = R.string.error_unknown,
-                    type = DialogType.ERROR,
-                    actions = listOf(
-                        DialogAction(R.string.dismiss) {
-                            clearDialog()
-                        },
-                        DialogAction(R.string.retry) {
-                            retryOperation(InterviewError.UploadAudio(path, language, actionSuccess))
-                        }
+        if(uiState.value.isTest == true){
+            viewModelScope.launch {
+                upsertInterviewStep("this was a test interview, any recording was not sent to speech recognition api")
+                actionSuccess.invoke()
+            }
+        }
+        else {
+            val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
+            val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+                showDialog(
+                    DialogData(
+                        title = R.string.error_unknown,
+                        type = DialogType.ERROR,
+                        actions = listOf(
+                            DialogAction(R.string.dismiss) {
+                                clearDialog()
+                            },
+                            DialogAction(R.string.retry) {
+                                retryOperation(
+                                    InterviewError.UploadAudio(
+                                        path,
+                                        language,
+                                        actionSuccess
+                                    )
+                                )
+                            }
+                        )
                     )
                 )
+            }
+            val transcriptionRequest = TranscriptionRequest(
+                audio = FileSource(path = path.toPath(), fileSystem = FileSystem.SYSTEM),
+                model = ModelId("whisper-1"),
+                language = language.split("-")[0]
             )
-        }
-        val transcriptionRequest = TranscriptionRequest(
-            audio = FileSource(path = path.toPath(), fileSystem = FileSystem.SYSTEM),
-            model = ModelId("whisper-1"),
-            language = language.split("-")[0]
-        )
-        viewModelScope.launch(handler) {
-            val transcription = openAI.transcription(transcriptionRequest)
-            upsertInterviewStep(transcription.text)
-            actionSuccess.invoke()
+            viewModelScope.launch(handler) {
+                val transcription = openAI.transcription(transcriptionRequest)
+                upsertInterviewStep(transcription.text)
+                actionSuccess.invoke()
+            }
         }
 
     }
@@ -328,7 +348,8 @@ data class InterviewUiState(
     internal val steps: List<InterviewStep>? = null,
     internal val isMicrophoneEnabled: Boolean = false,
     internal val isVideoEnabled: Boolean = false,
-    internal val interview: Interview? = null
+    internal val interview: Interview? = null,
+    internal val isTest: Boolean? = null
 )
 
 sealed class InterviewError {
