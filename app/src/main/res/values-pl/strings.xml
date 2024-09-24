@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">interv</string>
     <string name="retry">spróbuj ponownie</string>
     <string name="dismiss">odrzuć</string>
     <string name="ok">ok</string>
