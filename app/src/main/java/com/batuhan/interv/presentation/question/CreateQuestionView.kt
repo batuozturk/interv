@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.data.model.findType
+import com.batuhan.interv.presentation.interview.create.InterviewField
 import com.batuhan.interv.ui.theme.InterviewselfTheme
 import com.batuhan.interv.ui.theme.fontFamily
 import com.batuhan.interv.util.keyboardAsState
@@ -195,6 +196,13 @@ fun CreateQuestionView(
                 onClick = { updateLangCode(LanguageType.DA.code) },
             ) {
                 Text(stringResource(id = LanguageType.DA.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 10,
+                onClick = { updateLangCode(LanguageType.SV.code) },
+            ) {
+                Text(stringResource(id = LanguageType.SV.text))
             }
 
         }

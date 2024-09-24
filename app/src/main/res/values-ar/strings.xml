@@ -146,6 +146,9 @@
     <string name="filter_danish">الدنماركية</string>
     <string name="language_type_da">الدنماركية</string>
     <string name="settings_lang_option_ten">الدنماركية</string>
+    <string name="filter_swedish">سويدي</string>
+    <string name="language_type_sv">سويدي</string>
+    <string name="settings_lang_option_eleven">سويدي</string>
 
 
 </resources>

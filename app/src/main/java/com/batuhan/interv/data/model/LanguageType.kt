@@ -22,4 +22,5 @@ enum class LanguageType(
     IT(R.string.language_type_it, "it-IT"),
     NO(R.string.language_type_no, "no-NO"),
     DA(R.string.language_type_da, "da-DK"),
+    SV(R.string.language_type_sv, "sv-SE"),
 }

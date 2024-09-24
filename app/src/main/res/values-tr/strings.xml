@@ -149,5 +149,9 @@
     <string name="filter_danish">danca</string>
     <string name="language_type_da">danca</string>
     <string name="settings_lang_option_ten">danca</string>
+    <string name="filter_swedish">isveççe</string>
+    <string name="language_type_sv">isveççe</string>
+    <string name="settings_lang_option_eleven">isveççe</string>
+
 
 </resources>

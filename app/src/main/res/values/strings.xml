@@ -106,6 +106,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_10">interv-sv</string>
     <string name="interview_steps_not_added">interview steps not added</string>
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
@@ -147,4 +148,7 @@
     <string name="filter_danish">danish</string>
     <string name="language_type_da">danish</string>
     <string name="settings_lang_option_ten">danish</string>
+    <string name="filter_swedish">swedish</string>
+    <string name="language_type_sv">swedish</string>
+    <string name="settings_lang_option_eleven">swedish</string>
 </resources>

@@ -148,5 +148,9 @@
     <string name="filter_danish">danois</string>
     <string name="language_type_da">danois</string>
     <string name="settings_lang_option_ten">danois</string>
+    <string name="filter_swedish">suédois</string>
+    <string name="language_type_sv">suédois</string>
+    <string name="settings_lang_option_eleven">suédois</string>
+
 
 </resources>

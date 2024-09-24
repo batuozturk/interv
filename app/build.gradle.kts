@@ -15,9 +15,9 @@ android {
         applicationId = "com.batuhan.interv"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
-        resourceConfigurations.addAll(setOf("en", "tr", "fr", "de", "es", "pl", "ar", "it", "no", "da"))
+        versionCode = 9
+        versionName = "1.0.7"
+        resourceConfigurations.addAll(setOf("en", "tr", "fr", "de", "es", "pl", "ar", "it", "no", "da", "sv"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

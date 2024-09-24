@@ -146,4 +146,8 @@
     <string name="filter_danish">dansk</string>
     <string name="language_type_da">dansk</string>
     <string name="settings_lang_option_ten">dansk</string>
+    <string name="filter_swedish">svensk</string>
+    <string name="language_type_sv">svensk</string>
+    <string name="settings_lang_option_eleven">svensk</string>
+
 </resources>
