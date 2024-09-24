@@ -67,10 +67,12 @@ class MainActivity : ComponentActivity() {
             listOfNotNull(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else null,
             ).toTypedArray()
+        private val REQUIRED_PERMISSIONS_INTERVIEW = listOfNotNull(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+        ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
         internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY =
@@ -145,6 +147,9 @@ class MainActivity : ComponentActivity() {
                                 darkTheme = it
                             },
                             appUpdate = appUpdate,
+                            onPermissionRequest = {
+                                activityResultLauncher.launch(REQUIRED_PERMISSIONS_INTERVIEW)
+                            }
                         )
                     }
                 }
@@ -210,6 +215,7 @@ fun InterviewSelfApp(
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
     appUpdate: Boolean,
+    onPermissionRequest: () -> Unit,
 ) {
     val navController = rememberNavController()
 
@@ -263,6 +269,7 @@ fun InterviewSelfApp(
                 exportQuestions = {
                     navController.navigate(Screen.ExportQuestions.route)
                 },
+                onPermissionRequest = onPermissionRequest
             )
         }
         composable(Screen.CreateInterview.route) {
