@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">interv</string>
+    <string name="app_name" translatable="false">interv</string>
     <string name="retry">retry</string>
     <string name="dismiss">dismiss</string>
     <string name="ok">ok</string>
