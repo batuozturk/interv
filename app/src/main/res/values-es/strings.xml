@@ -104,6 +104,7 @@
     <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
+    <string name="topic_unsubscribe_9">interv-da</string>
     <string name="interview_steps_not_added">pasos de la entrevista no añadidos</string>
     <string name="api_key_placeholder">clave api</string>
     <string name="set_api_key">establecer clave api</string>
@@ -142,5 +143,8 @@
     <string name="filter_norwegian">noruego</string>
     <string name="language_type_no">noruego</string>
     <string name="settings_lang_option_nine">noruego</string>
+    <string name="filter_danish">danés</string>
+    <string name="language_type_da">danés</string>
+    <string name="settings_lang_option_ten">danés</string>
 
 </resources>
