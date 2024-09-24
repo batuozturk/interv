@@ -138,5 +138,7 @@
     <string name="language_type_it">italien</string>
     <string name="test_question_1">comment s\'est passée ta journée ?</string>
     <string name="test_question_2">nomme ton chanteur préféré ?</string>
+    <string name="permissions_required">pour entrer dans les entretiens, vous devez accorder les autorisations de caméra et d\'enregistrement audio</string>
+    <string name="fix">corriger</string>
 
 </resources>

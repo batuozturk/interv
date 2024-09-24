@@ -136,5 +136,7 @@
     <string name="language_type_it">włoski</string>
     <string name="test_question_1">jak minął twój dzień?</string>
     <string name="test_question_2">podaj swojego ulubionego piosenkarza?</string>
+    <string name="permissions_required">aby wejść do wywiadów, musisz udzielić zgody na dostęp do kamery i nagrywanie dźwięku</string>
+    <string name="fix">napraw</string>
 
 </resources>

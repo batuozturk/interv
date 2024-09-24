@@ -136,4 +136,6 @@
     <string name="language_type_it">italiano</string>
     <string name="test_question_1">com\'è andata la tua giornata?</string>
     <string name="test_question_2">nomina il tuo cantante preferito?</string>
+    <string name="permissions_required">per entrare nelle interviste, devi concedere le autorizzazioni per la fotocamera e la registrazione audio</string>
+    <string name="fix">correggi</string>
 </resources>
