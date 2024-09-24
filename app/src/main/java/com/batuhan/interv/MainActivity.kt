@@ -249,6 +249,9 @@ class MainActivity : ComponentActivity() {
             "sv" -> {
                 LanguageType.SV.code
             }
+            "nl" -> {
+                LanguageType.NL.code
+            }
             else -> LanguageType.EN.code
         }
     }
