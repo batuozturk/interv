@@ -44,9 +44,10 @@ fun ContainerScreen(
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
     importQuestions: () -> Unit,
-    exportQuestions: () -> Unit
+    exportQuestions: () -> Unit,
+    onPermissionRequest: () -> Unit
 ) {
-    ContainerScreenContent(createInterview, navigateToDetail, enterInterview, sendBrowserEvent, restartApplication, setStyle, importQuestions, exportQuestions)
+    ContainerScreenContent(createInterview, navigateToDetail, enterInterview, sendBrowserEvent, restartApplication, setStyle, importQuestions, exportQuestions, onPermissionRequest)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -59,7 +60,8 @@ fun ContainerScreenContent(
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
     importQuestions: () -> Unit,
-    exportQuestions: () -> Unit
+    exportQuestions: () -> Unit,
+    onPermissionRequest: () -> Unit
 ) {
     val pagerState =
         rememberPagerState {
@@ -174,6 +176,7 @@ fun ContainerScreenContent(
                                             },
                                         )
                                 },
+                                onPermissionRequest = onPermissionRequest
                             )
                         }
 
