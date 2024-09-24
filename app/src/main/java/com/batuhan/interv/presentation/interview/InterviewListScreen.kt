@@ -1,5 +1,7 @@
 package com.batuhan.interv.presentation.interview
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
@@ -70,6 +72,7 @@ fun InterviewListScreen(
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
     enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String, apiKey: String) -> Unit,
+    onPermissionRequest: () -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<InterviewListViewModel>()
@@ -108,7 +111,26 @@ fun InterviewListScreen(
                 is InterviewListEvent.Detail -> navigateToDetail.invoke(it.interviewId)
                 is InterviewListEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
                 is InterviewListEvent.EnterInterview -> {
-                    if (apiKey.isEmpty() && !it.isTest) {
+                    if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                        || context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        viewModel.showDialog(
+                            DialogData(
+                                title = R.string.permissions_required,
+                                type = DialogType.ERROR,
+                                actions =
+                                listOf(
+                                    DialogAction(R.string.fix) {
+                                        viewModel.clearDialog()
+                                        onPermissionRequest.invoke()
+                                    },
+                                    DialogAction(R.string.dismiss) {
+                                        viewModel.clearDialog()
+                                    },
+                                ),
+                            )
+                        )
+                    } else if (apiKey.isEmpty() && !it.isTest) {
                         viewModel.showDialog(
                             DialogData(
                                 title = R.string.api_key_empty,
@@ -381,17 +403,23 @@ fun EmptyInterviewView() {
     Column(Modifier.fillMaxSize()) {
         Text(
             stringResource(R.string.empty_interview_info),
-            modifier = Modifier.fillMaxSize().padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
             textAlign = TextAlign.Center,
         )
         Text(
             stringResource(R.string.empty_interview_info_cont),
-            modifier = Modifier.fillMaxSize().padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
             textAlign = TextAlign.Center,
         )
         Text(
             stringResource(R.string.empty_interview_free_info),
-            modifier = Modifier.fillMaxSize().padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 32.dp),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 32.dp),
             textAlign = TextAlign.Center,
         )
     }

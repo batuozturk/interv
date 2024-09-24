@@ -136,5 +136,7 @@
     <string name="language_type_it">italienisch</string>
     <string name="test_question_1">wie war dein tag?</string>
     <string name="test_question_2">nenne deinen lieblingssänger?</string>
+    <string name="permissions_required">um an interviews teilzunehmen, musst du die berechtigungen für kamera und audioaufnahme erteilen</string>
+    <string name="fix">beheben</string>
 
 </resources>
