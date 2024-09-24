@@ -104,6 +104,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="interview_steps_not_added">لم تتم إضافة خطوات المقابلة</string>
     <string name="api_key_placeholder">مفتاح api</string>
     <string name="set_api_key">تعيين مفتاح api</string>
@@ -148,6 +149,9 @@
     <string name="filter_swedish">سويدي</string>
     <string name="language_type_sv">سويدي</string>
     <string name="settings_lang_option_eleven">سويدي</string>
+    <string name="filter_dutch">هولندي</string>
+    <string name="language_type_nl">هولندي</string>
+    <string name="settings_lang_option_twelve">هولندي</string>
 
 
 </resources>

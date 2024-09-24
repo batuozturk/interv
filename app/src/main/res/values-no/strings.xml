@@ -104,6 +104,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-en</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="interview_steps_not_added">intervjuertrinn ikke lagt til</string>
     <string name="api_key_placeholder">api-nøkkel</string>
     <string name="set_api_key">angi api-nøkkel</string>
@@ -148,5 +149,8 @@
     <string name="filter_swedish">svensk</string>
     <string name="language_type_sv">svensk</string>
     <string name="settings_lang_option_eleven">svensk</string>
+    <string name="filter_dutch">nederlandsk</string>
+    <string name="language_type_nl">nederlandsk</string>
+    <string name="settings_lang_option_twelve">nederlandsk</string>
 
 </resources>

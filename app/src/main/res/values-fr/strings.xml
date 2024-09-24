@@ -100,6 +100,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="error_export_questions">les questions ne peuvent pas être exportées</string>
     <string name="save_and_share">enregistrer et partager</string>
     <string name="success_questions_imported">questions importées</string>
@@ -150,6 +151,10 @@
     <string name="filter_swedish">suédois</string>
     <string name="language_type_sv">suédois</string>
     <string name="settings_lang_option_eleven">suédois</string>
+    <string name="filter_dutch">néerlandais</string>
+    <string name="language_type_nl">néerlandais</string>
+    <string name="settings_lang_option_twelve">néerlandais</string>
+
 
 
 </resources>

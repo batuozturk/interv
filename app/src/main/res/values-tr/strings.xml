@@ -101,6 +101,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="error_export_questions">sorular dışa aktarılamıyor</string>
     <string name="save_and_share">kaydet ve paylaş</string>
     <string name="success_questions_imported">sorular içe aktarıldı</string>
@@ -151,6 +152,9 @@
     <string name="filter_swedish">isveççe</string>
     <string name="language_type_sv">isveççe</string>
     <string name="settings_lang_option_eleven">isveççe</string>
+    <string name="filter_dutch">hollandaca</string>
+    <string name="language_type_nl">hollandaca</string>
+    <string name="settings_lang_option_twelve">hollandaca</string>
 
 
 </resources>
