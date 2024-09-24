@@ -103,6 +103,7 @@
     <string name="topic_unsubscribe_5">interv-pl</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
     <string name="interview_steps_not_added">interview-schritte nicht hinzugefügt</string>
     <string name="api_key_placeholder">api-schlüssel</string>
     <string name="set_api_key">api-schlüssel festlegen</string>
@@ -138,5 +139,8 @@
     <string name="test_question_2">nenne deinen lieblingssänger?</string>
     <string name="permissions_required">um an interviews teilzunehmen, musst du die berechtigungen für kamera und audioaufnahme erteilen</string>
     <string name="fix">beheben</string>
+    <string name="filter_norwegian">norwegisch</string>
+    <string name="language_type_no">norwegisch</string>
+    <string name="settings_lang_option_nine">norwegisch</string>
 
 </resources>

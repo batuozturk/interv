@@ -103,6 +103,7 @@
     <string name="topic_unsubscribe_5">interv-en</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
     <string name="interview_steps_not_added">kroki rozmowy kwalifikacyjnej nie zostały dodane</string>
     <string name="api_key_placeholder">klucz api</string>
     <string name="set_api_key">ustaw klucz api</string>
@@ -138,5 +139,8 @@
     <string name="test_question_2">podaj swojego ulubionego piosenkarza?</string>
     <string name="permissions_required">aby wejść do wywiadów, musisz udzielić zgody na dostęp do kamery i nagrywanie dźwięku</string>
     <string name="fix">napraw</string>
+    <string name="filter_norwegian">norweski</string>
+    <string name="language_type_no">norweski</string>
+    <string name="settings_lang_option_nine">norweski</string>
 
 </resources>

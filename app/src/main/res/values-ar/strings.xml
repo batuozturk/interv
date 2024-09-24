@@ -103,6 +103,7 @@
     <string name="topic_unsubscribe_5">interv-pl</string>
     <string name="topic_unsubscribe_6">interv-en</string>
     <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
     <string name="interview_steps_not_added">لم تتم إضافة خطوات المقابلة</string>
     <string name="api_key_placeholder">مفتاح api</string>
     <string name="set_api_key">تعيين مفتاح api</string>
@@ -138,6 +139,9 @@
     <string name="test_question_2">من هو مغنيك المفضل؟</string>
     <string name="permissions_required">لدخول المقابلات، تحتاج إلى منح أذونات الكاميرا وتسجيل الصوت</string>
     <string name="fix">إصلاح</string>
+    <string name="filter_norwegian">النرويجية</string>
+    <string name="language_type_no">النرويجية</string>
+    <string name="settings_lang_option_nine">النرويجية</string>
 
 
 </resources>
