@@ -35,6 +35,7 @@ import androidx.navigation.navOptions
 import com.batuhan.interv.MainActivity.Companion.KEY_INTERVIEW_ID
 import com.batuhan.interv.MainActivity.Companion.KEY_INTERVIEW_TYPE
 import com.batuhan.interv.MainActivity.Companion.KEY_LANG_CODE
+import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.presentation.container.ContainerScreen
 import com.batuhan.interv.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interv.presentation.interview.create.addstep.AddStepScreen
@@ -56,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -161,7 +163,8 @@ class MainActivity : ComponentActivity() {
         val base: Context
         val config = newBase.resources.configuration
         runBlocking {
-            langCode = newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: "en-US"
+            langCode = newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: checkCurrentLangCode(
+                Locale.getDefault().language)
             val locales = LocaleList.forLanguageTags(langCode)
             config.setLocales(locales)
             base = newBase.createConfigurationContext(config)
@@ -207,6 +210,45 @@ class MainActivity : ComponentActivity() {
                     else -> {}
                 }
             }
+        }
+    }
+
+    fun checkCurrentLangCode(langCode: String): String{
+        return when(langCode){
+            "en" -> {
+                LanguageType.EN.code
+            }
+            "tr" -> {
+                LanguageType.TR.code
+            }
+            "fr" -> {
+                LanguageType.FR.code
+            }
+            "de" -> {
+                LanguageType.DE.code
+            }
+            "es" -> {
+                LanguageType.ES.code
+            }
+            "pl" -> {
+                LanguageType.PL.code
+            }
+            "ar" -> {
+                LanguageType.AR.code
+            }
+            "it" -> {
+                LanguageType.IT.code
+            }
+            "no" -> {
+                LanguageType.NO.code
+            }
+            "da" -> {
+                LanguageType.DA.code
+            }
+            "sv" -> {
+                LanguageType.SV.code
+            }
+            else -> LanguageType.EN.code
         }
     }
 }
