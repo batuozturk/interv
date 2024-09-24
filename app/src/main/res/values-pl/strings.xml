@@ -104,6 +104,7 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="interview_steps_not_added">kroki rozmowy kwalifikacyjnej nie zostały dodane</string>
     <string name="api_key_placeholder">klucz api</string>
     <string name="set_api_key">ustaw klucz api</string>
@@ -148,5 +149,8 @@
     <string name="filter_swedish">szwedzki</string>
     <string name="language_type_sv">szwedzki</string>
     <string name="settings_lang_option_eleven">szwedzki</string>
+    <string name="filter_dutch">niderlandzki</string>
+    <string name="language_type_nl">niderlandzki</string>
+    <string name="settings_lang_option_twelve">niderlandzki</string>
 
 </resources>

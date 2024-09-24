@@ -105,6 +105,7 @@
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
     <string name="topic_unsubscribe_10">interv-en</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="interview_steps_not_added">intervjusteringar ej tillagda</string>
     <string name="api_key_placeholder">api-nyckel</string>
     <string name="set_api_key">ställ in api-nyckel</string>
@@ -149,4 +150,7 @@
     <string name="filter_swedish">svenska</string>
     <string name="language_type_sv">svenska</string>
     <string name="settings_lang_option_eleven">svenska</string>
+    <string name="filter_dutch">nederländska</string>
+    <string name="language_type_nl">nederländska</string>
+    <string name="settings_lang_option_twelve">nederländska</string>
 </resources>

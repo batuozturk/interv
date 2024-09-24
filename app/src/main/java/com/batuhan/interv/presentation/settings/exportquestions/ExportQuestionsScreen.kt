@@ -314,6 +314,15 @@ fun ExportQuestionsScreenContent(
                 ) {
                     Text(stringResource(R.string.filter_swedish))
                 }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex ==10,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.NL.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_dutch))
+                }
             }
 
             Row(
