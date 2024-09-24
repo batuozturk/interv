@@ -100,6 +100,8 @@
     <string name="topic_unsubscribe_5">interv-pl</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
+    <string name="topic_unsubscribe_9">interv-da</string>
     <string name="error_export_questions">sorular dışa aktarılamıyor</string>
     <string name="save_and_share">kaydet ve paylaş</string>
     <string name="success_questions_imported">sorular içe aktarıldı</string>
@@ -141,5 +143,15 @@
     <string name="test_question_2">en sevdiğin şarkıcı kim?</string>
     <string name="permissions_required">mülakatlara girmek için kamera ve ses kaydı izinlerini vermeniz gerekiyor</string>
     <string name="fix">düzelt</string>
+    <string name="filter_norwegian">norveççe</string>
+    <string name="language_type_no">norveççe</string>
+    <string name="settings_lang_option_nine">norveççe</string>
+    <string name="filter_danish">danca</string>
+    <string name="language_type_da">danca</string>
+    <string name="settings_lang_option_ten">danca</string>
+    <string name="filter_swedish">isveççe</string>
+    <string name="language_type_sv">isveççe</string>
+    <string name="settings_lang_option_eleven">isveççe</string>
+
 
 </resources>

@@ -225,6 +225,36 @@ fun SettingsScreen(
                                 )
                             }
                         },
+                        DialogAction(
+                            R.string.settings_lang_option_nine,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("no-NO"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_ten,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("da-DK"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_eleven,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("sv-SE"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
                     ),
                     decideDialogType(darkTheme),
                     languageData =
@@ -419,6 +449,21 @@ fun SettingsScreenContent(
                                     DialogAction(R.string.settings_lang_option_eight) {
                                         writeData.invoke(
                                             SettingsType.LangCode("it-IT"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_nine) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("no-NO"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_ten) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("da-DK"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_eleven) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("sv-SE"),
                                         )
                                     },
                                 ),

@@ -367,6 +367,27 @@ fun ScreenContent(
             ) {
                 Text(stringResource(id = LanguageType.IT.text))
             }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 8,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.NO.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.NO.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 9,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.DA.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.DA.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 10,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.SV.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.SV.text))
+            }
         }
         Button(
             modifier = Modifier.fillMaxWidth(),

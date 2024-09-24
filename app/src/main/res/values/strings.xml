@@ -104,6 +104,9 @@
     <string name="topic_unsubscribe_5">interv-pl</string>
     <string name="topic_unsubscribe_6">interv-ar</string>
     <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
+    <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_10">interv-sv</string>
     <string name="interview_steps_not_added">interview steps not added</string>
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
@@ -139,4 +142,13 @@
     <string name="test_question_2">name your favorite singer?</string>
     <string name="permissions_required">to enter interviews, you need to give camera and record audio permissions</string>
     <string name="fix">fix</string>
+    <string name="filter_norwegian">norwegian</string>
+    <string name="language_type_no">norwegian</string>
+    <string name="settings_lang_option_nine">norwegian</string>
+    <string name="filter_danish">danish</string>
+    <string name="language_type_da">danish</string>
+    <string name="settings_lang_option_ten">danish</string>
+    <string name="filter_swedish">swedish</string>
+    <string name="language_type_sv">swedish</string>
+    <string name="settings_lang_option_eleven">swedish</string>
 </resources>
