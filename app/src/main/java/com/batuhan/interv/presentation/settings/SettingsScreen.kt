@@ -122,9 +122,9 @@ fun SettingsScreen(
         derivedStateOf { uiState.isDarkMode }
     }
 
-    val apiKey by remember(uiState.apiKey) {
-        derivedStateOf { uiState.apiKey }
-    }
+//    val apiKey by remember(uiState.apiKey) {
+//        derivedStateOf { uiState.apiKey }
+//    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -323,39 +323,12 @@ fun SettingsScreen(
                 }
             }
         },
-        setApiKey = {
-            viewModel.showDialog(
-                DialogData(
-                    R.string.set_api_key,
-                    actions =
-                        listOf(
-                            DialogAction(R.string.dismiss, viewModel::clearDialog),
-                        ),
-                    type = decideDialogType(darkTheme),
-                    inputActions =
-                        listOf(
-                            DialogInputAction(R.string.save) { key ->
-                                coroutineScope.launch {
-                                    context.dataStore.writeData(SettingsType.ApiKey(key)) {
-                                        viewModel.writeData(
-                                            SettingsType.ApiKey(key),
-                                        )
-                                    }
-                                }
-                            },
-                        ),
-                    apiKeyData = ApiKeyData(apiKey)
-                ),
-            )
-        },
-        apiKey = apiKey
     )
 }
 
 @Composable
 fun SettingsScreenContent(
     isTablet: Boolean,
-    apiKey: String,
     exportQuestions: () -> Unit,
     importQuestions: () -> Unit,
     language: () -> Unit,
@@ -364,7 +337,6 @@ fun SettingsScreenContent(
     showDialog: (DialogData) -> Unit,
     clearDialog: () -> Unit,
     writeData: (SettingsType) -> Unit,
-    setApiKey: () -> Unit,
 ) {
     var detailType: SettingsDetailAction? by remember {
         mutableStateOf(null)
@@ -489,24 +461,6 @@ fun SettingsScreenContent(
                 }
             }
             item {
-                SettingsListItem(title = R.string.set_api_key) {
-                    if (isTablet) {
-                        exportQuestionsOpened = false
-                        importQuestionsOpened = false
-                        detailType =
-                            SettingsDetailAction.ApiKey(
-                                listOf(
-                                    DialogInputAction(R.string.set_api_key) {
-                                        writeData.invoke(SettingsType.ApiKey(it))
-                                    },
-                                ),
-                            )
-                    } else {
-                        setApiKey.invoke()
-                    }
-                }
-            }
-            item {
                 SettingsListItem(title = R.string.settings_export_questions) {
                     if (isTablet) {
                         clearDialog.invoke()
@@ -555,21 +509,21 @@ fun SettingsScreenContent(
             if (weight > 2.25 && detailType != null) {
                 exportQuestionsOpened = false
                 importQuestionsOpened = false
-                if(detailType!!.inputActions != null){
-                    ApiKeyScreen(
-                        apiKeyData = ApiKeyData(apiKey),
-                        inputAction = detailType!!.inputActions!!,
-                        onBackPressed = {
-                            detailType = null
-                        }
-                    )
-                }else {
+//                if(detailType!!.inputActions != null){
+//                    ApiKeyScreen(
+//                        apiKeyData = ApiKeyData(apiKey),
+//                        inputAction = detailType!!.inputActions!!,
+//                        onBackPressed = {
+//                            detailType = null
+//                        }
+//                    )
+//                }else {
                     SettingsDetailScreen(
                         onBackPressed = { detailType = null },
                         title = detailType!!.title,
                         actions = detailType!!.actions,
                     )
-                }
+//                }
             } else if (weight > 2.25 && exportQuestionsOpened) {
                 ExportQuestionsScreen(onBackPressed = {
                     clearDialog.invoke()

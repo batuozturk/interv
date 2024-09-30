@@ -8,7 +8,7 @@ import com.batuhan.interv.data.model.InterviewType
 private object Route {
     const val CREATE_INTERVIEW = "create_interview"
     const val ENTER_INTERVIEW =
-        "enter_interview/{${ArgParams.INTERVIEW_ID}}/{${ArgParams.INTERVIEW_TYPE}}/{${ArgParams.LANG_CODE}}/{${ArgParams.API_KEY}}"
+        "enter_interview/{${ArgParams.INTERVIEW_ID}}/{${ArgParams.INTERVIEW_TYPE}}/{${ArgParams.LANG_CODE}}"
     const val INTERVIEW_DETAIL = "interview_detail/{${ArgParams.INTERVIEW_ID}}"
     const val IMPORT_QUESTIONS = "import_questions"
     const val EXPORT_QUESTIONS = "export_questions"
@@ -21,7 +21,7 @@ private object ArgParams {
     const val INTERVIEW_ID = "interviewId"
     const val INTERVIEW_TYPE = "interviewType"
     const val LANG_CODE = "langCode"
-    const val API_KEY = "openaiKey"
+//    const val API_KEY = "openaiKey"
 
     fun toPath(param: String) = "{$param}"
 }
@@ -67,25 +67,21 @@ sealed class Screen(val route: String, val navArguments: List<NamedNavArgument> 
                 navArgument(ArgParams.LANG_CODE) {
                     type = NavType.StringType
                 },
-                navArgument(ArgParams.API_KEY) {
-                    type = NavType.StringType
-                },
+//                navArgument(ArgParams.API_KEY) {
+//                    type = NavType.StringType
+//                },
             ),
     ) {
         fun createRoute(
             interviewId: Long,
             interviewType: InterviewType,
             langCode: String,
-            apiKey: String,
         ) = Route.ENTER_INTERVIEW
             .replace(
                 ArgParams.toPath(ArgParams.INTERVIEW_ID),
                 interviewId.toString(),
             ).replace(ArgParams.toPath(ArgParams.INTERVIEW_TYPE), interviewType.name)
-            .replace(ArgParams.toPath(ArgParams.LANG_CODE), langCode).replace(
-                ArgParams.toPath(ArgParams.API_KEY),
-                apiKey,
-            )
+            .replace(ArgParams.toPath(ArgParams.LANG_CODE), langCode)
     }
 
     object AddStep : Screen(
