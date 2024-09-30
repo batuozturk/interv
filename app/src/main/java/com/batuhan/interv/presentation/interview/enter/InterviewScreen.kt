@@ -9,7 +9,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +31,7 @@ import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
 import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.isTablet
+import kotlinx.coroutines.delay
 import java.io.IOException
 import java.util.Locale
 
@@ -69,6 +73,27 @@ fun InterviewScreen(
 
     val isMyTurn by viewModel.myTurnStepFlow.collectAsStateWithLifecycle()
 
+    val dialogData by remember(uiState.dialogData) {
+        derivedStateOf { uiState.dialogData }
+    }
+
+    var isRecording by
+        remember {
+            mutableStateOf(false)
+        }
+
+    var timeLeft by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(key1 = timeLeft) {
+        while (timeLeft > 0) {
+            delay(1000L)
+            timeLeft--
+        }
+        if(isRecording){
+            dialogData?.actions?.get(0)?.action?.invoke()
+        }
+    }
+
     var audioRecorder =
         remember {
             MediaRecorder().apply {
@@ -105,10 +130,6 @@ fun InterviewScreen(
             }
         }
 
-    val dialogData by remember(uiState.dialogData) {
-        derivedStateOf { uiState.dialogData }
-    }
-
     val size =
         remember(uiState.steps?.size) {
             uiState.steps?.size
@@ -124,15 +145,11 @@ fun InterviewScreen(
         derivedStateOf { uiState.isTest }
     }
 
-    var isRecording =
-        remember {
-            false
-        }
-
     LaunchedEffect(isMyTurn) {
         if (isMyTurn >= 0 && isMyTurn != size) {
             isRecording = true
             audioRecorder.start()
+            timeLeft = 120
             viewModel.showDialog(
                 DialogData(
                     R.string.recording_is_started,
