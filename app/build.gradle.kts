@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -23,6 +25,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "openaiApiKey", "\"${properties.getProperty("openaiApiKey")}\"")
     }
 
     buildTypes {
@@ -43,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
