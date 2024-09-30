@@ -123,7 +123,7 @@
     <string name="empty_interview_info">henüz bir mülakat oluşturmadınız, artı butonuna tıklayarak mülakat oluşturabilirsiniz (ve mülakat oluşturmadan önce en az 1 soru eklediğinizden emin olun) ya da api anahtarı girmeden ücretsiz olarak test mülakatlarına girebilirsiniz.</string>
     <string name="empty_interview_info_cont">mülakata girmek için openai api anahtarını ayarlamanız gerekir. api anahtarını ayarlar bölümüne girebilirsiniz.</string>
     <string name="empty_interview_free_info">ilk mülakatı ücretsiz bir şekilde deneyebilirsiniz, sonraki mülakatlar için mülakat (mülakatı başlattıktan sonra alabilirsiniz) ya da interv lifetime paketi (ayarlardan alınabilmektedir) satın almanız gerekir.</string>
-    <string name="empty_question_info">henüz hiçbir soru eklenmedi. soru oluşturmak için artı veya oluştur (openai api anahtarı gerekir, ayarlar kısmından eklenmesi gerekir) düğmesine tıklayabilirsiniz</string>
+    <string name="empty_question_info">henüz hiçbir soru eklenmedi. soru oluşturmak için artı veya oluştur düğmesine tıklayabilirsiniz</string>
     <string name="settings_lang_option_four">almanca</string>
     <string name="filter_german">almanca</string>
     <string name="language_type_es">ispanyolca</string>

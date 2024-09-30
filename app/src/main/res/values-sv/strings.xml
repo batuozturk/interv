@@ -121,7 +121,7 @@
     <string name="empty_interview_info">du har inte skapat en intervju ännu, du kan skapa intervjuer genom att klicka på plustecknet (och se till att du har lagt till minst 1 fråga innan du skapar en intervju) eller så kan du gå in i testintervjuer gratis utan att ange api-nyckel.</string>
     <string name="empty_interview_info_cont">för att delta i intervjuer måste du ställa in openai api-nyckel. Du kan ange api-nyckeln i inställningarna</string>
     <string name="empty_interview_free_info">Du kan prova den första intervjun gratis; för efterföljande intervjuer måste du köpa en intervju (efter att ha påbörjat en intervju) eller livstidspaket (tillgängligt för köp från inställningarna).</string>
-    <string name="empty_question_info">inga frågor har lagts till ännu, du kan skapa frågor genom att klicka på plustecknet eller generera (openai api-nyckel krävs, den måste läggas till i inställningsavsnittet.)</string>
+    <string name="empty_question_info">inga frågor har lagts till ännu, du kan skapa frågor genom att klicka på plustecknet eller generera</string>
     <string name="settings_lang_option_four">tyska</string>
     <string name="filter_german">tyska</string>
     <string name="language_type_es">spanska</string>

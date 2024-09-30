@@ -120,7 +120,7 @@
     <string name="empty_interview_info">aún no has creado una entrevista, puedes crear entrevistas haciendo clic en el botón más (y asegúrate de haber añadido al menos 1 pregunta antes de crear una entrevista) o puedes ingresar a entrevistas de prueba de forma gratuita sin introducir una clave api.</string>
     <string name="empty_interview_info_cont">para ingresar a las entrevistas, debes establecer la clave api de openai. puedes ingresar la clave api en la configuración</string>
     <string name="empty_interview_free_info">puedes probar la primera entrevista de forma gratuita; para entrevistas posteriores, necesitarás comprar una entrevista (después de comenzar una entrevista) o un paquete vitalicio (disponible para su compra en la configuración).</string>
-    <string name="empty_question_info">aún no se han agregado preguntas, puedes crear preguntas haciendo clic en el botón de más o generar (se requiere clave api de openai, debe ser agregada en la sección de configuración).</string>
+    <string name="empty_question_info">aún no se han agregado preguntas, puedes crear preguntas haciendo clic en el botón de más o generar.</string>
     <string name="settings_lang_option_four">alemán</string>
     <string name="filter_german">alemán</string>
     <string name="language_type_es">español</string>

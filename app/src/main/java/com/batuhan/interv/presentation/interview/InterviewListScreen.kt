@@ -395,13 +395,6 @@ fun EmptyInterviewView() {
             textAlign = TextAlign.Center,
         )
         Text(
-            stringResource(R.string.empty_interview_info_cont),
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
-            textAlign = TextAlign.Center,
-        )
-        Text(
             stringResource(R.string.empty_interview_free_info),
             modifier =
                 Modifier.fillMaxSize()

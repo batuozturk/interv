@@ -120,7 +120,7 @@
     <string name="empty_interview_info">لم تقم بإنشاء مقابلة بعد، يمكنك إنشاء المقابلات عن طريق النقر على زر الإضافة (وتأكد من إضافة سؤال واحد على الأقل قبل إنشاء مقابلة) أو يمكنك الدخول إلى المقابلات التجريبية مجاناً بدون إدخال مفتاح api.</string>
     <string name="empty_interview_info_cont">لدخول المقابلات، يجب عليك تعيين مفتاح api الخاص بـ openai. يمكنك إدخال مفتاح api في الإعدادات</string>
     <string name="empty_interview_free_info">يمكنك تجربة المقابلة الأولى مجاناً؛ للمقابلات التالية، ستحتاج إلى شراء مقابلة (بعد بدء مقابلة) أو حزمة مدى الحياة (متاحة للشراء من الإعدادات).</string>
-    <string name="empty_question_info">لم تتم إضافة أي أسئلة بعد، يمكنك إنشاء أسئلة بالنقر على زر الإضافة أو التوليد (مفتاح api الخاص بـ openai مطلوب، يجب إضافته في قسم الإعدادات.)</string>
+    <string name="empty_question_info">لم تتم إضافة أي أسئلة بعد، يمكنك إنشاء أسئلة بالنقر على زر الإضافة أو التوليد</string>
     <string name="settings_lang_option_four">الألمانية</string>
     <string name="filter_german">الألمانية</string>
     <string name="language_type_es">الإسبانية</string>
