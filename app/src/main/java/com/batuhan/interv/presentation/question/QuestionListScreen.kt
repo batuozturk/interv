@@ -98,22 +98,7 @@ fun QuestionListScreen(
                 QuestionListEvent.OpenFilter -> viewModel.setFilterType()
 
                 QuestionListEvent.GenerateQuestions -> {
-                    if (apiKey.isEmpty()) {
-                        viewModel.showDialog(
-                            DialogData(
-                                title = R.string.api_key_empty,
-                                type = DialogType.ERROR,
-                                actions =
-                                    listOf(
-                                        DialogAction(R.string.dismiss) {
-                                            viewModel.clearDialog()
-                                        },
-                                    ),
-                            ),
-                        )
-                    } else {
-                        viewModel.generateQuestions(apiKey)
-                    }
+                    viewModel.generateQuestions(apiKey)
                 }
 
                 QuestionListEvent.InitializeGenerateQuestions -> {

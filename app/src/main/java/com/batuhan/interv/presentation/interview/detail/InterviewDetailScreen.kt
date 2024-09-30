@@ -71,7 +71,7 @@ fun InterviewDetailScreen(
     onBackPressed: () -> Unit,
     showDialog: (DialogData) -> Unit = {},
     clearDialog: () -> Unit = {},
-    enterInterview: (Long, InterviewType, String, String) -> Unit = { _, _, _, _ -> },
+    enterInterview: (Long, InterviewType, String) -> Unit = { _, _, _ -> },
 ) {
     val context = LocalContext.current
 
@@ -121,61 +121,25 @@ fun InterviewDetailScreen(
 
                 is InterviewDetailEvent.ShareInterview -> viewModel.shareInterview(it.interview)
                 is InterviewDetailEvent.EnterInterview -> {
-                    if (apiKey.isEmpty()) {
-                        coroutineScope.launch {
-                            delay(500L)
-                            viewModel.showDialog(
-                                DialogData(
-                                    title = R.string.api_key_empty,
-                                    type = DialogType.ERROR,
-                                    actions =
-                                        listOf(
-                                            DialogAction(R.string.dismiss) {
-                                                viewModel.clearDialog()
-                                            },
-                                        ),
-                                ),
-                            )
-                        }
-                    } else {
-                        enterInterviewDialogData =
-                            EnterInterviewDialogData(
-                                it.interviewId,
-                                {
-                                    enterInterview(
-                                        it.interviewId,
-                                        it.interviewType,
-                                        it.languageCode,
-                                        apiKey,
-                                    )
-                                },
-                                {
-                                    enterInterviewDialogData = null
-                                },
-                            )
-                    }
+                    enterInterviewDialogData =
+                        EnterInterviewDialogData(
+                            it.interviewId,
+                            {
+                                enterInterview(
+                                    it.interviewId,
+                                    it.interviewType,
+                                    it.languageCode,
+                                )
+                            },
+                            {
+                                enterInterviewDialogData = null
+                            },
+                        )
                 }
 
+
                 is InterviewDetailEvent.GenerateSuggestedAnswer -> {
-                    if (apiKey.isEmpty()) {
-                        coroutineScope.launch {
-                            delay(500L)
-                            viewModel.showDialog(
-                                DialogData(
-                                    title = R.string.api_key_empty,
-                                    type = DialogType.ERROR,
-                                    actions =
-                                        listOf(
-                                            DialogAction(R.string.dismiss) {
-                                                viewModel.clearDialog()
-                                            },
-                                        ),
-                                ),
-                            )
-                        }
-                    } else {
-                        viewModel.generateSuggestedAnswer(it.interviewStep, apiKey)
-                    }
+                    viewModel.generateSuggestedAnswer(it.interviewStep, apiKey)
                 }
             }
         }

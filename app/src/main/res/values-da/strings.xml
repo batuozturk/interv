@@ -120,7 +120,7 @@
     <string name="empty_interview_info">du har ikke oprettet et interview endnu, du kan oprette interviews ved at klikke på plusknappen (og sørg for, at du har tilføjet mindst 1 spørgsmål, før du opretter et interview) eller du kan deltage i testinterviews gratis uden at indtaste api-nøglen.</string>
     <string name="empty_interview_info_cont">for at deltage i interviews, skal du indstille openai api nøgle. du kan indtaste api nøglen i indstillingerne</string>
     <string name="empty_interview_free_info">Du kan prøve det første interview gratis; for efterfølgende interviews skal du købe et interview (efter at have startet et interview) eller livstidspakke (tilgængelig for køb fra indstillinger).</string>
-    <string name="empty_question_info">ingen spørgsmål er blevet tilføjet endnu, du kan oprette spørgsmål ved at klikke på plus eller generere (openai api nøgle er påkrævet, den skal tilføjes i indstillingssektionen.) knap</string>
+    <string name="empty_question_info">ingen spørgsmål er blevet tilføjet endnu, du kan oprette spørgsmål ved at klikke på plus eller generere knap</string>
     <string name="settings_lang_option_four">tysk</string>
     <string name="filter_german">tysk</string>
     <string name="language_type_es">spansk</string>

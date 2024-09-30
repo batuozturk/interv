@@ -122,7 +122,7 @@
     <string name="empty_interview_info">u heeft nog geen interview aangemaakt, u kunt interviews maken door op de plusknop te klikken (en zorg ervoor dat u minstens 1 vraag hebt toegevoegd voordat u een interview maakt) of u kunt testinterviews gratis invoeren zonder een api-sleutel in te voeren.</string>
     <string name="empty_interview_info_cont">om interviews in te voeren, moet u de openai api-sleutel instellen. u kunt de api-sleutel in de instellingen invoeren</string>
     <string name="empty_interview_free_info">je kunt het eerste interview gratis uitproberen; voor daaropvolgende interviews moet je een interview (na het starten van een interview) of een levenslang pakket (verkrijgbaar voor aankoop in de instellingen) aanschaffen.</string>
-    <string name="empty_question_info">er zijn nog geen vragen toegevoegd, u kunt vragen maken door op plus of genereren (openai api-sleutel is vereist, deze moet worden toegevoegd in het instellingen-gedeelte.) knop</string>
+    <string name="empty_question_info">er zijn nog geen vragen toegevoegd, u kunt vragen maken door op plus of genereren knop</string>
     <string name="settings_lang_option_four">duits</string>
     <string name="filter_german">duits</string>
     <string name="language_type_es">spaans</string>

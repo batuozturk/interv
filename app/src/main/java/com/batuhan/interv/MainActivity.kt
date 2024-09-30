@@ -299,13 +299,12 @@ fun InterviewSelfApp(
                 navigateToDetail = {
                     navController.navigate(Screen.InterviewDetail.createRoute(it))
                 },
-                enterInterview = { id, type, langCode, apiKey ->
+                enterInterview = { id, type, langCode ->
                     navController.navigate(
                         Screen.EnterInterview.createRoute(
                             id,
                             type,
-                            langCode,
-                            apiKey,
+                            langCode
                         ),
                     )
                 },
@@ -342,14 +341,13 @@ fun InterviewSelfApp(
             InterviewDetailScreen(
                 interviewId = it.arguments?.getString(KEY_INTERVIEW_ID)?.toLong() ?: -1,
                 onBackPressed = { navController.popBackStack() },
-                enterInterview = { id, type, langCode, apiKey ->
+                enterInterview = { id, type, langCode ->
                     navController.popBackStack()
                     navController.navigate(
                         Screen.EnterInterview.createRoute(
                             id,
                             type,
                             langCode,
-                            apiKey,
                         ),
                     )
                 },

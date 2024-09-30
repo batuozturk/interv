@@ -14,6 +14,7 @@ import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
+import com.batuhan.interv.BuildConfig
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewStep
@@ -302,7 +303,7 @@ class InterviewViewModel
             }
         }
         else {
-            val openAI = OpenAI(token = apiKey!!, logging = LoggingConfig(LogLevel.All))
+            val openAI = OpenAI(token = BuildConfig.openaiApiKey, logging = LoggingConfig(LogLevel.All))
             val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
                 showDialog(
                     DialogData(

@@ -71,7 +71,7 @@ fun InterviewListScreen(
     clearDialog: () -> Unit,
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
-    enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String, apiKey: String) -> Unit,
+    enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String) -> Unit,
     onPermissionRequest: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -130,25 +130,11 @@ fun InterviewListScreen(
                                 ),
                             )
                         )
-                    } else if (apiKey.isEmpty() && !it.isTest) {
-                        viewModel.showDialog(
-                            DialogData(
-                                title = R.string.api_key_empty,
-                                type = DialogType.ERROR,
-                                actions =
-                                    listOf(
-                                        DialogAction(R.string.dismiss) {
-                                            viewModel.clearDialog()
-                                        },
-                                    ),
-                            ),
-                        )
-                    } else {
+                    }else {
                         enterInterview.invoke(
                             it.interviewId,
                             it.interviewType,
                             it.langCode,
-                            if (it.isTest) "test" else apiKey,
                         )
                     }
                 }
@@ -406,13 +392,6 @@ fun EmptyInterviewView() {
             modifier =
                 Modifier.fillMaxSize()
                     .padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            stringResource(R.string.empty_interview_info_cont),
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
             textAlign = TextAlign.Center,
         )
         Text(
