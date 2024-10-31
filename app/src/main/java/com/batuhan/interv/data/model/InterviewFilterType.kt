@@ -16,6 +16,15 @@ enum class InterviewFilterType(
         R.string.filter_turkish,
     ),
     LANG_FR(R.string.filter_french),
+    LANG_DE(R.string.filter_german),
+    LANG_ES(R.string.filter_spanish),
+    LANG_PL(R.string.filter_polish),
+    LANG_AR(R.string.filter_arabic),
+    LANG_IT(R.string.filter_italian),
+    LANG_NO(R.string.filter_norwegian),
+    LANG_DA(R.string.filter_danish),
+    LANG_SV(R.string.filter_swedish),
+    LANG_NL(R.string.filter_dutch),
     COMPLETED(
         R.string.filter_completed,
     ),
@@ -33,6 +42,15 @@ fun InterviewFilterType.createQuery(searchText: String): String{
         InterviewFilterType.LANG_EN -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'en-US'"
         InterviewFilterType.LANG_TR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'tr-TR'"
         InterviewFilterType.LANG_FR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'fr-FR'"
+        InterviewFilterType.LANG_DE -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'de-DE'"
+        InterviewFilterType.LANG_ES -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'es-ES'"
+        InterviewFilterType.LANG_PL -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'pl-PL'"
+        InterviewFilterType.LANG_AR -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'ar-AR'"
+        InterviewFilterType.LANG_IT -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'it-IT'"
+        InterviewFilterType.LANG_NO -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'no-NO'"
+        InterviewFilterType.LANG_DA -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'da-DK'"
+        InterviewFilterType.LANG_SV -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'sv-SE'"
+        InterviewFilterType.LANG_NL -> (if(stringIsValid) "AND " else "WHERE ") + "langCode = 'nl-NL'"
         InterviewFilterType.DEFAULT -> ""
         InterviewFilterType.COMPLETED -> (if(stringIsValid) "AND " else "WHERE ") + "completed = true"
         InterviewFilterType.NOT_COMPLETED -> (if(stringIsValid) "AND " else "WHERE ") + "completed = false"

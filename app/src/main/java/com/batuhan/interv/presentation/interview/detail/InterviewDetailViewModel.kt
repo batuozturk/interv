@@ -2,6 +2,15 @@ package com.batuhan.interv.presentation.interview.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aallam.openai.api.chat.ChatCompletion
+import com.aallam.openai.api.chat.ChatCompletionRequest
+import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.logging.LogLevel
+import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.LoggingConfig
+import com.aallam.openai.client.OpenAI
+import com.batuhan.interv.BuildConfig
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.Interview
 import com.batuhan.interv.data.model.InterviewStep
@@ -11,6 +20,7 @@ import com.batuhan.interv.domain.interview.DeleteInterview
 import com.batuhan.interv.domain.interview.DeleteInterviewSteps
 import com.batuhan.interv.domain.interview.GetInterviewWithSteps
 import com.batuhan.interv.domain.interview.UpsertInterview
+import com.batuhan.interv.domain.interview.UpsertInterviewStep
 import com.batuhan.interv.domain.interview.UpsertInterviewSteps
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
@@ -18,6 +28,7 @@ import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.Result
 import com.batuhan.interv.util.ViewModelEventHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -36,6 +47,7 @@ class InterviewDetailViewModel @Inject constructor(
     private val getInterviewWithSteps: GetInterviewWithSteps,
     private val deleteInterviewSteps: DeleteInterviewSteps,
     private val upsertInterviewSteps: UpsertInterviewSteps,
+    private val upsertInterviewStep: UpsertInterviewStep,
 ) : ViewModel(), InterviewDetailEventHandler, ViewModelEventHandler<InterviewDetailEvent, InterviewDetailError> {
 
     private val _event = Channel<InterviewDetailEvent> { Channel.BUFFERED }
@@ -116,7 +128,7 @@ class InterviewDetailViewModel @Inject constructor(
                 is Result.Success -> {
                     val newInterviewId = result.data
                     val steps = uiState.value.interviewWithSteps?.steps?.map {
-                        it.copy(interviewStepId = null, interviewId = newInterviewId)
+                        it.copy(interviewStepId = null, interviewId = newInterviewId, suggestedAnswer = null, answer = null)
                     }
                     upsertInterviewSteps(newInterviewId, steps!!, isTablet)
                 }
@@ -149,16 +161,7 @@ class InterviewDetailViewModel @Inject constructor(
                         DialogData(
                             title = R.string.success_interview_saved,
                             type = DialogType.SUCCESS_INFO,
-                            actions = if(!isTablet){
-                                listOf(
-                                    DialogAction(R.string.start_interview){
-                                        clearDialog()
-                                        sendEvent(InterviewDetailEvent.EnterInterview(interviewId, interviewType, langCode))
-                                    },
-                                    DialogAction(R.string.dismiss, ::clearDialog)
-                                )
-                            }
-                            else listOf(DialogAction(R.string.dismiss, ::clearDialog))
+                            actions = listOf(DialogAction(R.string.dismiss, ::clearDialog))
                         )
                     )
                 }
@@ -244,6 +247,7 @@ class InterviewDetailViewModel @Inject constructor(
             is InterviewDetailError.GetInterviewWithSteps -> getInterviewWithSteps(error.interviewId)
             is InterviewDetailError.DeleteInterviewSteps -> deleteInterviewStepsJob(error.interviewId)
             is InterviewDetailError.UpsertInterviewSteps -> upsertInterviewSteps(error.interviewId, error.steps, error.isTablet)
+            is InterviewDetailError.GenerateSuggestedAnswer -> generateSuggestedAnswer(error.interviewStep, error.apiKey)
         }
     }
 
@@ -251,6 +255,68 @@ class InterviewDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(interviewWithSteps = null)
         }
+    }
+
+    override fun generateSuggestedAnswer(interviewStep: InterviewStep, apiKey: String) {
+
+        val interviewWithSteps = uiState.value.interviewWithSteps
+        val interviewStepList = interviewWithSteps?.steps?.toMutableList() ?: return
+        val openAI = OpenAI(token = BuildConfig.openaiApiKey, logging = LoggingConfig(LogLevel.All))
+
+        val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            showDialog(
+                DialogData(
+                    title = R.string.error_unknown,
+                    type = DialogType.ERROR,
+                    actions = listOf(
+                        DialogAction(R.string.dismiss) {
+                            clearDialog()
+                        },
+                        DialogAction(R.string.retry) {
+                            retryOperation(InterviewDetailError.GenerateSuggestedAnswer(interviewStep, apiKey))
+                        }
+                    )
+                )
+            )
+        }
+        // openai operation
+        viewModelScope.launch(handler) {
+            val chatCompletionRequest = ChatCompletionRequest(
+                model = ModelId("gpt-4o-mini"),
+                messages = listOf(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = interviewStep.question?.question // stepi yaz
+                    )
+                )
+            )
+            val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
+
+            val newList = interviewStepList.map {
+                if(it.interviewStepId == interviewStep.interviewStepId)
+                    it.copy(suggestedAnswer = completion.choices[0].message.content ?: "")
+                else it
+            }
+            val updatedStep = interviewStep.copy(suggestedAnswer = completion.choices[0].message.content)
+            val result = upsertInterviewStep.invoke(UpsertInterviewStep.Params(updatedStep))
+
+            when(result){
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            interviewWithSteps = interviewWithSteps.copy(steps = newList)
+                        )
+                    }
+                }
+                is Result.Error -> {
+
+                }
+            }
+
+
+        }
+
+
     }
 
 }
@@ -268,6 +334,8 @@ sealed class InterviewDetailError {
 
     data class DeleteInterviewSteps(val interviewId: Long): InterviewDetailError()
     data class UpsertInterviewSteps(val interviewId: Long, val steps: List<InterviewStep>, val isTablet: Boolean) : InterviewDetailError()
+
+    data class GenerateSuggestedAnswer(val interviewStep: InterviewStep, val apiKey: String) : InterviewDetailError()
 }
 
 sealed class InterviewDetailEvent {
@@ -276,6 +344,7 @@ sealed class InterviewDetailEvent {
     data class EnterInterview(val interviewId: Long, val interviewType: InterviewType, val languageCode: String) : InterviewDetailEvent()
     data class ShareInterview(val interview: Interview) : InterviewDetailEvent()
     data class RetryInterview(val interview: Interview, val isTablet: Boolean): InterviewDetailEvent()
+    data class GenerateSuggestedAnswer(val interviewStep: InterviewStep) : InterviewDetailEvent()
 
     object ClearDialog: InterviewDetailEvent()
 }

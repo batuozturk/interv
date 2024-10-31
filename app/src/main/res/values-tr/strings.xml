@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Interviewself</string>
     <string name="retry">yeniden dene</string>
     <string name="dismiss">kapat</string>
     <string name="ok">tamam</string>
@@ -95,6 +94,14 @@
     <string name="topic_subscribe">interv-tr</string>
     <string name="topic_unsubscribe_1">interv-en</string>
     <string name="topic_unsubscribe_2">interv-fr</string>
+    <string name="topic_unsubscribe_3">interv-de</string>
+    <string name="topic_unsubscribe_4">interv-es</string>
+    <string name="topic_unsubscribe_5">interv-pl</string>
+    <string name="topic_unsubscribe_6">interv-ar</string>
+    <string name="topic_unsubscribe_7">interv-it</string>
+    <string name="topic_unsubscribe_8">interv-no</string>
+    <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_11">interv-nl</string>
     <string name="error_export_questions">sorular dışa aktarılamıyor</string>
     <string name="save_and_share">kaydet ve paylaş</string>
     <string name="success_questions_imported">sorular içe aktarıldı</string>
@@ -102,4 +109,52 @@
     <string name="success_questions_shared">sorular paylaşıldı</string>
     <string name="speech_recognition_requires_internet">bağlantı yok</string>
     <string name="interview_steps_not_added">görüşme adımları eklenmedi</string>
+    <string name="api_key_placeholder">api anahtarı</string>
+    <string name="set_api_key">api anahtarı gir</string>
+    <string name="recording_is_started">kayıt başladı</string>
+    <string name="stop_recording">durdur</string>
+    <string name="api_key_empty">api anahtarı ayarlar kısmına girilmelidir</string>
+    <string name="api_key_info">api anahtarı, yapay zeka tabanlı sorular oluşturmak, uygulama içindeki konuşmadan metne özelliğini kullanma ve mülakat sonuçlarını değerlendirmek için kullanılır. api anahtarını openai api anahtar sayfasından alabilirsiniz, sadece anahtarı kopyalayın veya yazın.</string>
+    <string name="not_answered_yet">henüz cevaplanmadı</string>
+    <string name="import_questions_info">sorularınızı json dosyası olarak içe aktarabilirsiniz.\n\ndosyayı seçtikten sonra sorular interv\'e aktarılacaktır.</string>
+    <string name="export_questions_info">sorularınızı seçtiğiniz dile göre json dosyası olarak dışa aktarabilirsiniz.\n\nayrıca soruları arkadaşlarınızla paylaşabilirsiniz, onlar bu json dosyalarını soruları içe aktarma bölümünde içe aktarabilirler.</string>
+    <string name="generate_suggested_answer">önerilen cevabı oluştur</string>
+    <string name="success_questions_saved">sorular kaydedildi</string>
+    <string name="empty_interview_info">henüz bir mülakat oluşturmadınız, artı butonuna tıklayarak mülakat oluşturabilirsiniz (ve mülakat oluşturmadan önce en az 1 soru eklediğinizden emin olun) ya da api anahtarı girmeden ücretsiz olarak test mülakatlarına girebilirsiniz.</string>
+    <string name="empty_interview_info_cont">mülakata girmek için openai api anahtarını ayarlamanız gerekir. api anahtarını ayarlar bölümüne girebilirsiniz.</string>
+    <string name="empty_interview_free_info">ilk mülakatı ücretsiz bir şekilde deneyebilirsiniz, sonraki mülakatlar için mülakat (mülakatı başlattıktan sonra alabilirsiniz) ya da interv lifetime paketi (ayarlardan alınabilmektedir) satın almanız gerekir.</string>
+    <string name="empty_question_info">henüz hiçbir soru eklenmedi. soru oluşturmak için artı veya oluştur düğmesine tıklayabilirsiniz</string>
+    <string name="settings_lang_option_four">almanca</string>
+    <string name="filter_german">almanca</string>
+    <string name="language_type_es">ispanyolca</string>
+    <string name="filter_spanish">ispanyolca</string>
+    <string name="settings_lang_option_five">ispanyolca</string>
+    <string name="language_type_de">almanca</string>
+    <string name="settings_lang_option_six">lehçe</string>
+    <string name="filter_polish">lehçe</string>
+    <string name="language_type_pl">lehçe</string>
+    <string name="settings_lang_option_seven">arapça</string>
+    <string name="filter_arabic">arapça</string>
+    <string name="language_type_ar">arapça</string>
+    <string name="settings_lang_option_eight">italyanca</string>
+    <string name="filter_italian">italyanca</string>
+    <string name="language_type_it">italyanca</string>
+    <string name="test_question_1">günün nasıl geçti?</string>
+    <string name="test_question_2">en sevdiğin şarkıcı kim?</string>
+    <string name="permissions_required">mülakatlara girmek için kamera ve ses kaydı izinlerini vermeniz gerekiyor</string>
+    <string name="fix">düzelt</string>
+    <string name="filter_norwegian">norveççe</string>
+    <string name="language_type_no">norveççe</string>
+    <string name="settings_lang_option_nine">norveççe</string>
+    <string name="filter_danish">danca</string>
+    <string name="language_type_da">danca</string>
+    <string name="settings_lang_option_ten">danca</string>
+    <string name="filter_swedish">isveççe</string>
+    <string name="language_type_sv">isveççe</string>
+    <string name="settings_lang_option_eleven">isveççe</string>
+    <string name="filter_dutch">hollandaca</string>
+    <string name="language_type_nl">hollandaca</string>
+    <string name="settings_lang_option_twelve">hollandaca</string>
+
+
 </resources>

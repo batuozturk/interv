@@ -16,4 +16,6 @@ interface InterviewDetailEventHandler {
     fun setInterviewWithStepsAsInitial()
 
     fun upsertInterviewSteps(interviewId: Long, steps: List<InterviewStep>, isTablet: Boolean)
+
+    fun generateSuggestedAnswer(interviewStep: InterviewStep, apiKey: String)
 }

@@ -36,12 +36,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.LanguageType
+import com.batuhan.interv.presentation.settings.apikey.ApiKeyScreen
 import com.batuhan.interv.presentation.settings.detail.SettingsDetailScreen
 import com.batuhan.interv.presentation.settings.exportquestions.ExportQuestionsScreen
 import com.batuhan.interv.presentation.settings.importquestions.ImportQuestionsScreen
+import com.batuhan.interv.util.ApiKeyData
 import com.batuhan.interv.util.BrowserEvent
 import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogInputAction
 import com.batuhan.interv.util.LanguageData
 import com.batuhan.interv.util.SettingsDetailAction
 import com.batuhan.interv.util.StyleData
@@ -103,13 +106,25 @@ fun SettingsScreen(
                     )
                     Locale.US.language + "-" + Locale.US.country
                 }
-            viewModel.readData(isDarkMode, langCode)
+            val apiKey =
+                data[SettingsViewModel.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                    datastore.writeData(
+                        SettingsType.ApiKey(""),
+                        viewModel::writeData,
+                    )
+                    ""
+                }
+            viewModel.readData(isDarkMode, langCode, apiKey)
         }
     }
 
     val darkTheme by remember(uiState.isDarkMode) {
         derivedStateOf { uiState.isDarkMode }
     }
+
+//    val apiKey by remember(uiState.apiKey) {
+//        derivedStateOf { uiState.apiKey }
+//    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -156,6 +171,96 @@ fun SettingsScreen(
                             coroutineScope.launch {
                                 datastore.writeData(
                                     SettingsType.LangCode("fr-FR"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_four,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("de-DE"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_five,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("es-ES"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_six,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("pl-PL"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_seven,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("ar-AR"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_eight,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("it-IT"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_nine,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("no-NO"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_ten,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("da-DK"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_eleven,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("sv-SE"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_twelve,
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("nl-NL"),
                                     viewModel::writeData,
                                 )
                             }
@@ -259,6 +364,7 @@ fun SettingsScreenContent(
                 SettingsListItem(title = R.string.settings_style) {
                     if (isTablet) {
                         exportQuestionsOpened = false
+                        importQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Style(
                                 listOf(
@@ -283,6 +389,7 @@ fun SettingsScreenContent(
                 SettingsListItem(title = R.string.settings_language) {
                     if (isTablet) {
                         exportQuestionsOpened = false
+                        importQuestionsOpened = false
                         detailType =
                             SettingsDetailAction.Language(
                                 listOf(
@@ -299,6 +406,51 @@ fun SettingsScreenContent(
                                     DialogAction(R.string.settings_lang_option_three) {
                                         writeData.invoke(
                                             SettingsType.LangCode("fr-FR"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_four) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("de-DE"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_five) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("es-ES"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_six) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("pl-PL"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_seven) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("ar-AR"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_eight) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("it-IT"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_nine) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("no-NO"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_ten) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("da-DK"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_eleven) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("sv-SE"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_twelve) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("nl-NL"),
                                         )
                                     },
                                 ),
@@ -355,11 +507,23 @@ fun SettingsScreenContent(
         }
         Column(Modifier.weight(weight).fillMaxSize()) {
             if (weight > 2.25 && detailType != null) {
-                SettingsDetailScreen(
-                    onBackPressed = { detailType = null },
-                    title = detailType!!.title,
-                    actions = detailType!!.actions,
-                )
+                exportQuestionsOpened = false
+                importQuestionsOpened = false
+//                if(detailType!!.inputActions != null){
+//                    ApiKeyScreen(
+//                        apiKeyData = ApiKeyData(apiKey),
+//                        inputAction = detailType!!.inputActions!!,
+//                        onBackPressed = {
+//                            detailType = null
+//                        }
+//                    )
+//                }else {
+                    SettingsDetailScreen(
+                        onBackPressed = { detailType = null },
+                        title = detailType!!.title,
+                        actions = detailType!!.actions,
+                    )
+//                }
             } else if (weight > 2.25 && exportQuestionsOpened) {
                 ExportQuestionsScreen(onBackPressed = {
                     clearDialog.invoke()
@@ -406,6 +570,10 @@ suspend fun DataStore<Preferences>.writeData(
             is SettingsType.LangCode ->
                 prefs[SettingsViewModel.KEY_PREFERENCES_LANGUAGE] =
                     settingsType.langCode
+
+            is SettingsType.ApiKey ->
+                prefs[SettingsViewModel.KEY_PREFERENCES_OPENAI_CLIENT_KEY] =
+                    settingsType.apiKey
         }
     }
     afterCompletion.invoke(settingsType)

@@ -14,7 +14,6 @@ import com.squareup.moshi.JsonClass
 data class Interview(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("interviewId") val interviewId: Long? = null,
     @ColumnInfo("interviewName") val interviewName: String? = null,
-    @ColumnInfo("questionDuration") val questionDuration: Int? = null,
     @ColumnInfo("interviewType") val interviewType: InterviewType? = null,
     @ColumnInfo("step") val step: Int? = null,
     @ColumnInfo("totalStep") val totalStep: Int? = null,
@@ -33,6 +32,7 @@ data class InterviewStep(
     @ColumnInfo("sentenceToTalk") val sentenceToTalk: String? = null,
     @ColumnInfo("question") val question: Question? = null,
     @ColumnInfo("answer") val answer: String? = null,
+    @ColumnInfo("suggestedAnswer") val suggestedAnswer: String? = null
 )
 
 @Keep

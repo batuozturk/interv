@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -15,14 +17,17 @@ android {
         applicationId = "com.batuhan.interv"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
-        resourceConfigurations.addAll(setOf("en", "tr", "fr"))
+        versionCode = 9
+        versionName = "1.0.7"
+        resourceConfigurations.addAll(setOf("en", "tr", "fr", "de", "es", "pl", "ar", "it", "no", "da", "sv", "nl"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "openaiApiKey", "\"${properties.getProperty("openaiApiKey")}\"")
     }
 
     buildTypes {
@@ -43,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
@@ -105,6 +111,12 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
+
+    // OpenAI Client
+    implementation("com.aallam.openai:openai-client:3.8.2")
+
+    // OkHttp Engine for OpenAI Client
+    implementation("io.ktor:ktor-client-android:2.3.12")
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

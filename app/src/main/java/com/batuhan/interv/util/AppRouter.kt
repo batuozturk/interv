@@ -21,6 +21,7 @@ private object ArgParams {
     const val INTERVIEW_ID = "interviewId"
     const val INTERVIEW_TYPE = "interviewType"
     const val LANG_CODE = "langCode"
+//    const val API_KEY = "openaiKey"
 
     fun toPath(param: String) = "{$param}"
 }
@@ -66,6 +67,9 @@ sealed class Screen(val route: String, val navArguments: List<NamedNavArgument> 
                 navArgument(ArgParams.LANG_CODE) {
                     type = NavType.StringType
                 },
+//                navArgument(ArgParams.API_KEY) {
+//                    type = NavType.StringType
+//                },
             ),
     ) {
         fun createRoute(
@@ -83,14 +87,14 @@ sealed class Screen(val route: String, val navArguments: List<NamedNavArgument> 
     object AddStep : Screen(
         Route.ADD_STEP,
         navArguments =
-        listOf(
-            navArgument(ArgParams.INTERVIEW_ID) {
-                type = NavType.StringType
-            },
-            navArgument(ArgParams.LANG_CODE) {
-                type = NavType.StringType
-            },
-        ),
+            listOf(
+                navArgument(ArgParams.INTERVIEW_ID) {
+                    type = NavType.StringType
+                },
+                navArgument(ArgParams.LANG_CODE) {
+                    type = NavType.StringType
+                },
+            ),
     ) {
         fun createRoute(
             interviewId: Long,

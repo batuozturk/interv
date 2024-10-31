@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,22 +29,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interv.MainActivity
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.FilterType
 import com.batuhan.interv.data.model.Question
 import com.batuhan.interv.util.ActionView
+import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.FilterDialogView
+import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
 
 @Composable
@@ -57,6 +68,16 @@ fun QuestionListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dialogData by remember(uiState.dialogData) {
         derivedStateOf { uiState.dialogData }
+    }
+    var apiKey by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(true) {
+        context.dataStore.data.collect {
+            apiKey = it[MainActivity.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                ""
+            }
+        }
     }
     LaunchedEffect(dialogData) {
         dialogData?.let(showDialog)
@@ -75,6 +96,14 @@ fun QuestionListScreen(
                 QuestionListEvent.ClearDialog -> clearDialog.invoke()
                 is QuestionListEvent.DeleteQuestion -> viewModel.deleteQuestion(it.question)
                 QuestionListEvent.OpenFilter -> viewModel.setFilterType()
+
+                QuestionListEvent.GenerateQuestions -> {
+                    viewModel.generateQuestions(apiKey)
+                }
+
+                QuestionListEvent.InitializeGenerateQuestions -> {
+                    viewModel.setGenerating(true)
+                }
             }
         }
     }
@@ -87,7 +116,11 @@ fun QuestionListScreen(
     val selectedFilter by remember(uiState.selectedFilter) {
         derivedStateOf { uiState.selectedFilter }
     }
-    FilterDialogView(filterType = filterType, selectedFilter = selectedFilter, updateFilterType = viewModel::filter) {
+    FilterDialogView(
+        filterType = filterType,
+        selectedFilter = selectedFilter,
+        updateFilterType = viewModel::filter,
+    ) {
         if (isTablet) {
             QuestionListScreenContentForTablet(
                 uiState,
@@ -99,6 +132,10 @@ fun QuestionListScreen(
                     viewModel.setQuestionEditing(false)
                 },
                 viewModel::filterByText,
+                viewModel::updateGenerateQuestionText,
+                onGenerateDismiss = {
+                    viewModel.setGenerating(false)
+                },
             )
         } else {
             QuestionListScreenContent(
@@ -111,6 +148,10 @@ fun QuestionListScreen(
                     viewModel.setQuestionEditing(false)
                 },
                 viewModel::filterByText,
+                viewModel::updateGenerateQuestionText,
+                onGenerateDismiss = {
+                    viewModel.setGenerating(false)
+                },
             )
         }
     }
@@ -125,9 +166,14 @@ fun QuestionListScreenContentForTablet(
     updateLangCode: (String) -> Unit,
     onEditDismiss: () -> Unit,
     updateFilterText: (String) -> Unit,
+    updateGenerateQuestionText: (String) -> Unit,
+    onGenerateDismiss: () -> Unit,
 ) {
     val isEditing by remember(uiState.isEditing) {
         derivedStateOf { uiState.isEditing }
+    }
+    val isGenerating by remember(uiState.isGenerating) {
+        derivedStateOf { uiState.isGenerating }
     }
     val questionText by remember(uiState.questionText) {
         derivedStateOf { uiState.questionText }
@@ -135,19 +181,26 @@ fun QuestionListScreenContentForTablet(
     val langCode by remember(uiState.langCode) {
         derivedStateOf { uiState.langCode }
     }
+
+    val generateQuestionText by remember(uiState.generateQuestionText) {
+        derivedStateOf { uiState.generateQuestionText }
+    }
     val weight by animateFloatAsState(
-        targetValue = if (isEditing) 3f else 0.001f,
+        targetValue = if (isEditing || isGenerating) 3f else 0.001f,
         animationSpec = tween(durationMillis = 1000),
     )
+    val loadState = questions.loadState
     Row(Modifier.fillMaxSize()) {
         Column(Modifier.weight(9f - weight)) {
             ActionView(
                 searchString = updateFilterText,
-                Icons.AutoMirrored.Default.List,
-                Icons.Default.Add,
-                stringResource(R.string.search_questions),
+                icon1 = Icons.AutoMirrored.Default.List,
+                icon2 = Icons.Default.Add,
+                icon3 = ImageVector.vectorResource(id = R.drawable.ic_outline_auto_awesome_24),
+                placeholderString = stringResource(R.string.search_questions),
                 action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
                 action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
+                action3 = { sendEvent(QuestionListEvent.InitializeGenerateQuestions) },
             )
             LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxHeight()) {
                 items(questions.itemCount) {
@@ -155,10 +208,15 @@ fun QuestionListScreenContentForTablet(
                         QuestionListItem(question = question, sendEvent)
                     }
                 }
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && questions.itemCount == 0) {
+                    item(span = { GridItemSpan(2) }) {
+                        EmptyQuestionView()
+                    }
+                }
             }
         }
         Column(modifier = Modifier.weight(weight)) {
-            if (weight > 2.25) {
+            if (weight > 2.25 && isEditing) {
                 CreateQuestionView(
                     isTablet = true,
                     questionText = questionText,
@@ -167,6 +225,16 @@ fun QuestionListScreenContentForTablet(
                     updateQuestionText = updateQuestionText,
                     updateLangCode = updateLangCode,
                     onDismiss = onEditDismiss,
+                )
+            } else if (weight > 2.25 && isGenerating) {
+                CreateQuestionView(
+                    isTablet = true,
+                    questionText = generateQuestionText,
+                    langCode = langCode,
+                    createQuestion = { sendEvent(QuestionListEvent.GenerateQuestions) },
+                    updateQuestionText = updateGenerateQuestionText,
+                    updateLangCode = updateLangCode,
+                    onDismiss = onGenerateDismiss,
                 )
             }
         }
@@ -182,9 +250,14 @@ fun QuestionListScreenContent(
     updateLangCode: (String) -> Unit,
     onEditDismiss: () -> Unit,
     updateFilterText: (String) -> Unit,
+    updateGenerateQuestionText: (String) -> Unit,
+    onGenerateDismiss: () -> Unit,
 ) {
     val isEditing by remember(uiState.isEditing) {
         derivedStateOf { uiState.isEditing }
+    }
+    val isGenerating by remember(uiState.isGenerating) {
+        derivedStateOf { uiState.isGenerating }
     }
     val questionText by remember(uiState.questionText) {
         derivedStateOf { uiState.questionText }
@@ -192,14 +265,22 @@ fun QuestionListScreenContent(
     val langCode by remember(uiState.langCode) {
         derivedStateOf { uiState.langCode }
     }
+    val generateQuestionText by remember(uiState.generateQuestionText) {
+        derivedStateOf { uiState.generateQuestionText }
+    }
+
+    val loadState = questions.loadState
+
     Column(Modifier.fillMaxSize()) {
         ActionView(
             searchString = updateFilterText,
-            Icons.AutoMirrored.Default.List,
-            Icons.Default.Add,
-            stringResource(id = R.string.search_questions),
+            icon1 = Icons.AutoMirrored.Default.List,
+            icon2 = Icons.Default.Add,
+            icon3 = ImageVector.vectorResource(id = R.drawable.ic_outline_auto_awesome_24),
+            placeholderString = stringResource(R.string.search_questions),
             action1 = { sendEvent(QuestionListEvent.OpenFilter) }, // filtering
             action2 = { sendEvent(QuestionListEvent.InitializeQuestion) },
+            action3 = { sendEvent(QuestionListEvent.InitializeGenerateQuestions) },
         )
         AnimatedVisibility(visible = isEditing) {
             CreateQuestionView(
@@ -212,11 +293,27 @@ fun QuestionListScreenContent(
                 onDismiss = onEditDismiss,
             )
         }
-        if (!isEditing) {
+        AnimatedVisibility(visible = isGenerating) {
+            CreateQuestionView(
+                isTablet = true,
+                questionText = generateQuestionText,
+                langCode = langCode,
+                createQuestion = { sendEvent(QuestionListEvent.GenerateQuestions) },
+                updateQuestionText = updateGenerateQuestionText,
+                updateLangCode = updateLangCode,
+                onDismiss = onGenerateDismiss,
+            )
+        }
+        if (!isEditing && !isGenerating) {
             LazyColumn(Modifier.fillMaxSize()) {
                 items(questions.itemCount) {
                     questions[it]?.let { question ->
                         QuestionListItem(question = question, sendEvent)
+                    }
+                }
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && questions.itemCount == 0) {
+                    item {
+                        EmptyQuestionView()
                     }
                 }
             }
@@ -239,9 +336,21 @@ fun QuestionListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(question.question ?: "undefined",modifier = Modifier.weight(7f))
-        IconButton(modifier = Modifier.weight(1f), onClick = { sendEvent(QuestionListEvent.DeleteQuestion(question)) }) {
+        Text(question.question?.lowercase() ?: "undefined", modifier = Modifier.weight(7f))
+        IconButton(
+            modifier = Modifier.weight(1f),
+            onClick = { sendEvent(QuestionListEvent.DeleteQuestion(question)) },
+        ) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
         }
     }
+}
+
+@Composable
+fun EmptyQuestionView() {
+    Text(
+        stringResource(R.string.empty_question_info),
+        modifier = Modifier.fillMaxSize().padding(32.dp),
+        textAlign = TextAlign.Center,
+    )
 }

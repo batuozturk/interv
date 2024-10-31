@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -96,28 +97,28 @@ fun ExportQuestionsScreen(
             }
         }
 
-
     LaunchedEffect(true) {
         viewModel.event.collect {
             when (it) {
                 ExportQuestionsEvent.Back -> onBackPressed.invoke()
                 ExportQuestionsEvent.ClearDialog -> clearDialog.invoke()
                 is ExportQuestionsEvent.ShareQuestions -> {
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/json"
-                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        putExtra(
-                            Intent.EXTRA_SUBJECT,
-                            "sharing file from interviewself"
-                        )
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            "sharing file which is exported as json"
-                        )
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
-                    }
+                    val intent =
+                        Intent(Intent.ACTION_SEND).apply {
+                            type = "application/json"
+                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            putExtra(
+                                Intent.EXTRA_SUBJECT,
+                                "sharing file from interviewself",
+                            )
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "sharing file which is exported as json",
+                            )
+                            putExtra(Intent.EXTRA_STREAM, it.uri)
+                        }
                     startActivityForResultSharing.launch(
-                        intent
+                        intent,
                     )
                 }
 
@@ -185,18 +186,18 @@ fun ExportQuestionsScreenContent(
                 modifier =
                     Modifier.fillMaxWidth()
                         .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 16.dp),
-                text = "you can export your questions as json file, based on the language that you select.\n\nalso you can share questions with your friends, they can import these json files in import questions section.",
+                text = stringResource(R.string.export_questions_info),
             )
-            TabRow(
+            ScrollableTabRow(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(76.dp)
                         .padding(top = 12.dp, bottom = 16.dp),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 selectedTabIndex = currentLanguageIndex,
                 divider = {},
+                edgePadding = 0.dp,
                 indicator = {
                     if (currentLanguageIndex < it.size) {
                         Column(
@@ -204,20 +205,18 @@ fun ExportQuestionsScreenContent(
                                 Modifier
                                     .tabIndicatorOffset(it[currentLanguageIndex])
                                     .fillMaxSize()
-                                    .padding(8.dp)
                                     .border(
                                         1.dp,
                                         MaterialTheme.colorScheme.onSurface,
                                         RoundedCornerShape(10.dp),
-                                    )
-                                    .padding(10.dp),
+                                    ),
                         ) {
                         }
                     }
                 },
             ) {
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 0,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.EN.code)
@@ -226,7 +225,7 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_english))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 1,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.TR.code)
@@ -235,13 +234,94 @@ fun ExportQuestionsScreenContent(
                     Text(stringResource(R.string.filter_turkish))
                 }
                 Tab(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier.height(48.dp).padding(12.dp),
                     selected = currentLanguageIndex == 2,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.FR.code)
                     },
                 ) {
                     Text(stringResource(R.string.filter_french))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 3,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.DE.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_german))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 4,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.ES.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_spanish))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 5,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.PL.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_polish))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 6,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.AR.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_arabic))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 7,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.IT.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_italian))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 8,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.NO.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_norwegian))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 9,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.DA.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_danish))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex ==10,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.SV.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_swedish))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex ==10,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.NL.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_dutch))
                 }
             }
 
@@ -279,12 +359,12 @@ fun ExportQuestionsScreenContent(
                         sendEvent.invoke(ExportQuestionsEvent.ExportQuestions(true))
                     },
                     colors =
-                    ButtonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        disabledContainerColor = Color.Transparent,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
+                        ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
                 ) {
                     Text(
                         stringResource(id = R.string.save_and_share),

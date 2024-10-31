@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.data.model.findType
+import com.batuhan.interv.presentation.interview.create.InterviewField
 import com.batuhan.interv.ui.theme.InterviewselfTheme
 import com.batuhan.interv.ui.theme.fontFamily
 import com.batuhan.interv.util.keyboardAsState
@@ -100,51 +102,116 @@ fun CreateQuestionView(
                 singleLine = true,
             )
         }
-        TabRow(
+        ScrollableTabRow(
             modifier =
             Modifier
-                .fillMaxWidth().height(76.dp)
+                .fillMaxWidth()
                 .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndexLang,
             divider = {},
+            edgePadding = 0.dp,
             indicator = {
                 if (selectedIndexLang < it.size) {
                     Column(
                         modifier =
-                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize().padding(8.dp)
+                        Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize()
                             .border(
                                 1.dp,
                                 MaterialTheme.colorScheme.onSurface,
                                 RoundedCornerShape(10.dp),
-                            ).padding(10.dp),
+                            ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 0,
                 onClick = { updateLangCode(LanguageType.EN.code) },
             ) {
                 Text(stringResource(id = LanguageType.EN.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 1,
                 onClick = { updateLangCode(LanguageType.TR.code) },
             ) {
                 Text(stringResource(id = LanguageType.TR.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 2,
                 onClick = { updateLangCode(LanguageType.FR.code) },
             ) {
                 Text(stringResource(id = LanguageType.FR.text))
             }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 3,
+                onClick = { updateLangCode(LanguageType.DE.code) },
+            ) {
+                Text(stringResource(id = LanguageType.DE.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 4,
+                onClick = { updateLangCode(LanguageType.ES.code) },
+            ) {
+                Text(stringResource(id = LanguageType.ES.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 5,
+                onClick = { updateLangCode(LanguageType.PL.code) },
+            ) {
+                Text(stringResource(id = LanguageType.PL.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 6,
+                onClick = { updateLangCode(LanguageType.AR.code) },
+            ) {
+                Text(stringResource(id = LanguageType.AR.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 7,
+                onClick = { updateLangCode(LanguageType.IT.code) },
+            ) {
+                Text(stringResource(id = LanguageType.IT.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 8,
+                onClick = { updateLangCode(LanguageType.NO.code) },
+            ) {
+                Text(stringResource(id = LanguageType.NO.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 9,
+                onClick = { updateLangCode(LanguageType.DA.code) },
+            ) {
+                Text(stringResource(id = LanguageType.DA.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 10,
+                onClick = { updateLangCode(LanguageType.SV.code) },
+            ) {
+                Text(stringResource(id = LanguageType.SV.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 10,
+                onClick = { updateLangCode(LanguageType.NL.code) },
+            ) {
+                Text(stringResource(id = LanguageType.NL.text))
+            }
+
         }
         Row(
             Modifier

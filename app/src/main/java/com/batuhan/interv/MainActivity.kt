@@ -35,6 +35,7 @@ import androidx.navigation.navOptions
 import com.batuhan.interv.MainActivity.Companion.KEY_INTERVIEW_ID
 import com.batuhan.interv.MainActivity.Companion.KEY_INTERVIEW_TYPE
 import com.batuhan.interv.MainActivity.Companion.KEY_LANG_CODE
+import com.batuhan.interv.data.model.LanguageType
 import com.batuhan.interv.presentation.container.ContainerScreen
 import com.batuhan.interv.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interv.presentation.interview.create.addstep.AddStepScreen
@@ -56,7 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.lang.RuntimeException
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -68,12 +69,16 @@ class MainActivity : ComponentActivity() {
             listOfNotNull(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else null,
             ).toTypedArray()
+        private val REQUIRED_PERMISSIONS_INTERVIEW = listOfNotNull(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+        ).toTypedArray()
         private val KEY_PREFERENCES_STYLE = booleanPreferencesKey("preferences_style")
         private val KEY_PREFERENCES_LANGUAGE = stringPreferencesKey("preferences_language")
+        internal val KEY_PREFERENCES_OPENAI_CLIENT_KEY =
+            stringPreferencesKey("preferences_openai_key")
     }
 
     private lateinit var customTabsIntent: CustomTabsIntent
@@ -94,8 +99,12 @@ class MainActivity : ComponentActivity() {
         } else {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+        val appUpdate = intent.extras?.getString("app-update").toBoolean()
         setContent {
             var darkTheme: Boolean? by remember {
+                mutableStateOf(null)
+            }
+            var apiToken: String? by remember {
                 mutableStateOf(null)
             }
             LaunchedEffect(true) {
@@ -103,6 +112,10 @@ class MainActivity : ComponentActivity() {
                     darkTheme = it[KEY_PREFERENCES_STYLE] ?: run {
                         writeData(SettingsType.Style(true))
                         true
+                    }
+                    apiToken = it[KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                        writeData(SettingsType.ApiKey(""))
+                        ""
                     }
                     if (it[KEY_PREFERENCES_LANGUAGE] == null) {
                         writeData(SettingsType.LangCode("en-US"))
@@ -135,6 +148,10 @@ class MainActivity : ComponentActivity() {
                             setStyle = {
                                 darkTheme = it
                             },
+                            appUpdate = appUpdate,
+                            onPermissionRequest = {
+                                activityResultLauncher.launch(REQUIRED_PERMISSIONS_INTERVIEW)
+                            }
                         )
                     }
                 }
@@ -146,7 +163,8 @@ class MainActivity : ComponentActivity() {
         val base: Context
         val config = newBase.resources.configuration
         runBlocking {
-            langCode = newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: "en-US"
+            langCode = newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: checkCurrentLangCode(
+                Locale.getDefault().language)
             val locales = LocaleList.forLanguageTags(langCode)
             config.setLocales(locales)
             base = newBase.createConfigurationContext(config)
@@ -163,11 +181,19 @@ class MainActivity : ComponentActivity() {
             permissions.entries.forEach {
                 if (it.value == false) {
                     permissionGranted = false
-                }
-                else if(it.value && it.key == Manifest.permission.POST_NOTIFICATIONS){
+                } else if (it.value && it.key == Manifest.permission.POST_NOTIFICATIONS) {
                     Firebase.messaging.subscribeToTopic(getString(R.string.topic_subscribe))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_1))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_2))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_3))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_4))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_5))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_6))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_7))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_8))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_9))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_10))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_11))
                 }
             }
             // todo
@@ -181,8 +207,52 @@ class MainActivity : ComponentActivity() {
                     is SettingsType.LangCode ->
                         prefs[KEY_PREFERENCES_LANGUAGE] =
                             settingsType.langCode
+
+                    else -> {}
                 }
             }
+        }
+    }
+
+    fun checkCurrentLangCode(langCode: String): String{
+        return when(langCode){
+            "en" -> {
+                LanguageType.EN.code
+            }
+            "tr" -> {
+                LanguageType.TR.code
+            }
+            "fr" -> {
+                LanguageType.FR.code
+            }
+            "de" -> {
+                LanguageType.DE.code
+            }
+            "es" -> {
+                LanguageType.ES.code
+            }
+            "pl" -> {
+                LanguageType.PL.code
+            }
+            "ar" -> {
+                LanguageType.AR.code
+            }
+            "it" -> {
+                LanguageType.IT.code
+            }
+            "no" -> {
+                LanguageType.NO.code
+            }
+            "da" -> {
+                LanguageType.DA.code
+            }
+            "sv" -> {
+                LanguageType.SV.code
+            }
+            "nl" -> {
+                LanguageType.NL.code
+            }
+            else -> LanguageType.EN.code
         }
     }
 }
@@ -193,22 +263,31 @@ fun InterviewSelfApp(
     sendBrowserEvent: (BrowserEvent) -> Unit,
     restartApplication: () -> Unit,
     setStyle: (Boolean) -> Unit,
+    appUpdate: Boolean,
+    onPermissionRequest: () -> Unit,
 ) {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
-            SplashScreen(onBackPressed = finishApplication) {
-                navController.navigate(
-                    Screen.Home.route,
-                    navOptions =
-                        navOptions {
-                            popUpTo(Screen.Splash.route) {
-                                inclusive = true
-                            }
-                        },
-                )
-            }
+            SplashScreen(
+                appUpdate,
+                onBackPressed = finishApplication,
+                navigateMainScreen = {
+                    navController.navigate(
+                        Screen.Home.route,
+                        navOptions =
+                            navOptions {
+                                popUpTo(Screen.Splash.route) {
+                                    inclusive = true
+                                }
+                            },
+                    )
+                },
+                updateApp = {
+                    sendBrowserEvent.invoke(BrowserEvent.UpdateApp)
+                },
+            )
         }
         composable(Screen.Home.route) { // todo on back pressed test edilecek
             ContainerScreen(
@@ -221,7 +300,13 @@ fun InterviewSelfApp(
                     navController.navigate(Screen.InterviewDetail.createRoute(it))
                 },
                 enterInterview = { id, type, langCode ->
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
+                    navController.navigate(
+                        Screen.EnterInterview.createRoute(
+                            id,
+                            type,
+                            langCode
+                        ),
+                    )
                 },
                 sendBrowserEvent = sendBrowserEvent,
                 restartApplication = restartApplication,
@@ -232,6 +317,7 @@ fun InterviewSelfApp(
                 exportQuestions = {
                     navController.navigate(Screen.ExportQuestions.route)
                 },
+                onPermissionRequest = onPermissionRequest
             )
         }
         composable(Screen.CreateInterview.route) {
@@ -257,7 +343,13 @@ fun InterviewSelfApp(
                 onBackPressed = { navController.popBackStack() },
                 enterInterview = { id, type, langCode ->
                     navController.popBackStack()
-                    navController.navigate(Screen.EnterInterview.createRoute(id, type, langCode))
+                    navController.navigate(
+                        Screen.EnterInterview.createRoute(
+                            id,
+                            type,
+                            langCode,
+                        ),
+                    )
                 },
             )
         }

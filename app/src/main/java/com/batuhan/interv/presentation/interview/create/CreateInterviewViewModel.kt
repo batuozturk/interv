@@ -160,19 +160,6 @@ class CreateInterviewViewModel @Inject constructor(
             )
             return
         }
-        interview.questionDuration ?: run {
-            showDialog(
-                DialogData(
-                    title = R.string.error_interview_duration_invalid,
-                    type = DialogType.ERROR,
-                    actions =
-                        listOf(
-                            DialogAction(R.string.dismiss, ::clearDialog),
-                        ),
-                ),
-            )
-            return
-        }
 
 
         viewModelScope.launch {
@@ -237,10 +224,6 @@ class CreateInterviewViewModel @Inject constructor(
                 when (interviewField) {
                     is InterviewField.Name -> {
                         it.currentInterview.copy(interviewName = interviewField.name)
-                    }
-
-                    is InterviewField.Duration -> {
-                        it.currentInterview.copy(questionDuration = interviewField.duration.toIntOrNull()) // Int.max_value validation
                     }
 
                     is InterviewField.Type -> {
@@ -337,8 +320,6 @@ data class CreateInterviewUiState(
 
 sealed class InterviewField {
     data class Name(val name: String) : InterviewField()
-
-    data class Duration(val duration: String) : InterviewField()
 
     data class Type(val type: InterviewType) : InterviewField()
 

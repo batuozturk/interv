@@ -33,9 +33,11 @@ fun ActionView(
     searchString: (String) -> Unit,
     icon1: ImageVector,
     icon2: ImageVector,
+    icon3: ImageVector? = null,
     placeholderString: String,
     action1: () -> Unit,
     action2: () -> Unit,
+    action3: (() -> Unit)? = null
 ) {
     var textString by remember {
         mutableStateOf("")
@@ -76,6 +78,11 @@ fun ActionView(
         IconButton(onClick = action2, modifier = Modifier.weight(1.5f)) {
             Icon(icon2, contentDescription = null)
         }
+        action3?.let{
+            IconButton(onClick = action3, modifier = Modifier.weight(1.5f)) {
+                Icon(icon3!!, contentDescription = null)
+            }
+        }
     }
 }
 
@@ -87,9 +94,11 @@ fun ActionViewPreview() {
             searchString = { _ -> },
             icon1 = Icons.AutoMirrored.Default.List,
             icon2 = Icons.Outlined.Add,
+            icon3 = Icons.Outlined.Add,
             placeholderString = "search questions",
             action1 = {},
             action2 = {},
+            action3 = {}
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.batuhan.interv.presentation.interview
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,11 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.batuhan.interv.MainActivity
 import com.batuhan.interv.R
 import com.batuhan.interv.data.model.FilterType
 import com.batuhan.interv.data.model.Interview
@@ -50,8 +56,11 @@ import com.batuhan.interv.presentation.interview.create.CreateInterviewScreen
 import com.batuhan.interv.presentation.interview.create.addstep.AddStepScreen
 import com.batuhan.interv.presentation.interview.detail.InterviewDetailScreen
 import com.batuhan.interv.util.ActionView
+import com.batuhan.interv.util.DialogAction
 import com.batuhan.interv.util.DialogData
+import com.batuhan.interv.util.DialogType
 import com.batuhan.interv.util.FilterDialogView
+import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,6 +72,7 @@ fun InterviewListScreen(
     createInterview: () -> Unit,
     navigateToDetail: (interviewId: Long) -> Unit,
     enterInterview: (interviewId: Long, interviewType: InterviewType, langCode: String) -> Unit,
+    onPermissionRequest: () -> Unit,
 ) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<InterviewListViewModel>()
@@ -70,6 +80,25 @@ fun InterviewListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dialogData by remember(uiState.dialogData) {
         derivedStateOf { uiState.dialogData }
+    }
+    var apiKey by remember {
+        mutableStateOf("")
+    }
+    var langCode by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(true) {
+        context.dataStore.data.collect {
+            apiKey = it[MainActivity.KEY_PREFERENCES_OPENAI_CLIENT_KEY] ?: run {
+                ""
+            }
+            langCode = it[InterviewListViewModel.KEY_PREFERENCES_LANGUAGE] ?: run {
+                "en-US"
+            }
+        }
+    }
+    LaunchedEffect(langCode) {
+        viewModel.initializeTestInterviews(langCode)
     }
     LaunchedEffect(dialogData) {
         dialogData?.let(showDialog)
@@ -81,12 +110,34 @@ fun InterviewListScreen(
                 InterviewListEvent.ClearDialog -> clearDialog.invoke()
                 is InterviewListEvent.Detail -> navigateToDetail.invoke(it.interviewId)
                 is InterviewListEvent.DeleteInterview -> viewModel.deleteInterview(it.interview)
-                is InterviewListEvent.EnterInterview ->
-                    enterInterview.invoke(
-                        it.interviewId,
-                        it.interviewType,
-                        it.langCode,
-                    )
+                is InterviewListEvent.EnterInterview -> {
+                    if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                        || context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        viewModel.showDialog(
+                            DialogData(
+                                title = R.string.permissions_required,
+                                type = DialogType.ERROR,
+                                actions =
+                                listOf(
+                                    DialogAction(R.string.fix) {
+                                        viewModel.clearDialog()
+                                        onPermissionRequest.invoke()
+                                    },
+                                    DialogAction(R.string.dismiss) {
+                                        viewModel.clearDialog()
+                                    },
+                                ),
+                            )
+                        )
+                    }else {
+                        enterInterview.invoke(
+                            it.interviewId,
+                            it.interviewType,
+                            it.langCode,
+                        )
+                    }
+                }
 
                 is InterviewListEvent.OpenFilter -> {
                     viewModel.setFilterType()
@@ -128,12 +179,13 @@ fun InterviewListScreenContent(
     sendEvent: (InterviewListEvent) -> Unit,
     updateFilterText: (String) -> Unit,
 ) {
+    val loadState = interviews.loadState
     Column(Modifier.fillMaxSize()) {
         ActionView(
             searchString = updateFilterText,
-            Icons.AutoMirrored.Default.List,
-            Icons.Default.Add,
-            stringResource(R.string.search_interviews),
+            icon1 = Icons.AutoMirrored.Default.List,
+            icon2 = Icons.Default.Add,
+            placeholderString = stringResource(R.string.search_interviews),
             action1 = { sendEvent(InterviewListEvent.OpenFilter) },
             action2 = { sendEvent(InterviewListEvent.CreateInterview) },
         )
@@ -143,6 +195,11 @@ fun InterviewListScreenContent(
                     InterviewListItem(interview = interview, sendEvent = sendEvent) {
                         sendEvent(InterviewListEvent.Detail(it))
                     }
+                }
+            }
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount < 3) {
+                item {
+                    EmptyInterviewView()
                 }
             }
         }
@@ -188,13 +245,15 @@ fun InterviewListScreenContentForTablets(
         targetValue = if (interviewDetailId != null) 3f else 0.001f,
         animationSpec = tween(durationMillis = 1000),
     )
+    val loadState = interviews.loadState
+
     Row(Modifier.fillMaxSize()) {
         Column(Modifier.weight(9f - weight - weight2 - weight3)) {
             ActionView(
                 searchString = updateFilterText,
-                Icons.AutoMirrored.Default.List,
-                Icons.Default.Add,
-                stringResource(R.string.search_interviews),
+                icon1 = Icons.AutoMirrored.Default.List,
+                icon2 = Icons.Default.Add,
+                placeholderString = stringResource(R.string.search_interviews),
                 action1 = { sendEvent.invoke(InterviewListEvent.OpenFilter) }, // filtering
                 action2 = {
                     interviewDetailId = null
@@ -213,6 +272,11 @@ fun InterviewListScreenContentForTablets(
                                 interviewDetailId = it
                             }
                         }
+                    }
+                }
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && interviews.itemCount < 3) {
+                    item(span = { GridItemSpan(2) }) {
+                        EmptyInterviewView()
                     }
                 }
             }
@@ -288,7 +352,7 @@ fun InterviewListItem(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                interview.interviewName,
+                interview.interviewName.lowercase(),
                 modifier = Modifier.weight(if (interview.completed != true) 6f else 7f),
             )
             if (interview.completed != true) {
@@ -300,6 +364,7 @@ fun InterviewListItem(
                                 interview.interviewId ?: return@IconButton,
                                 interview.interviewType ?: return@IconButton,
                                 interview.langCode ?: return@IconButton,
+                                interview.interviewId < 2,
                             ),
                         )
                     },
@@ -307,12 +372,34 @@ fun InterviewListItem(
                     Icon(Icons.Outlined.PlayArrow, contentDescription = null)
                 }
             }
-            IconButton(
-                modifier = Modifier.weight(1f),
-                onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
-            ) {
-                Icon(Icons.Outlined.Delete, contentDescription = null)
+            if (interview.interviewId!! >= 2) {
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { sendEvent(InterviewListEvent.DeleteInterview(interview)) },
+                ) {
+                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                }
             }
         }
+    }
+}
+
+@Composable
+fun EmptyInterviewView() {
+    Column(Modifier.fillMaxSize()) {
+        Text(
+            stringResource(R.string.empty_interview_info),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(top = 32.dp, start = 32.dp, end = 32.dp, bottom = 16.dp),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            stringResource(R.string.empty_interview_free_info),
+            modifier =
+                Modifier.fillMaxSize()
+                    .padding(top = 16.dp, start = 32.dp, end = 32.dp, bottom = 32.dp),
+            textAlign = TextAlign.Center,
+        )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -40,6 +41,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -200,9 +202,6 @@ fun ScreenContent(
     val interviewName by remember(uiState.currentInterview.interviewName) {
         derivedStateOf { uiState.currentInterview.interviewName }
     }
-    val questionDuration by remember(uiState.currentInterview.questionDuration) {
-        derivedStateOf { uiState.currentInterview.questionDuration }
-    }
     val langCode by remember(uiState.currentInterview.langCode) {
         derivedStateOf { uiState.currentInterview.langCode }
     }
@@ -248,28 +247,10 @@ fun ScreenContent(
             },
             singleLine = true,
         )
-        OutlinedTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp),
-            placeholder = {
-                Text(stringResource(R.string.create_interview_question_duration_placeholder))
-            },
-            leadingIcon = {
-                Icon(painterResource(id = R.drawable.ic_access_time_24), contentDescription = null)
-            },
-            colors = OutlinedTextFieldDefaults.colors(),
-            value = questionDuration?.toString() ?: "0",
-            onValueChange = {
-                updateConfiguration.invoke(InterviewField.Duration(it))
-            },
-            singleLine = true,
-        )
         TabRow(
             modifier =
                 Modifier
-                    .fillMaxWidth().height(76.dp)
+                    .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -280,77 +261,139 @@ fun ScreenContent(
                     Column(
                         modifier =
                             Modifier.tabIndicatorOffset(it[selectedIndexType]).fillMaxSize()
-                                .padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
                                     RoundedCornerShape(10.dp),
-                                ).padding(10.dp),
+                                ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexType == 0,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.VIDEO)) },
             ) {
-                Text(stringResource(id = InterviewType.VIDEO.text))
+                Text(stringResource(id = InterviewType.VIDEO.text), textAlign = TextAlign.Center)
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexType == 1,
                 onClick = { updateConfiguration.invoke(InterviewField.Type(InterviewType.PHONE_CALL)) },
             ) {
-                Text(stringResource(id = InterviewType.PHONE_CALL.text))
+                Text(stringResource(id = InterviewType.PHONE_CALL.text), textAlign = TextAlign.Center)
             }
         }
-        TabRow(
+        ScrollableTabRow(
             modifier =
                 Modifier
-                    .fillMaxWidth().height(76.dp)
+                    .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 16.dp),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurface,
             selectedTabIndex = selectedIndexLang,
             divider = {},
+            edgePadding = 0.dp,
             indicator = {
                 if (selectedIndexLang < it.size) {
                     Column(
                         modifier =
                             Modifier.tabIndicatorOffset(it[selectedIndexLang]).fillMaxSize()
-                                .padding(8.dp)
                                 .border(
                                     1.dp,
                                     MaterialTheme.colorScheme.onSurface,
                                     RoundedCornerShape(10.dp),
-                                ).padding(10.dp),
+                                ),
                     ) {
                     }
                 }
             },
         ) {
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 0,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.EN.code)) },
             ) {
                 Text(stringResource(id = LanguageType.EN.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 1,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.TR.code)) },
             ) {
                 Text(stringResource(id = LanguageType.TR.text))
             }
             Tab(
-                modifier = Modifier.height(60.dp),
+                modifier = Modifier.height(48.dp).padding(12.dp),
                 selected = selectedIndexLang == 2,
                 onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.FR.code)) },
             ) {
                 Text(stringResource(id = LanguageType.FR.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 3,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.DE.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.DE.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 4,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.ES.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.ES.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 5,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.PL.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.PL.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 6,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.AR.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.AR.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 7,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.IT.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.IT.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 8,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.NO.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.NO.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 9,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.DA.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.DA.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 10,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.SV.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.SV.text))
+            }
+            Tab(
+                modifier = Modifier.height(48.dp).padding(12.dp),
+                selected = selectedIndexLang == 11,
+                onClick = { updateConfiguration.invoke(InterviewField.Language(LanguageType.NL.code)) },
+            ) {
+                Text(stringResource(id = LanguageType.NL.text))
             }
         }
         Button(
