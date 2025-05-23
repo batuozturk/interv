@@ -51,13 +51,19 @@ import com.batuhan.interv.util.Screen
 import com.batuhan.interv.util.dataStore
 import com.batuhan.interv.util.isTablet
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.FirebaseAnalytics.ConsentStatus
+import com.google.firebase.analytics.FirebaseAnalytics.ConsentType
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.setConsent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.EnumMap
 import java.util.Locale
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -92,8 +98,14 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        analytics = FirebaseAnalytics.getInstance(this)
+        analytics = Firebase.analytics
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
+        val consentMap = mutableMapOf<ConsentType, ConsentStatus>()
+        consentMap[ConsentType.ANALYTICS_STORAGE] = ConsentStatus.GRANTED
+        consentMap[ConsentType.AD_STORAGE] = ConsentStatus.GRANTED
+        consentMap[ConsentType.AD_USER_DATA] = ConsentStatus.GRANTED
+        consentMap[ConsentType.AD_PERSONALIZATION] = ConsentStatus.GRANTED
+        analytics.setConsent(consentMap)
         if (isTablet()) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
@@ -163,8 +175,10 @@ class MainActivity : ComponentActivity() {
         val base: Context
         val config = newBase.resources.configuration
         runBlocking {
-            langCode = newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: checkCurrentLangCode(
-                Locale.getDefault().language)
+            langCode =
+                newBase.dataStore.data.first()[KEY_PREFERENCES_LANGUAGE] ?: checkCurrentLangCode(
+                    Locale.getDefault().language
+                )
             val locales = LocaleList.forLanguageTags(langCode)
             config.setLocales(locales)
             base = newBase.createConfigurationContext(config)
@@ -214,44 +228,56 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun checkCurrentLangCode(langCode: String): String{
-        return when(langCode){
+    fun checkCurrentLangCode(langCode: String): String {
+        return when (langCode) {
             "en" -> {
                 LanguageType.EN.code
             }
+
             "tr" -> {
                 LanguageType.TR.code
             }
+
             "fr" -> {
                 LanguageType.FR.code
             }
+
             "de" -> {
                 LanguageType.DE.code
             }
+
             "es" -> {
                 LanguageType.ES.code
             }
+
             "pl" -> {
                 LanguageType.PL.code
             }
+
             "ar" -> {
                 LanguageType.AR.code
             }
+
             "it" -> {
                 LanguageType.IT.code
             }
+
             "no" -> {
                 LanguageType.NO.code
             }
+
             "da" -> {
                 LanguageType.DA.code
             }
+
             "sv" -> {
                 LanguageType.SV.code
             }
+
             "nl" -> {
                 LanguageType.NL.code
             }
+
             else -> LanguageType.EN.code
         }
     }
@@ -277,11 +303,11 @@ fun InterviewSelfApp(
                     navController.navigate(
                         Screen.Home.route,
                         navOptions =
-                            navOptions {
-                                popUpTo(Screen.Splash.route) {
-                                    inclusive = true
-                                }
-                            },
+                        navOptions {
+                            popUpTo(Screen.Splash.route) {
+                                inclusive = true
+                            }
+                        },
                     )
                 },
                 updateApp = {
