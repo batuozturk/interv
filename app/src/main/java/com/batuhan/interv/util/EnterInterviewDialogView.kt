@@ -43,18 +43,18 @@ fun EnterInterviewDialogView(data: EnterInterviewDialogData?) {
         val lifecycleEventObserver =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_DESTROY) {
-                    mediaPlayer.pause()
+                    if(mediaPlayer.isPlaying) mediaPlayer.pause()
                     mediaPlayer.release()
                 } else if (event == Lifecycle.Event.ON_RESUME) {
                     mediaPlayer.start()
                 } else if (event == Lifecycle.Event.ON_PAUSE) {
-                    mediaPlayer.pause()
+                    if(mediaPlayer.isPlaying) mediaPlayer.pause()
                 }
             }
         lifecycleOwner.lifecycle.addObserver(lifecycleEventObserver)
 
         onDispose {
-            mediaPlayer.pause()
+            if(mediaPlayer.isPlaying) mediaPlayer.pause()
             mediaPlayer.release()
             lifecycleOwner.lifecycle.removeObserver(lifecycleEventObserver)
         }
