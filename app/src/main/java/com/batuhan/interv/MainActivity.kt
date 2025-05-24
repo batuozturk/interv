@@ -208,6 +208,9 @@ class MainActivity : ComponentActivity() {
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_9))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_10))
                     Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_11))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_12))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_13))
+                    Firebase.messaging.unsubscribeFromTopic(getString(R.string.topic_unsubscribe_14))
                 }
             }
             // todo
@@ -276,6 +279,18 @@ class MainActivity : ComponentActivity() {
 
             "nl" -> {
                 LanguageType.NL.code
+            }
+
+            "pt" -> {
+                LanguageType.PT.code
+            }
+
+            "ja" -> {
+                LanguageType.JA.code
+            }
+
+            "ko" -> {
+                LanguageType.KO.code
             }
 
             else -> LanguageType.EN.code

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -265,6 +266,37 @@ fun SettingsScreen(
                                 )
                             }
                         },
+                        DialogAction(
+                            R.string.settings_lang_option_thirteen, // Portuguese (Portugal)
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("pt-PT"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+
+                        DialogAction(
+                            R.string.settings_lang_option_fourteen, // Korean
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("ko-KR"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
+                        DialogAction(
+                            R.string.settings_lang_option_fifteen, // Japanese
+                        ) {
+                            coroutineScope.launch {
+                                datastore.writeData(
+                                    SettingsType.LangCode("ja-JP"),
+                                    viewModel::writeData,
+                                )
+                            }
+                        },
                     ),
                     decideDialogType(darkTheme),
                     languageData =
@@ -453,6 +485,23 @@ fun SettingsScreenContent(
                                             SettingsType.LangCode("nl-NL"),
                                         )
                                     },
+                                    DialogAction(R.string.settings_lang_option_thirteen) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("pt-PT"),
+                                        )
+                                    },
+
+                                    DialogAction(R.string.settings_lang_option_fourteen) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("ko-KR"),
+                                        )
+                                    },
+                                    DialogAction(R.string.settings_lang_option_fifteen) {
+                                        writeData.invoke(
+                                            SettingsType.LangCode("ja-JP"),
+                                        )
+                                    },
+
                                 ),
                             )
                     } else {
@@ -548,7 +597,7 @@ fun SettingsListItem(
         verticalArrangement = Arrangement.Center,
         modifier =
             Modifier
-                .fillMaxWidth().height(100.dp).padding(8.dp)
+                .fillMaxWidth().defaultMinSize(minHeight = 100.dp).padding(8.dp)
                 .clickable { action.invoke() }
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
                 .padding(10.dp),

@@ -19,7 +19,7 @@ android {
         targetSdk = 34
         versionCode = 9
         versionName = "1.0.7"
-        resourceConfigurations.addAll(setOf("en", "tr", "fr", "de", "es", "pl", "ar", "it", "no", "da", "sv", "nl"))
+        resourceConfigurations.addAll(setOf("en", "tr", "fr", "de", "es", "pl", "ar", "it", "no", "da", "sv", "nl", "pt", "ja", "ko"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

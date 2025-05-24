@@ -316,12 +316,41 @@ fun ExportQuestionsScreenContent(
                 }
                 Tab(
                     modifier = Modifier.height(48.dp).padding(12.dp),
-                    selected = currentLanguageIndex ==10,
+                    selected = currentLanguageIndex == 11,
                     onClick = {
                         updateSelectedLanguage.invoke(LanguageType.NL.code)
                     },
                 ) {
                     Text(stringResource(R.string.filter_dutch))
+                }
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 12,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.PT.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_portuguese))
+                }
+
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 13,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.JA.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_japan))
+                }
+
+                Tab(
+                    modifier = Modifier.height(48.dp).padding(12.dp),
+                    selected = currentLanguageIndex == 14,
+                    onClick = {
+                        updateSelectedLanguage.invoke(LanguageType.KO.code)
+                    },
+                ) {
+                    Text(stringResource(R.string.filter_korean))
                 }
             }
 
