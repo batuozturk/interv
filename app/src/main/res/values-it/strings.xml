@@ -104,7 +104,11 @@
     <string name="topic_unsubscribe_7">interv-en</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_10">interv-sv</string>
     <string name="topic_unsubscribe_11">interv-nl</string>
+    <string name="topic_unsubscribe_12">interv-pt</string>
+    <string name="topic_unsubscribe_13">interv-ko</string>
+    <string name="topic_unsubscribe_14">interv-ja</string>
     <string name="interview_steps_not_added">passi dell\'intervista non aggiunti</string>
     <string name="api_key_placeholder">chiave api</string>
     <string name="set_api_key">imposta chiave api</string>
@@ -152,5 +156,14 @@
     <string name="filter_dutch">olandese</string>
     <string name="language_type_nl">olandese</string>
     <string name="settings_lang_option_twelve">olandese</string>
+    <string name="filter_portuguese">portoghese</string>
+    <string name="language_type_pt">portoghese</string>
+    <string name="settings_lang_option_thirteen">portoghese</string>
+    <string name="filter_korean">coreano</string>
+    <string name="language_type_ko">coreano</string>
+    <string name="settings_lang_option_fourteen">coreano</string>
+    <string name="filter_japan">giapponese</string>
+    <string name="language_type_ja">giapponese</string>
+    <string name="settings_lang_option_fifteen">giapponese</string>
 
 </resources>

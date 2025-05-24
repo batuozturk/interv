@@ -108,6 +108,9 @@
     <string name="topic_unsubscribe_9">interv-da</string>
     <string name="topic_unsubscribe_10">interv-sv</string>
     <string name="topic_unsubscribe_11">interv-nl</string>
+    <string name="topic_unsubscribe_12">interv-pt</string>
+    <string name="topic_unsubscribe_13">interv-ko</string>
+    <string name="topic_unsubscribe_14">interv-ja</string>
     <string name="interview_steps_not_added">interview steps not added</string>
     <string name="api_key_placeholder">api key</string>
     <string name="set_api_key">set api key</string>
@@ -155,4 +158,13 @@
     <string name="filter_dutch">dutch</string>
     <string name="language_type_nl">dutch</string>
     <string name="settings_lang_option_twelve">dutch</string>
+    <string name="filter_portuguese">portuguese</string>
+    <string name="language_type_pt">portuguese</string>
+    <string name="settings_lang_option_thirteen">portuguese</string>
+    <string name="filter_korean">korean</string>
+    <string name="language_type_ko">korean</string>
+    <string name="settings_lang_option_fourteen">korean</string>
+    <string name="filter_japan">japanese</string>
+    <string name="language_type_ja">japanese</string>
+    <string name="settings_lang_option_fifteen">japanese</string>
 </resources>
