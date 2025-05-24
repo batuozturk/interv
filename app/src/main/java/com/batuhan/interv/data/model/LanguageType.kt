@@ -24,4 +24,7 @@ enum class LanguageType(
     DA(R.string.language_type_da, "da-DK"),
     SV(R.string.language_type_sv, "sv-SE"),
     NL(R.string.language_type_nl, "nl-NL"),
+    PT(R.string.language_type_pt, "pt-PT"),
+    KO(R.string.language_type_ko, "ko-KR"),
+    JA(R.string.language_type_ja, "ja-JP"),
 }

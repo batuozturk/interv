@@ -104,7 +104,11 @@
     <string name="topic_unsubscribe_7">interv-it</string>
     <string name="topic_unsubscribe_8">interv-no</string>
     <string name="topic_unsubscribe_9">interv-da</string>
+    <string name="topic_unsubscribe_10">interv-sv</string>
     <string name="topic_unsubscribe_11">interv-nl</string>
+    <string name="topic_unsubscribe_12">interv-pt</string>
+    <string name="topic_unsubscribe_13">interv-ko</string>
+    <string name="topic_unsubscribe_14">interv-ja</string>
     <string name="interview_steps_not_added">لم تتم إضافة خطوات المقابلة</string>
     <string name="api_key_placeholder">مفتاح api</string>
     <string name="set_api_key">تعيين مفتاح api</string>
@@ -152,6 +156,16 @@
     <string name="filter_dutch">هولندي</string>
     <string name="language_type_nl">هولندي</string>
     <string name="settings_lang_option_twelve">هولندي</string>
+    <string name="filter_portuguese">البرتغالية</string>
+    <string name="language_type_pt">البرتغالية</string>
+    <string name="settings_lang_option_thirteen">البرتغالية</string>
+    <string name="filter_korean">الكورية</string>
+    <string name="language_type_ko">الكورية</string>
+    <string name="settings_lang_option_fourteen">الكورية</string>
+    <string name="filter_japan">اليابانية</string>
+    <string name="language_type_ja">اليابانية</string>
+    <string name="settings_lang_option_fifteen">اليابانية</string>
+
 
 
 </resources>
